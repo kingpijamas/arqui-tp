@@ -17,4 +17,6 @@
 *.out
 *.app
 
+bochsout.txt
 *.bochsrc
+*.*~
