@@ -10,8 +10,6 @@
 #define word short int
 #define dword int
 
-#define size_t int /*TODO: check this!*/
-
 /* Flags para derechos de acceso de los segmentos */
 #define ACS_PRESENT     0x80            /* segmento presente en memoria */
 #define ACS_CSEG        0x18            /* segmento de codigo */
@@ -26,6 +24,12 @@
 #define ACS_CODE        (ACS_PRESENT | ACS_CSEG | ACS_READ)
 #define ACS_DATA        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 #define ACS_STACK       (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
+
+//C constants and defines
+#define size_t int //TODO: check this!
+
+#define SYS_READ  0x03
+#define SYS_WRITE 0x04
 
 #pragma pack (1) 		/* Alinear las siguiente estructuras a 1 byte */
 

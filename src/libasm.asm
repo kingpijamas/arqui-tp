@@ -4,7 +4,7 @@ GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 
 EXTERN  int_08
-
+EXTERN  int_80
 
 SECTION .text
 
@@ -68,36 +68,30 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
 
 
 _int_80_hand:
-        cmp ebx, 1
-        jne error                       ; Wrong file descriptor (stdin/stdout 
-                                        ; are the only ones supported)
-        cmp eax, 0x03
-        je write
-        cmp eax, 0x04
-        je read
+        ; Build stack frame:
+        push ebp
+        mov ebp, esp
 
-write:
-        ; TODO
-read:
-        ; TODO
-error:
-        ;TODO
-end:
+        ; Push parameters according to C convention
+        push edx
+        push ecx
+        push ebx
+        push eax
+        
+        ; Call handler function
+        call int_80
+
+        mov al,20h      ; send dummy EOI to the PIC
+        out 20h,al
+        
+        ; Pop registers from stack
+        popa
+
+        ; Destroy stack frame:
+        mov esp,ebp
+        pop ebp
+
         iret
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ; Debug para el BOCHS, detiene la ejecució; Para continuar colocar en el BOCHSDBG: set $eax=0
 ;
