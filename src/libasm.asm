@@ -1,5 +1,5 @@
 GLOBAL  _read_msw,_lidt
-GLOBAL  _int_08_hand
+GLOBAL  _int_08_hand,_int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 
@@ -65,6 +65,38 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         pop     es
         pop     ds
         iret
+
+
+_int_80_hand:
+        cmp ebx, 1
+        jne error                       ; Wrong file descriptor (stdin/stdout 
+                                        ; are the only ones supported)
+        cmp eax, 0x03
+        je write
+        cmp eax, 0x04
+        je read
+
+write:
+        ; TODO
+read:
+        ; TODO
+error:
+        ;TODO
+end:
+        iret
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ; Debug para el BOCHS, detiene la ejecució; Para continuar colocar en el BOCHSDBG: set $eax=0
