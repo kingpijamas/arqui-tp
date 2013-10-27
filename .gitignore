@@ -19,5 +19,10 @@
 
 bochsout.txt
 *.bochsrc
+
 *.*~
+
+# Binaries and generated files
 *.d
+*.bin
+*.img
