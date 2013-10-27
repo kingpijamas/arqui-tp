@@ -47,15 +47,9 @@ kmain() {
 
 /* Habilito interrupcion de timer tick*/
 
-	// <<<<<<< HEAD
-	_mascaraPIC1(0xFE);
+	_mascaraPIC1(0xFC); /* Timer tick y teclado */
 	_mascaraPIC2(0xFF);
 
-	// =======
- //        _mascaraPIC1(0xFC); /* Timer tick y teclado */
-	// _mascaraPIC2(0xFF);
-
-	// >>>>>>> 5394b567edb65b1ce76d2af039b66093d333f6fb
 	_Sti();
 
 	while(1) {
@@ -63,13 +57,13 @@ kmain() {
 	
 }
 
-// /* See kernel.h for description */
-// size_t __write(int fd, const void* buffer, size_t count){
-// 	int numwrite;
+/* See kernel.h for description */
+size_t __write(int fd, const void* buffer, size_t count){
+	int numwrite;
 
-// 	switch(fd){
-// 		/*CASE STANDAR_OUTPUT: numwrite videoprint(buffer,count,video);*/
-// 	}
+	switch(fd){
+		/*CASE STANDAR_OUTPUT: numwrite videoprint(buffer,count,video);*/
+	}
 
-// 	return numwrite;
-// }
+	return numwrite;
+}
