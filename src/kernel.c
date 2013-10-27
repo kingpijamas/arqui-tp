@@ -7,9 +7,10 @@ IDTR idtr;				/* IDTR */
 int tickpos=640;
 
 void int_08() {
-
+/*
     char *video = (char *) 0xb8000;
     video[tickpos+=2]='*';
+ */
 
 }
 
@@ -43,7 +44,7 @@ kmain()
 	_Cli();
 /* Habilito interrupcion de timer tick*/
 
-        _mascaraPIC1(0xFE);
+        _mascaraPIC1(0xFC); /* Timer tick y teclado */
         _mascaraPIC2(0xFF);
         
 	_Sti();
@@ -54,3 +55,13 @@ kmain()
 	
 }
 
+/* See kernel.h for description */
+size_t __write(int fd, const void* buffer, size_t count){
+	int numwrite;
+
+	switch(fd){
+		/*CASE STANDAR_OUTPUT: numwrite videoprint(buffer,count,video);*/
+	}
+
+	return numwrite;
+}

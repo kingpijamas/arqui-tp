@@ -10,6 +10,9 @@
 #define _kernel_
 
 #define OS_PID	0
+#define STANDAR_INPUT 0
+#define STANDAR_OUTPUT 1
+#define STANDAR_ERROR 2
 
 int (*player)(void);
 
