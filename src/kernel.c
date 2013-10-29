@@ -13,7 +13,6 @@ kmain() {
 	// Clears the screen
 	k_clear_screen();
 
-
 	// Carga de IDT con la rutina de atencion de IRQ0
 	setup_IDT_entry (&idt[0x08], 0x08, (dword)&_int_08_hand, ACS_INT, 0);
 	setup_IDT_entry (&idt[0x80], 0x08, (dword)&_int_80_hand, ACS_INT, 0);
@@ -31,6 +30,8 @@ kmain() {
 	_mascaraPIC1(0x00); // Enable ALL
 	_mascaraPIC2(0xFF); // Enable NONE
 	_Sti();
+
+	__init_graphics();
 
 	while(1) {
 	}

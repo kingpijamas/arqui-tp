@@ -1,6 +1,7 @@
 #include "../include/kasm.h"
 #include "../include/defs.h"
 #include "../include/inthandlers.h"
+#include "../include/video.h"
 
 /********************************** 
 *

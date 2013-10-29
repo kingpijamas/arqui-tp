@@ -42,9 +42,9 @@ void dummy_handler(void** args) {
 int ctoi(int c){
    	int aux;
    	switch(c){
-		case 0:
+	case 0:
 			aux='0';
-			break;
+	break;
 		case 1:
 			aux='1';
 			break;
@@ -73,7 +73,13 @@ int ctoi(int c){
 			aux='9';
 			break;
 		default:
-			aux='*';
+			if(c > 10){
+				aux='>';
+			}else if (c>100){
+				aux='~';
+			}else{
+				aux='*';
+			}
 	}
 	return aux;
 }
