@@ -1,8 +1,15 @@
 #ifndef INTHANDLERS_H
 #define INTHANDLERS_H
 
-#include "defs.h"
+#include "../include/defs.h"
+#include "../include/kernel.h"
+#include "../include/sysio.h"
 
 void int_08();
-void int_80(int sysCallNo, int fd, void *buf, size_t count);
+void int_80(int sysCallNo, void** args);
+
+//TODO just for testing purposes
+void dummy_handler(void** args);
+//TODO just for testing purposes
+int ctoi(int c);
 #endif

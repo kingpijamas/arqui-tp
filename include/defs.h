@@ -9,15 +9,17 @@
 #define byte unsigned char
 #define word short int
 #define dword int
+#define NULL (void*)0
 
-/* Flags para derechos de acceso de los segmentos */
-#define ACS_PRESENT     0x80            /* segmento presente en memoria */
-#define ACS_CSEG        0x18            /* segmento de codigo */
-#define ACS_DSEG        0x10            /* segmento de datos */
-#define ACS_READ        0x02            /* segmento de lectura */
-#define ACS_WRITE       0x02            /* segmento de escritura */
+
+// Flags para derechos de acceso de los segmentos
+#define ACS_PRESENT     0x80            // segmento presente en memoria
+#define ACS_CSEG        0x18            // segmento de codigo
+#define ACS_DSEG        0x10            // segmento de datos
+#define ACS_READ        0x02            // segmento de lectura
+#define ACS_WRITE       0x02            // segmento de escritura
 #define ACS_IDT         ACS_DSEG
-#define ACS_INT_386 	0x0E		/* Interrupt GATE 32 bits */
+#define ACS_INT_386    	0x0E		        // Interrupt GATE 32 bits
 #define ACS_INT         ( ACS_PRESENT | ACS_INT_386 )
 
 
@@ -25,41 +27,44 @@
 #define ACS_DATA        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 #define ACS_STACK       (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 
-//C constants and defines
-#define size_t int //TODO: check this!
+//File descriptors
+#define STD_IN          0
+#define STD_OUT         1
+#define STD_ERR         2
+//TODO define a fd for the register display console
 
-#define SYS_READ  0x03
-#define SYS_WRITE 0x04
+//C constants and defs
+#define SYS_READ        0x03
+#define SYS_WRITE       0x04
 
 #pragma pack (1) 		/* Alinear las siguiente estructuras a 1 byte */
 
-/* Descriptor de segmento */
-typedef struct {
-  word limit,
-       base_l;
-  byte base_m,
-       access,
-       attribs,
-       base_h;
-} DESCR_SEG;
+// Descriptor de segmento
+  typedef struct {
+    word limit,
+    base_l;
+    byte base_m,
+    access,
+    attribs,
+    base_h;
+  } DESCR_SEG;
 
 
-/* Descriptor de interrupcion */
-typedef struct {
-  word      offset_l,
-            selector;
-  byte      cero,
-            access;
-  word	    offset_h;
-} DESCR_INT;
+// Descriptor de interrupcion
+  typedef struct {
+    word      offset_l,
+    selector;
+    byte      cero,
+    access;
+    word	    offset_h;
+  } DESCR_INT;
 
-/* IDTR  */
-typedef struct {
-  word  limit;
-  dword base;
-} IDTR;
+// IDTR
+  typedef struct {
+    word  limit;
+    dword base;
+  } IDTR;
 
-     
+
 
 #endif
-

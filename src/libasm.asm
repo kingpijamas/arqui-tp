@@ -2,9 +2,11 @@ GLOBAL  _read_msw,_lidt
 GLOBAL  _int_08_hand,_int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
+GLOBAL  _Sys_Call
 
 EXTERN  int_08
 EXTERN  int_80
+EXTERN  dummy_handler
 
 SECTION .text
 
@@ -66,7 +68,6 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         pop     ds
         iret
 
-
 _int_80_hand:
         ; Build stack frame:
         push ebp
@@ -76,16 +77,23 @@ _int_80_hand:
         push edx
         push ecx
         push ebx
-        push eax
-        
+        push esp        ; void ** args
+        push eax        ; sysCallNo
+    
         ; Call handler function
         call int_80
 
-        mov al,20h      ; send dummy EOI to the PIC
+        ; send dummy EOI to the PIC
+        mov al,20h
         out 20h,al
         
         ; Pop registers from stack
-        popa
+        pop eax
+        pop esp
+
+        pop ebx
+        pop ecx
+        pop edx
 
         ; Destroy stack frame:
         mov esp,ebp
@@ -93,9 +101,29 @@ _int_80_hand:
 
         iret
 
+_Sys_Call:
+        ; Build the stack frame:
+        push ebp
+        mov ebp, esp
+        pusha
+
+        ; Build the call params
+        mov eax, [ebp+8]        ; sysCallNo
+        mov ebx, [ebp+12]       ; fd
+        mov ecx, [ebp+16]       ; buf
+        mov edx, [ebp+20]       ; count
+
+        ; Make the call
+        int 80h
+
+        ; Destroy the stack frame
+        popa
+        mov esp, ebp
+        pop ebp
+        ret
+
 ; Debug para el BOCHS, detiene la ejecució; Para continuar colocar en el BOCHSDBG: set $eax=0
 ;
-
 
 _debug:
         push    bp
