@@ -2,11 +2,19 @@
 #include "../include/defs.h"
 #include "../include/inthandlers.h"
 
-
 DESCR_INT idt[0xA];			/* IDT de 10 entradas*/
 IDTR idtr;				/* IDTR */
 
 int tickpos=640;
+int s=80*11;
+
+//s sirve para ir probando, deberia ocuparse el driver de video
+void int_09(char scancode){
+	putinbuffer(scancode,s);
+	if(isScanCode(scancode)==0){
+		s=s+2;
+	}
+}
 
 /**********************************************
 kmain() 
@@ -21,6 +29,8 @@ kmain() {
 
 	// Carga de IDT con la rutina de atencion de IRQ0
 	setup_IDT_entry (&idt[0x08], 0x08, (dword)&_int_08_hand, ACS_INT, 0);
+
+	setup_IDT_entry (&idt[0x09], 0x09, (dword)&_int_09_hand, ACS_INT, 0);
 
 	setup_IDT_entry (&idt[0x80], 0x80, (dword)&_int_80_hand, ACS_INT, 0);
 

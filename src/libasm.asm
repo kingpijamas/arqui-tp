@@ -1,10 +1,11 @@
 GLOBAL  _read_msw,_lidt
-GLOBAL  _int_08_hand,_int_80_hand
+GLOBAL  _int_08_hand,_int_09_hand,_int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 
 EXTERN  int_08
 EXTERN  int_80
+EXTERN  int_09
 
 SECTION .text
 
@@ -64,6 +65,28 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
 	popa                            
         pop     es
         pop     ds
+        iret
+
+_int_09_hand:
+
+        push    ebp
+        mov     ebp, esp
+        pushad
+
+        and eax,0
+        in al, 60h
+
+        push ax
+        call int_09
+        pop ax
+
+        popad
+        mov esp,ebp
+        pop ebp
+
+        mov al,20h ; EOI command code
+        out 20h,al ; IO base address for master pic
+
         iret
 
 

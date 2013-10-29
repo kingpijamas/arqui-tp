@@ -5,4 +5,6 @@ nasm -f aout ../src/kstart.asm -o kstart.o
 nasm -f aout ../src/loader.asm -o kstart.o
 gcc -c ../src/kernel.c -o kernel.o -fno-builtin
 gcc -c ../src/libc.c  -o libc.o -fno-builtin
-ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o
+gcc -c ../src/inthandlers.c -o inthandlers.o -fno-builtin
+gcc -c ../src/keyboard.c -o keyboard.o -fno-builtin
+ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o inthandlers.o keyboard.o
