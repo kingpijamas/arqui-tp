@@ -1,7 +1,5 @@
 #include "../include/inthandlers.h"
 
-int tickpos=0;
-
 void int_08() {
     //test
     // char *video = (char *) 0xb8000;
@@ -12,23 +10,8 @@ void int_08() {
 }
 
 void int_80(int sysCallNo, void ** args) {
-	char *video = (char *) 0xb8000;
-
-	video[32]='=';
-	video[10]=ctoi(sysCallNo);
-	video[14]=ctoi(SYS_WRITE);
-
 	switch(sysCallNo){
 		case SYS_WRITE:
-			switch((int)args[0]){
-				case STD_OUT:
-				case STD_ERR:
-					video[2]='a';
-					break;
-				default:
-					video[2]='s';
-					break;
-			}
 			__sys_write((int)args[0],(void*)args[1],(int)args[2]);
 			break;
 		case SYS_READ:

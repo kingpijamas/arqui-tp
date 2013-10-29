@@ -11,7 +11,6 @@
 #define dword int
 #define NULL (void*)0
 
-
 // Flags para derechos de acceso de los segmentos
 #define ACS_PRESENT     0x80            // segmento presente en memoria
 #define ACS_CSEG        0x18            // segmento de codigo
@@ -31,13 +30,16 @@
 #define STD_IN          0
 #define STD_OUT         1
 #define STD_ERR         2
-//TODO define a fd for the register display console
+#define REG_OUT         3
 
 //C constants and defs
 #define SYS_READ        0x03
 #define SYS_WRITE       0x04
 
-#pragma pack (1) 		/* Alinear las siguiente estructuras a 1 byte */
+typedef int size_t;
+typedef short int ssize_t;
+
+#pragma pack (1) 		// Alinear las siguiente estructuras a 1 byte
 
 // Descriptor de segmento
   typedef struct {

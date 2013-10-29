@@ -41,16 +41,6 @@ int offset3=0;
 
 /* See kernel.h for description */
 size_t __write(int fd, const void* buffer, size_t count){
-	char *video = (char *) 0xb8000;
-	switch(fd){
-		case STD_OUT:
-		case STD_ERR:
-			video[offset3+0]='q';
-			break;
-		default:
-			video[offset3+0]='w';
-			break;
-	}
 	_Sys_Call(SYS_WRITE,fd,buffer,count);
 	return count;
 }
