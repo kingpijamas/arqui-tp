@@ -1,12 +1,21 @@
 #include "../include/inthandlers.h"
 
+int flag=0;
+
 void int_08() {
     //test
     // char *video = (char *) 0xb8000;
     // video[tickpos+=2]='a';
 
+	if (flag%2==0){
+		__write(STD_OUT,"buffer",6);
+	}else{
+		__write(REG_OUT,"pepe",4);
+	}
+	flag++;
+
 	//TODO just for testing purposes
-	__write(STD_OUT,NULL,0);
+	//__write(STD_OUT,NULL,0);
 }
 
 int s=80*11;
