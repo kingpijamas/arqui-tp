@@ -4,6 +4,7 @@
 #include "../include/defs.h"
 #include "../include/kernel.h"
 #include "../include/sysio.h"
+#include "../include/stdio.h"
 
 void int_08();
 void int_09(char scancode);

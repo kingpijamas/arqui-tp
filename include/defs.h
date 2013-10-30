@@ -11,6 +11,7 @@
 #define dword int
 #define NULL (void*)0
 
+
 // Flags para derechos de acceso de los segmentos
 #define ACS_PRESENT     0x80            // segmento presente en memoria
 #define ACS_CSEG        0x18            // segmento de codigo
@@ -32,9 +33,13 @@
 #define STD_ERR         2
 #define REG_OUT         3
 
-//C constants and defs
+//System Calls
 #define SYS_READ        0x03
 #define SYS_WRITE       0x04
+
+//C constants and defs
+#define EOF             -1
+
 
 typedef int size_t;
 typedef short int ssize_t;

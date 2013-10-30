@@ -3,19 +3,27 @@
 int flag=0;
 
 void int_08() {
-    //test
-    // char *video = (char *) 0xb8000;
-    // video[tickpos+=2]='a';
+	void* params[1]={"hola mundo!"};
+	void* params2[1]={'*'};
+	void** params3=0;
+	void* params4[4]={"\n...wait for it!\n","\n...wait for it!\n","...dary!","\n\nLegen...dary!\n"};
 
-	if (flag%2==0){
-		__write(STD_OUT,"buffer",6);
-	}else{
-		__write(REG_OUT,"pepe",4);
+	if(flag==0){
+		printf("%s",params);
+		printf("%c",params2);
+		printf("%%",params);
+		printf("\n\nLegen...\n%s%s\n%s%s",params4);
+		flag++;
 	}
-	flag++;
+	// putc('1',STD_OUT);
+	// putc('2',REG_OUT);
 
-	//TODO just for testing purposes
-	//__write(STD_OUT,NULL,0);
+	//__write(STD_OUT,"1",1);
+	//__write(STD_OUT,"buffer",6);
+	//}else{
+	//	putc('b',REG_OUT);
+		//__write(REG_OUT,"\bpepe",5);
+	//}
 }
 
 int s=80*11;

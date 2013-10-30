@@ -24,7 +24,7 @@
 
 int __init_graphics();
 size_t __print(int fd, const void * buffer, size_t count);
-size_t __bounded_print(int maxRow, int * offset, const void* buffer, size_t count);
+size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
 int __getLineOf(int offset);
 int __getOffsetOf(int line);
 

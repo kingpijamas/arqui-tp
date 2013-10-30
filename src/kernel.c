@@ -1,7 +1,7 @@
 #include "../include/kernel.h"
 
-DESCR_INT idt[0x81];	/* IDT de 81 entradas*/
-IDTR idtr;				/* IDTR */
+DESCR_INT idt[0x81];	// IDT de 81 entradas
+IDTR idtr;				// IDTR
 
 /**********************************************
 kmain() 
