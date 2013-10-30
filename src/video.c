@@ -25,7 +25,7 @@ size_t __bounded_print(int maxRow, int * offset, const void* buffer, size_t coun
 	char c;
 	int written, line;
 
-	for(written=0; written<count && __getLineOf(*offset) < maxRow; written++){
+	for(written=0; written<count && __getLineOf(*offset) <= maxRow; written++){
 		c=((char *)buffer)[written];
 		switch(c){
 			//TODO '\b'
