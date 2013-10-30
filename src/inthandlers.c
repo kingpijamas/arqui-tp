@@ -3,11 +3,14 @@
 int flag=0;
 
 void int_08() {
-	fprintf(REG_OUT,"%s","hola mundo!");
+	//rprintf("%s","hola mundo!");
 	if(flag==0){
-		printf("%%");
-		printf("%c",'*');
+		//__printInt(STD_OUT,-1234567891);
+		// printf("%%");
+		// printf("%c",'*');
+		printf("%d",-123);
 		printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
+		//__printUntil(STD_OUT,"\n\nLegen...\na%s%s\n%s%s",'%');
 		flag++;
 	}
 }
@@ -34,65 +37,4 @@ void int_80(int sysCallNo, void ** args) {
 		default:;
 			//TODO	
 	}
-}
-
-//TODO just for testing purposes
-void dummy_handler(void** args) {
-	char *video = (char *) 0xb8000;
-	int eax=(char)args[0];
-	int ebx=(char)args[1];
-	int ecx=(char)args[2];
-	int edx=(char)args[3];
-
-	video[34]=ctoi(eax);
-	video[36]=ctoi(ebx);
-	video[38]=ctoi(ecx);
-	video[40]=ctoi(edx);
-	return;
-}
-
-//TODO just for testing purposes
-int ctoi(int c){
-   	int aux;
-   	switch(c){
-	case 0:
-			aux='0';
-	break;
-		case 1:
-			aux='1';
-			break;
-		case 2:
-			aux='2';
-			break;
-		case 3:
-			aux='3';
-			break;
-		case 4:
-			aux='4';
-			break;
-		case 5:
-			aux='5';
-			break;
-		case 6:
-			aux='6';
-			break;
-		case 7:
-			aux='7';
-			break;
-		case 8:
-			aux='8';
-			break;
-		case 9:
-			aux='9';
-			break;
-		default:
-			if(c > 10){
-				aux='>';
-			}else if (c>100){
-				aux='~';
-			}else{
-				aux='*';
-			}
-	}
-	return aux;
 }

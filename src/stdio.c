@@ -32,6 +32,18 @@ int printf(const char *format, ...){
 	return ret;
 }
 
+int rprintf(const char *format, ...){
+	int ret;
+	va_list args;
+
+	va_start(args,format);
+	ret=vfprintf(REG_OUT,format,args);
+	va_end(args);
+
+	return ret;
+}
+
+
 //TODO
 //	%[parameter][flags][width][.precision][length]
 int vfprintf(FILE stream, const char *format, va_list vlist){
@@ -47,28 +59,28 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 						state=PF_PARAMETER;
 						break;
 					default://TODO could be done much more efficiently
-						//TODO: this solution is bugged: i+=__printUntil(stream,format[i],'%');
+						//i+=__printUntil(stream,format[i],'%');
 						fputc(c,stream);
 				}
 				break;
 			case PF_PARAMETER:
 				switch(c){
+					// case '.':
+					// 	state=PF_PRECISION;
+					// 	break;
 					case '%':
 						fputc('%',stream);
 						break;
 					case 'c':
-						fputc(va_arg(vlist, int),stream);//int here stands for 'char', but va_arg won't work otherwise
+						//IMPORTANT: int here stands for 'char', va_arg won't work otherwise
+						fputc(va_arg(vlist, int),stream);
 						break;
 					case 's':
-						//TODO validar que les guste esto y que no quieran que itere y use solo putc
-						//TODO could be much more efficient
 						__printString(stream,va_arg(vlist,char *));
-						// __write(stream,va_arg(args,(char *)),strlen((char *)args[f]));
 						break;
 					case 'd':
-					case 'i':
-						//TODO do sth
-						//TEMA: atoi((int)args[f]); hago una funcion especial que vaya putc-eando? el int
+					case 'i'://TODO precision
+						__printInt(stream,va_arg(vlist,int));
 						break;
 					case 'o':
 						//TODO do sth
@@ -142,14 +154,31 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 int __printUntil(FILE stream, const char * str, char limit){
 	int i;
 	for(i=0;str[i]!=limit && str[i]!='\0';i++){;}
-	__write(stream,str,i);
-	return i;
+	return __write(stream,str,i);
 }
 
 int auxPrint(const char * str){
-	__printString(REG_OUT,str);
+	return __printString(REG_OUT,str);
 }
 
 int __printString(FILE stream, const char * str){
-	__write(stream,str,strlen(str));
+	return __write(stream,str,strlen(str));
+}
+
+int __printInt(FILE stream, int i){
+	if(i<0){
+		fputc('-',stream);
+		i*=-1;
+	}
+	if(i>10){
+		__printInt(stream,i/10);
+	}
+	__printDigit(stream,i%10);
+}
+
+int __printDigit(FILE stream, int d){
+	if(d<10){
+		return fputc('0'+d, stream);
+	}
+	//TODO will never happen
 }

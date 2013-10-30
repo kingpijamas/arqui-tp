@@ -25,13 +25,14 @@ int putc(int ch, FILE stream);
 int vfprintf(FILE stream, const char *format, va_list vlist);
 int printf(const char *format, ...);
 int fprintf(FILE stream, const char *format, ...);
+int rprintf(const char *format, ...);
 
 int __printUntil(FILE stream, const char * str, char limit);
 int __printString(FILE stream, const char * str);
+int __printInt(FILE stream, int i);
+int __printDigit(FILE stream, int d);
 
 //TODO just for debugging purposes
 int auxPrint(const char * str);
-
-void printargs(char arg1, ...);
 
 #endif
