@@ -42,8 +42,6 @@ size_t __bounded_print(int maxRow, int * offset, const void* buffer, size_t coun
 	return written;
 }
 
-
-
 int __getLineOf(int offset){
 	return offset/WIDTH;
 }
