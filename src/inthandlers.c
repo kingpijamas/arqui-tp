@@ -3,27 +3,13 @@
 int flag=0;
 
 void int_08() {
-	void* params[1]={"hola mundo!"};
-	void* params2[1]={'*'};
-	void** params3=0;
-	void* params4[4]={"\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"};
-
+	fprintf(REG_OUT,"%s","hola mundo!");
 	if(flag==0){
-		printf("%s",params);
-		printf("%c",params2);
-		printf("%%",params);
-		printf("\n\nLegen...\n%s%s\n%s%s",params4);
+		printf("%%");
+		printf("%c",'*');
+		printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
 		flag++;
 	}
-	// putc('1',STD_OUT);
-	// putc('2',REG_OUT);
-
-	//__write(STD_OUT,"1",1);
-	//__write(STD_OUT,"buffer",6);
-	//}else{
-	//	putc('b',REG_OUT);
-		//__write(REG_OUT,"\bpepe",5);
-	//}
 }
 
 int s=80*11;

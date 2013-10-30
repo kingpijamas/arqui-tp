@@ -4,8 +4,7 @@
 #include "../include/kernel.h"
 #include "../include/defs.h"
 #include "../include/string.h"
-
-typedef int FILE;
+#include "../include/stdarg.h"
 
 //check the
 //	extern int __stdin=STD_IN
@@ -14,20 +13,25 @@ typedef int FILE;
 // + using FILE *
 //
 //	hack
+typedef int FILE;
 
 //Auxiliary
-typedef enum {WAITING, CHAR} format_t;
+typedef enum {PF_CHAR, PF_PARAMETER, PF_FLAGS, PF_WIDTH, PF_PRECISION, PF_LENGTH} format_state_t;
 
 //TODO failure behavior not supported. Should we support it?
 int fputc(int ch, FILE stream);
 int putc(int ch, FILE stream);
 
-//TODO check this. We're NOT using varargs
-int fprintf(FILE stream, const char *format, const void ** args);
-int printf(const char *format, const void ** args);
+int vfprintf(FILE stream, const char *format, va_list vlist);
+int printf(const char *format, ...);
+int fprintf(FILE stream, const char *format, ...);
 
 int __printUntil(FILE stream, const char * str, char limit);
+int __printString(FILE stream, const char * str);
 
 //TODO just for debugging purposes
 int auxPrint(const char * str);
+
+void printargs(char arg1, ...);
+
 #endif

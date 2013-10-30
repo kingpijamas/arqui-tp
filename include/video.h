@@ -8,6 +8,7 @@
 #define VIDEO_ADDRESS	0xb8000
 #define INVALID_DISPLAY -1
 
+//TODO should I change all these for static consts?
 #define WIDTH			80
 #define HEIGHT  		25
 
