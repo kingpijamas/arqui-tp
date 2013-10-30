@@ -9,6 +9,16 @@ void int_08() {
 	__write(STD_OUT,NULL,0);
 }
 
+int s=80*11;
+
+//s sirve para ir probando, deberia ocuparse el driver de video
+void int_09(char scancode){
+	putinbuffer(scancode,s);
+	if(isScanCode(scancode)==0){
+		s=s+2;
+	}
+}
+
 void int_80(int sysCallNo, void ** args) {
 	switch(sysCallNo){
 		case SYS_WRITE:

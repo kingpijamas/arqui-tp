@@ -1,6 +1,6 @@
 #include "../include/kernel.h"
 
-DESCR_INT idt[0x81];	/* IDT de 10 entradas*/
+DESCR_INT idt[0x81];	/* IDT de 81 entradas*/
 IDTR idtr;				/* IDTR */
 
 /**********************************************
@@ -15,6 +15,7 @@ kmain() {
 
 	// Carga de IDT con la rutina de atencion de IRQ0
 	setup_IDT_entry (&idt[0x08], 0x08, (dword)&_int_08_hand, ACS_INT, 0);
+	setup_IDT_entry (&idt[0x09], 0x08, (dword)&_int_09_hand, ACS_INT, 0);
 	setup_IDT_entry (&idt[0x80], 0x08, (dword)&_int_80_hand, ACS_INT, 0);
 
 	// Carga de IDTR
@@ -37,8 +38,6 @@ kmain() {
 	}
 	
 }
-
-int offset3=0;
 
 /* See kernel.h for description */
 size_t __write(int fd, const void* buffer, size_t count){
