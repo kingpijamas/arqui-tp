@@ -22,6 +22,8 @@
 #define STD_OUT_MIN_ROW REG_OUT_MAX_ROW+1
 #define STD_OUT_MAX_ROW STD_OUT_MIN_ROW+STD_OUT_HEIGHT-1
 
+#define TAB_LENGTH		4
+
 int __init_graphics();
 size_t __print(int fd, const void * buffer, size_t count);
 size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);

@@ -23,19 +23,25 @@ size_t __print(int fd, const void * buffer, size_t count){
 size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count){
 	char *video = (char*)VIDEO_ADDRESS;
 	char c;
-	int written, line;
+	int written, line, aux;
 
 	for(written=0; written<count && __getLineOf(*offset) <= maxRow; written++){
 		c=((char *)buffer)[written];
 		switch(c){
-			case '\t': //TODO
-				break;
 			case '\n':
 				(*offset)=__getOffsetOf(__getLineOf(*offset)+1);
 				break;
 			case '\b':
 				if(((*offset)-1) > minRow){
 					video[((*offset)--)*2]='\0';
+				}
+				break;
+			case '\t':
+				if(((*offset)+TAB_LENGTH) % MAX_COL == 0){
+					(*offset)=__getOffsetOf(__getLineOf((*offset)+TAB_LENGTH));
+				}
+				for(aux=0;aux<TAB_LENGTH;aux++){
+					video[((*offset)++)*2]=' ';
 				}
 				break;
 			default:

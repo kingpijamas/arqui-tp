@@ -6,7 +6,7 @@ void int_08() {
 	void* params[1]={"hola mundo!"};
 	void* params2[1]={'*'};
 	void** params3=0;
-	void* params4[4]={"\n...wait for it!\n","\n...wait for it!\n","...dary!","\n\nLegen...dary!\n"};
+	void* params4[4]={"\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"};
 
 	if(flag==0){
 		printf("%s",params);
