@@ -39,7 +39,8 @@ kmain() {
 	
 }
 
-/* See kernel.h for description */
+//WARNING, this function will assume that a character is being printed no matter what
+//this is a problem when printing to REG_OUT
 size_t __write(int fd, const void* buffer, size_t count){
 	_Sys_Call(SYS_WRITE,fd,buffer,count);
 	return count;

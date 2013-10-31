@@ -2,8 +2,10 @@
 
 int fputc(int ch, FILE stream){
 	unsigned char auxChar=ch;
-	__write(stream, &auxChar, 1);
-	return auxChar; //TODO this assumes this function always succeeds
+	if(__write(stream, &auxChar, 1)){
+		return auxChar;
+	}
+	return EOF;
 }
 
 int putc(int ch, FILE stream){
@@ -48,9 +50,9 @@ int rprintf(const char *format, ...){
 //	%[parameter][flags][width][.precision][length]
 int vfprintf(FILE stream, const char *format, va_list vlist){
 	char c;
-	int i=0;
+	int i,written=0;
 	format_state_t state=PF_CHAR;
-	while(format[i]!='\0'){
+	for(i=0; format[i]!='\0'; i++){
 		c=format[i];
 		switch(state){
 			case PF_CHAR:
@@ -58,9 +60,8 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 					case '%':
 						state=PF_PARAMETER;
 						break;
-					default://TODO could be done much more efficiently
-						//i+=__printUntil(stream,format[i],'%');
-						fputc(c,stream);
+					default:
+						written+=bfputc(c,stream);
 				}
 				break;
 			case PF_PARAMETER:
@@ -69,27 +70,27 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 					// 	state=PF_PRECISION;
 					// 	break;
 					case '%':
-						fputc('%',stream);
+						written+=bfputc('%',stream);
 						break;
 					case 'c':
 						//IMPORTANT: int here stands for 'char', va_arg won't work otherwise
-						fputc(va_arg(vlist, int),stream);
+						written+=bfputc(va_arg(vlist, int),stream);
 						break;
 					case 's':
-						__printString(stream,va_arg(vlist,char *));
+						written+=__printString(stream,va_arg(vlist,char *));
 						break;
 					case 'd':
 					case 'i'://TODO precision
-						__printInt(stream,va_arg(vlist,int),10,false);
+						written+=__printDecimal(stream,va_arg(vlist,int));
 						break;
 					case 'o':
-						__printInt(stream,va_arg(vlist,int),8,false);
+						written+=__printOctal(stream,va_arg(vlist,int));
 						break;
 					case 'x':
-						__printInt(stream,va_arg(vlist,int),16,false);
+						written+=__printHexadecimal(stream,va_arg(vlist,int),false);
 						break;
 					case 'X':
-						__printInt(stream,va_arg(vlist,int),16,true);
+						written+=__printHexadecimal(stream,va_arg(vlist,int),true);
 						break;
 					case 'u':
 						//TODO do sth
@@ -117,7 +118,7 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 						//TODO do sth
 						break;
 					case 'n':
-						//TODO do sth
+						written+=__printInt(stream,written,10,false);
 						break;
 					case 'p':
 						//TODO do sth
@@ -146,8 +147,8 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 			// case PF_LENGTH:
 			// 	break;
 		}
-		i++;
 	}
+	return written;
 }
 
 //TODO bugged apparently
@@ -166,29 +167,27 @@ int __printString(FILE stream, const char * str){
 }
 
 int __printInt(FILE stream, int i, int base, bool caps){
+	int written=0;
 	if(i<0){
-		fputc('-',stream);
+		written+=bfputc('-',stream);
 		i*=-1;
 	}
 	if(i>=base){
-		__printInt(stream,i/base,base,caps);
+		written+=__printInt(stream,i/base,base,caps);
 	}
-	__printDigit(stream,i%base,base,caps);
+	return written+__printDigit(stream,i%base,base,caps);
 }
 
 int __printDigit(FILE stream, int d, int base, bool caps){
-	// if(d>base){
-	// 	//TODO will never happen
-	// }
 	if(d<10){
-		return fputc('0'+d, stream);
+		return bfputc('0'+d, stream);
 	}
 	if(d<16){
 		if(caps){
-			return fputc('a'+d-10, stream);
+			return bfputc('a'+d-10, stream);
 		}else{
-			return fputc('A'+d-10, stream);
+			return bfputc('A'+d-10, stream);
 		}
 	}
-	//TODO will never happen
+	return 0;	//TODO will never happen
 }

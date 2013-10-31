@@ -19,12 +19,21 @@ void int_08() {
 		// rprintf("\nda=%d",REG_OUT_MAX_ROW+1);
 		// printf("%%");
 		// printf("%c",'*');
-		printf("d:%d\n",15);
-		printf("x:%x\n",15);
-		printf("X:%X\n",15);
-		printf("o:%o\n",15);
+		// printf("d:%d\n",12345);
+		// printf("x:%x\n",12345);
+		// printf("X:%X\n",12345);
+		// printf("o:%o\n",12345);
 
-		//rprintf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
+		rprintf("largo:%d\n",strlen("\n\nLegen...\n\n")+
+			strlen("\n\t...wait for it!\n")+
+			strlen("\n\t\t...wait for it!\n")+
+			strlen("...dary!")+
+			strlen("\n\nLegen...dary!\n"));
+
+		rprintf("largo:%d\n",printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"));
+
+		// rprintf("da: %d\n",__printUntil(REG_OUT,"hola\n mundo!",' '));
+		// rprintf("deberia dar: %d\n",strlen("hola\n"));
 	}
 	if(flag==10){
 		//__shift_up(STD_OUT, 1);
