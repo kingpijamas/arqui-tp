@@ -151,7 +151,6 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 	return written;
 }
 
-//TODO bugged apparently
 int __printUntil(FILE stream, const char * str, char limit){
 	int i;
 	for(i=0;str[i]!=limit && str[i]!='\0';i++){;}
