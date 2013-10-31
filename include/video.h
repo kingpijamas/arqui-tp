@@ -31,4 +31,7 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
 int __getLineOf(int offset);
 int __getOffsetOf(int line);
 
+int __shift_up(int fd, int lines);
+void __bounded_shift_up(int minRow, int maxRow, int lines);
+
 #endif

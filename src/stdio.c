@@ -165,12 +165,12 @@ int __printString(FILE stream, const char * str){
 	return __write(stream,str,strlen(str));
 }
 
-int __printInt(FILE stream, int i){
+int __printInt(FILE stream, int i){//TODO int base
 	if(i<0){
 		fputc('-',stream);
 		i*=-1;
 	}
-	if(i>10){
+	if(i>=10){
 		__printInt(stream,i/10);
 	}
 	__printDigit(stream,i%10);

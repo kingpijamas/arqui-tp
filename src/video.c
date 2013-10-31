@@ -1,4 +1,5 @@
 #include "../include/video.h"
+#include "../include/stdio.h" //TODO
 
 int std_out_offset;
 int reg_out_offset;
@@ -60,4 +61,39 @@ int __getLineOf(int offset){
 
 int __getOffsetOf(int line){
 	return line*WIDTH;
+}
+
+int __shift_up(int fd, int lines){
+	switch(fd){
+		case STD_ERR:
+		case STD_OUT:
+			__bounded_shift_up(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, lines);
+			return 1;//TODO
+		case REG_OUT:
+			__bounded_shift_up(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, lines);
+			return 1;//TODO
+		default:
+			return INVALID_DISPLAY;
+	}
+}
+
+void __bounded_shift_up(int minRow, int maxRow, int lines){
+	char *video = (char*)VIDEO_ADDRESS;
+	char c;
+	int line, i;
+	int killOffset,cloneOffset;
+
+	for(;lines>0;lines--){
+		for(line=minRow; line<maxRow; line++){
+			killOffset=__getOffsetOf(line);
+			cloneOffset=__getOffsetOf(line+1);
+			for(i=0; i<2*WIDTH; i++){
+				video[2*killOffset+i]=video[2*cloneOffset+i];
+			}
+		}
+		killOffset=__getOffsetOf(maxRow);
+		for(i=0; i<WIDTH; i++){
+			video[2*(killOffset+i)]='\0';
+		}
+	}
 }
