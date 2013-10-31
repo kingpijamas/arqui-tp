@@ -11,7 +11,7 @@ void int_08() {
 	// 	// }
 	// 	// printf("\n");
 	// }
-	_draw_prompt();
+	//_draw_prompt();
 
 	if(flag==0){
 		// rprintf("reg_out\tminRow=%d\tmaxRow=%d\t",REG_OUT_MIN_ROW,REG_OUT_MAX_ROW);
@@ -19,7 +19,11 @@ void int_08() {
 		// rprintf("\nda=%d",REG_OUT_MAX_ROW+1);
 		// printf("%%");
 		// printf("%c",'*');
-		// printf("%d",-123);
+		printf("d:%d\n",15);
+		printf("x:%x\n",15);
+		printf("X:%X\n",15);
+		printf("o:%o\n",15);
+
 		//rprintf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
 	}
 	if(flag==10){

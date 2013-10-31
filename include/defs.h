@@ -11,6 +11,10 @@
 #define dword int
 #define NULL (void*)0
 
+//Utility defines
+typedef int bool;
+#define true 1
+#define false 0
 
 // Flags para derechos de acceso de los segmentos
 #define ACS_PRESENT     0x80            // segmento presente en memoria

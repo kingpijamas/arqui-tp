@@ -29,8 +29,8 @@ int rprintf(const char *format, ...);
 
 int __printUntil(FILE stream, const char * str, char limit);
 int __printString(FILE stream, const char * str);
-int __printInt(FILE stream, int i);
-int __printDigit(FILE stream, int d);
+int __printInt(FILE stream, int i, int base, bool caps);
+int __printDigit(FILE stream, int d, int base, bool caps);
 
 //TODO just for debugging purposes
 int auxPrint(const char * str);

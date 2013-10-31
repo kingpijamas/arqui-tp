@@ -1,15 +1,10 @@
-#include "../include/kasm.h"
+#include "../include/keyboard.h"
 
 #define SIZE_BUFFER 20
 #define SCTABLEROWS 8
 #define SCTABLECOLS 16
 
-typedef int bool;
-#define true 1
-#define false 0
 #define start 0
-
-
 
 /* vacio igual a lleno? Problema buffer circular*/
 

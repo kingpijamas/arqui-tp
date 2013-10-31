@@ -1,5 +1,4 @@
 #include "../include/video.h"
-#include "../include/stdio.h" //TODO
 
 colour std_out_background_colour=DEFAULT_STD_OUT_BACKGROUND_COLOUR;
 colour std_out_text_colour=DEFAULT_STD_OUT_TEXT_COLOUR;

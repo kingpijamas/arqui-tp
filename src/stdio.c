@@ -80,16 +80,16 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 						break;
 					case 'd':
 					case 'i'://TODO precision
-						__printInt(stream,va_arg(vlist,int));
+						__printInt(stream,va_arg(vlist,int),10,false);
 						break;
 					case 'o':
-						//TODO do sth
+						__printInt(stream,va_arg(vlist,int),8,false);
 						break;
 					case 'x':
-						//TODO do sth
+						__printInt(stream,va_arg(vlist,int),16,false);
 						break;
 					case 'X':
-						//TODO do sth
+						__printInt(stream,va_arg(vlist,int),16,true);
 						break;
 					case 'u':
 						//TODO do sth
@@ -165,20 +165,30 @@ int __printString(FILE stream, const char * str){
 	return __write(stream,str,strlen(str));
 }
 
-int __printInt(FILE stream, int i){//TODO int base
+int __printInt(FILE stream, int i, int base, bool caps){
 	if(i<0){
 		fputc('-',stream);
 		i*=-1;
 	}
-	if(i>=10){
-		__printInt(stream,i/10);
+	if(i>=base){
+		__printInt(stream,i/base,base,caps);
 	}
-	__printDigit(stream,i%10);
+	__printDigit(stream,i%base,base,caps);
 }
 
-int __printDigit(FILE stream, int d){
+int __printDigit(FILE stream, int d, int base, bool caps){
+	// if(d>base){
+	// 	//TODO will never happen
+	// }
 	if(d<10){
 		return fputc('0'+d, stream);
+	}
+	if(d<16){
+		if(caps){
+			return fputc('a'+d-10, stream);
+		}else{
+			return fputc('A'+d-10, stream);
+		}
 	}
 	//TODO will never happen
 }
