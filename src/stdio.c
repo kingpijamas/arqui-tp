@@ -118,7 +118,7 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 						//TODO do sth
 						break;
 					case 'n':
-						written+=__printInt(stream,written,10,false);
+						written+=__printDecimal(stream,written);
 						break;
 					case 'p':
 						//TODO do sth
