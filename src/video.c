@@ -1,12 +1,19 @@
 #include "../include/video.h"
 #include "../include/stdio.h" //TODO
 
+colour std_out_background_colour=DEFAULT_STD_OUT_BACKGROUND_COLOUR;
+colour std_out_text_colour=DEFAULT_STD_OUT_TEXT_COLOUR;
+colour reg_out_background_colour=DEFAULT_REG_OUT_BACKGROUND_COLOUR;
+colour reg_out_text_colour=DEFAULT_REG_OUT_TEXT_COLOUR;
+
 int std_out_offset;
 int reg_out_offset;
 
 int __init_graphics(){
 	std_out_offset=__getOffsetOf(STD_OUT_MIN_ROW);
 	reg_out_offset=__getOffsetOf(REG_OUT_MIN_ROW);
+	__paint_area(STD_OUT,std_out_background_colour,std_out_text_colour);
+	__paint_area(REG_OUT,reg_out_background_colour,reg_out_text_colour);
 }
 
 size_t __print(int fd, const void * buffer, size_t count){
@@ -55,12 +62,28 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
 	return written;
 }
 
-int __getLineOf(int offset){
-	return offset/WIDTH;
+int __paint_area(int fd, colour backgroundColour, colour textColour){
+	switch(fd){
+		case STD_ERR:
+		case STD_OUT:
+			__bounded_paint_area(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
+			return 0;//TODO
+		case REG_OUT:
+			__bounded_paint_area(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
+			return 0;//TODO
+		default:
+			return INVALID_DISPLAY;
+	}
 }
 
-int __getOffsetOf(int line){
-	return line*WIDTH;
+void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour backgroundColour, colour textColour){
+	char *video = (char*)VIDEO_ADDRESS;
+	int i,j;
+	for(i=minRow;i<=maxRow;i++){
+		for(j=minCol;j<=maxCol;j++){
+			video[2*(__getOffsetOf(i)+j)+1]=AS_COLOUR_BYTE(backgroundColour,textColour);
+		}
+	}
 }
 
 int __shift_up(int fd, int lines){
@@ -68,10 +91,10 @@ int __shift_up(int fd, int lines){
 		case STD_ERR:
 		case STD_OUT:
 			__bounded_shift_up(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, lines);
-			return 1;//TODO
+			return 0;//TODO
 		case REG_OUT:
 			__bounded_shift_up(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, lines);
-			return 1;//TODO
+			return 0;//TODO
 		default:
 			return INVALID_DISPLAY;
 	}
@@ -96,4 +119,12 @@ void __bounded_shift_up(int minRow, int maxRow, int lines){
 			video[2*(killOffset+i)]='\0';
 		}
 	}
+}
+
+int __getLineOf(int offset){
+	return offset/WIDTH;
+}
+
+int __getOffsetOf(int line){
+	return line*WIDTH;
 }

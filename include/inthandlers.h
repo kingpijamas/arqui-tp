@@ -5,6 +5,7 @@
 #include "../include/kernel.h"
 #include "../include/sysio.h"
 #include "../include/stdio.h"
+#include "../include/shell.h"
 
 void int_08();
 void int_09(char scancode);
