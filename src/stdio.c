@@ -188,5 +188,6 @@ int __printDigit(FILE stream, int d, int base, bool caps){
 			return bfputc('A'+d-10, stream);
 		}
 	}
-	return 0;	//TODO will never happen
+	//TODO will never happen
+	return 0;
 }

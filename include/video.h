@@ -6,7 +6,11 @@
 #include "../include/inthandlers.h"
 
 #define VIDEO_ADDRESS		0xb8000
+#define BASE_PORT			0x3D4
+
+//FIXME all these should be some sort of enum
 #define INVALID_DISPLAY 	-1
+#define INVALID_CURSOR		-2
 
 //TODO should I change all these for static consts?
 #define WIDTH				80
@@ -14,6 +18,8 @@
 
 #define MIN_COL				0
 #define MAX_COL				WIDTH-1
+
+#define MIN_ROW 			0
 #define MAX_ROW 			HEIGHT-1
 
 #define REG_OUT_HEIGHT		10
@@ -51,9 +57,9 @@
 #define DEFAULT_REG_OUT_BACKGROUND_COLOUR	MAGENTA
 #define DEFAULT_REG_OUT_TEXT_COLOUR			WHITE
 
-#define colour char
+typedef char colour;
 
-int __init_graphics();
+void __init_graphics();
 
 size_t __print(int fd, const void * buffer, size_t count);
 size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
@@ -63,6 +69,9 @@ void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour
 
 int __shift_up(int fd, int lines);
 void __bounded_shift_up(int minRow, int maxRow, int lines);
+
+int __set_cursor_position_in(int fd, int relRow, int relCol);
+int __bounded_set_cursor_position(int minRow, int maxRow, int minCol, int maxCol, int relRow, int relCol);
 
 int __getLineOf(int offset);
 int __getOffsetOf(int line);

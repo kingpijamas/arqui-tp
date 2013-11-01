@@ -12,6 +12,13 @@ void int_08() {
 	// 	// printf("\n");
 	// }
 	//_draw_prompt();
+	//__set_cursor_position(flag++,0);
+
+	// if(flag%2==0){
+	// 	__set_cursor_position_in(STD_OUT,2,flag);		
+	// }else{
+	// 	__set_cursor_position_in(REG_OUT,2,flag);
+	// }
 
 	if(flag==0){
 		// rprintf("reg_out\tminRow=%d\tmaxRow=%d\t",REG_OUT_MIN_ROW,REG_OUT_MAX_ROW);
@@ -23,15 +30,16 @@ void int_08() {
 		// printf("x:%x\n",12345);
 		// printf("X:%X\n",12345);
 		// printf("o:%o\n",12345);
+		// update_cursor();
 
-		rprintf("largo:%d\n",strlen("\n\nLegen...\n\n")+
-			strlen("\n\t...wait for it!\n")+
-			strlen("\n\t\t...wait for it!\n")+
-			strlen("...dary!")+
-			strlen("\n\nLegen...dary!\n"));
+		// rprintf("largo:%d\n",strlen("\n\nLegen...\n\n")+
+		// 	strlen("\n\t...wait for it!\n")+
+		// 	strlen("\n\t\t...wait for it!\n")+
+		// 	strlen("...dary!")+
+		// 	strlen("\n\nLegen...dary!\n"));
 
-		rprintf("largo:%d\n",printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"));
-
+		// rprintf("largo:%d\n",printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"));
+		printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
 		// rprintf("da: %d\n",__printUntil(REG_OUT,"hola\n mundo!",' '));
 		// rprintf("deberia dar: %d\n",strlen("hola\n"));
 	}
