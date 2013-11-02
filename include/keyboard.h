@@ -1,3 +1,9 @@
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
+
+#include "../include/defs.h"
+#include "../include/kasm.h"
+
 #define SIZE_BUFFER 20
 #define KEYMAPROWS 8
 #define KEYMAPSCOLS 16
@@ -54,3 +60,6 @@ int isSpecialKey(unsigned char scancode);
 void putinbuffer(unsigned char ascii);
 
 void forBuffer(unsigned char scancode);
+
+#endif
+

@@ -1,9 +1,11 @@
+
 #include "../include/kasm.h"
 #include "../include/defs.h"
 #include "../include/keyboard.h"
 
 //TODO sacar. Es para el write de prueba
 #include "../include/kernel.h"
+
 
 unsigned char buffer[SIZE_BUFFER];
 int last=0; 
@@ -13,7 +15,7 @@ bool full=false;
 bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
 
-// Pasar a ingles
+
 unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
 {ZERO,ZERO,'1','2','3','4','5','6','7','8','9','0','-','=','\b','\t'}, //01 esc
 {'q','w','e','r','t','y','u','i','o','p','[',']','\n',ZERO,'a','s'}, //L control
@@ -31,8 +33,6 @@ unsigned char spKeyKeyboard[KEYMAPROWS][KEYMAPSCOLS] = {
 {ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'7','8','9','-','4','6','+','1'},
 {'2','3','0','.',ZERO,ZERO,ZERO,ZERO,ZERO}
 };
-
-
 
 bool isEmpty(){
 	return (first==last && full==false);

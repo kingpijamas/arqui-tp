@@ -3,9 +3,16 @@
 int flag=0;
 
 void int_08() {
-    //test
-    // char *video = (char *) 0xb8000;
-    // video[tickpos+=2]='a';
+	//rprintf("%s","hola mundo!");
+	// int i;
+	// if (flag<10){
+	// 	// for(i=0;i<50;i++){
+	// 	// 	printf("%d",flag);
+	// 	// }
+	// 	// printf("\n");
+	// }
+	//_draw_prompt();
+	//__set_cursor_position(flag++,0);
 
 	/*if (flag%2==0){
 		__write(STD_OUT,"buffer",6);
@@ -16,6 +23,40 @@ void int_08() {
 
 	//TODO just for testing purposes
 	//__write(STD_OUT,NULL,0);
+
+	// if(flag%2==0){
+	// 	__set_cursor_position_in(STD_OUT,2,flag);		
+	// }else{
+	// 	__set_cursor_position_in(REG_OUT,2,flag);
+	// }
+
+	if(flag==0){
+		// rprintf("reg_out\tminRow=%d\tmaxRow=%d\t",REG_OUT_MIN_ROW,REG_OUT_MAX_ROW);
+		// rprintf("\nstd_out\tminRow=%d\tmaxRow=%d\t",STD_OUT_MIN_ROW,STD_OUT_MAX_ROW);
+		// rprintf("\nda=%d",REG_OUT_MAX_ROW+1);
+		// printf("%%");
+		// printf("%c",'*');
+		// printf("d:%d\n",12345);
+		// printf("x:%x\n",12345);
+		// printf("X:%X\n",12345);
+		// printf("o:%o\n",12345);
+		// update_cursor();
+
+		// rprintf("largo:%d\n",strlen("\n\nLegen...\n\n")+
+		// 	strlen("\n\t...wait for it!\n")+
+		// 	strlen("\n\t\t...wait for it!\n")+
+		// 	strlen("...dary!")+
+		// 	strlen("\n\nLegen...dary!\n"));
+
+		// rprintf("largo:%d\n",printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"));
+		printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
+		// rprintf("da: %d\n",__printUntil(REG_OUT,"hola\n mundo!",' '));
+		// rprintf("deberia dar: %d\n",strlen("hola\n"));
+	}
+	if(flag==10){
+		//__shift_up(STD_OUT, 1);
+	}
+	flag++;
 }
 
 void int_09(char scancode){
@@ -34,65 +75,4 @@ void int_80(int sysCallNo, void ** args) {
 		default:;
 			//TODO	
 	}
-}
-
-//TODO just for testing purposes
-void dummy_handler(void** args) {
-	char *video = (char *) 0xb8000;
-	int eax=(char)args[0];
-	int ebx=(char)args[1];
-	int ecx=(char)args[2];
-	int edx=(char)args[3];
-
-	video[34]=ctoi(eax);
-	video[36]=ctoi(ebx);
-	video[38]=ctoi(ecx);
-	video[40]=ctoi(edx);
-	return;
-}
-
-//TODO just for testing purposes
-int ctoi(int c){
-   	int aux;
-   	switch(c){
-	case 0:
-			aux='0';
-	break;
-		case 1:
-			aux='1';
-			break;
-		case 2:
-			aux='2';
-			break;
-		case 3:
-			aux='3';
-			break;
-		case 4:
-			aux='4';
-			break;
-		case 5:
-			aux='5';
-			break;
-		case 6:
-			aux='6';
-			break;
-		case 7:
-			aux='7';
-			break;
-		case 8:
-			aux='8';
-			break;
-		case 9:
-			aux='9';
-			break;
-		default:
-			if(c > 10){
-				aux='>';
-			}else if (c>100){
-				aux='~';
-			}else{
-				aux='*';
-			}
-	}
-	return aux;
 }
