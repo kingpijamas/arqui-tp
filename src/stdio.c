@@ -191,3 +191,11 @@ int __printDigit(FILE stream, int d, int base, bool caps){
 	//TODO will never happen
 	return 0;
 }
+
+int scanf(char *format, ...){
+	int ret;
+	va_list args;
+
+	va_start(args,format);
+	//TODO
+}

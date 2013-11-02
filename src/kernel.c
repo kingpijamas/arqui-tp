@@ -40,8 +40,6 @@ kmain() {
 		char ch=ZERO;
 		while(isEmpty()){
 		};
-
-
 		char* buffer;
 		__read(STD_IN, buffer,1);
 		__write(STD_OUT,buffer,1);
