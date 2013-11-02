@@ -33,13 +33,12 @@ kmain() {
 	_Sti();
 
 	__init_graphics();
-
-	while(1) {
+		
 	}
 	
 }
 
-/* See kernel.h for description */
+/*  kernel.h for description */
 size_t __write(int fd, const void* buffer, size_t count){
 	_Sys_Call(SYS_WRITE,fd,buffer,count);
 	return count;

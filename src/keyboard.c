@@ -1,57 +1,162 @@
 #include "../include/kasm.h"
+#include "../include/defs.h"
+#include "../include/keyboard.h"
 
-#define SIZE_BUFFER 20
-#define SCTABLEROWS 8
-#define SCTABLECOLS 16
+//TODO sacar. Es para el write de prueba
+#include "../include/kernel.h"
 
-typedef int bool;
-#define true 1
-#define false 0
-#define start 0
-
-
-
-/* vacio igual a lleno? Problema buffer circular*/
-
-char buffer[SIZE_BUFFER];
-int last=0; /*marca el proximo lugar disponible*/
-int first=0; /*marca el primer elemento de mi buffer*/ 
+unsigned char buffer[SIZE_BUFFER];
+int last=0; 
+int first=0; 
 bool full=false;
 
-/* keyboard[scancode%16][scancode/16] */
-unsigned char keyboard[SCTABLEROWS][SCTABLECOLS]={
-{0,0,'1','2','3','4','5','6','7','8','9','0','\'','¿','\b','\t'},
-{'q','w','e','r','t','y','u','i','o','p','\'','+','\n',0,'a','s'},
-{'d','f','g','h','j','k','l','.','{','}',0,'<','z','x','c','v'},
-{'b','n','m',',','.','?',0,'*',0,' ',0,0,0,0,0,0},
-{0,0,0,0,0,0,'7','8','9','-','4','5','6','+','1'},
-{'2','3','0','.',0,'+','+',0,0,'+','+'}};
+bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
+bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
 
-void putinbuffer(int scancode, unsigned int s) {	
-   	char *video = (char *) 0xb8000;
-	if(isScanCode(scancode)){
+// Pasar a ingles
+unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
+{ZERO,ZERO,'1','2','3','4','5','6','7','8','9','0','-','=','\b','\t'}, //01 esc
+{'q','w','e','r','t','y','u','i','o','p','[',']','\n',ZERO,'a','s'}, //L control
+{'d','f','g','h','j','k','l',';','\'','`',ZERO,'\\','z','x','c','v'}, // L shift
+{'b','n','m',',','.','/',ZERO,'*',ZERO,' ',ZERO,ZERO,ZERO,ZERO,ZERO,ZERO}, // R shift, L alt, Caps, f1, f2, f3, f4, f5
+{ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'-',ZERO,'5',ZERO,'+',ZERO}, //f6-f10, Num Lock
+}; 
 
-	}else{
-		if(full==false){
-			buffer[last]=keyboard[scancode/SCTABLECOLS][scancode%SCTABLECOLS];
-			last++;
+//shift
+unsigned char spKeyKeyboard[KEYMAPROWS][KEYMAPSCOLS] = {	
+{ZERO,ZERO,'!','\"','#','$','%','^','&','*','(',')','_','+','\b','\t'},
+{'Q','W','E','R','T','Y','U','I','O','P','{','}','\n',ZERO,'A','S'},
+{'D','F','G','H','J','K','L',';','[',']',ZERO,'>','Z','X','C','V'},	
+{'B','N','M','<','>','?',ZERO,'*',ZERO,' ',ZERO,ZERO,ZERO,ZERO,ZERO,ZERO},
+{ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'7','8','9','-','4','6','+','1'},
+{'2','3','0','.',ZERO,ZERO,ZERO,ZERO,ZERO}
+};
 
-			if(last==first){
-				full=true;
-			}else if(last==SIZE_BUFFER && first!=start){
-				last=start;
-			}
-		}
-		
-		//para probar
-		video[s++]=keyboard[scancode/SCTABLECOLS][scancode%SCTABLECOLS];
-		video[s]=0x03;	
-	}
 
+
+bool isEmpty(){
+	return (first==last && full==false);
 }
 
-bool isScanCode(int scancode){
+/* Retorna el primer elemento del buffer*/
+char getChar(){
+//	if(isEmpty()){
+//		return;
+//	}else{
+		char caracter=buffer[first];
+		first++;
+
+		if(first>=SIZE_BUFFER){
+			first=bufferstart;
+		}
+		if(full){
+			full=false;
+		}
+		return caracter;
+
+	//}
+}
+
+void clearBuffer(){
+	first=bufferstart;
+	last=bufferstart;
+	full=false;
+}
+
+bool isBreakCode(unsigned char scancode){
 	return (scancode & 0x80);
 }
 
+bool isLetter(unsigned char ascii){
+	return (ascii>=(unsigned char)'a' && ascii<=(unsigned char)'z');
+}
 
+bool isAscii(unsigned char ascii){
+	return ascii!=ZERO;
+}
+void LockOnOff(int i){
+	if(lockFlag[i]){
+		lockFlag[i]=false;
+	}else{
+		lockFlag[i]=true;
+	}	
+}
+
+void SpecialKeyOnOff(int i, bool onoff){
+	specialKey[i-LOCKSKEYS]=onoff;
+}
+
+/* Devuelve el numero de tecla especial, sino -1*/
+int isSpecialKey(unsigned char scancode){
+	int numKey=-1;
+	switch(scancode){
+		case NumLockScan: numKey=NumLock; break;
+		case ScrllLockScan:numKey=ScrllLock; break;
+		case CapsLockScan:numKey=CapsLock; break;
+		case CtrlScan: numKey=Ctrl; break;
+		case AltScan: numKey=Alt; break;
+		case RShiftScan: numKey=Shift; break;
+		case LShiftScan: numKey=Shift; break;
+		default: numKey=-1; break;
+//		case InsScanCode: break;
+//		case DelScanCode: break;
+	}
+	return numKey;
+}
+
+void putinbuffer(unsigned char ascii){
+	if(full==false){
+				buffer[last]=ascii;
+				last++;
+				if(last==SIZE_BUFFER && first!=bufferstart){
+					last=bufferstart;
+				}else if(last==first){
+					full=true;
+				}
+			}				
+		//para probar
+//		__write(STD_OUT,buffer,last-first);
+}
+
+void forBuffer(unsigned char scancode) {	
+    unsigned char ascii=ZERO;
+   	int specialkeynum=-1; 
+   	int specialindex;
+
+	if(isBreakCode(scancode)){
+		specialkeynum=isSpecialKey(scancode&0x7F);
+		specialindex=specialkeynum-LOCKSKEYS;
+
+		if(specialkeynum>=LOCKSKEYS && specialKey[specialindex]){
+			//si es un breakcode solo me interesa para alt, control y shift encendidos.
+			SpecialKeyOnOff(specialkeynum,false);
+		}
+		return;
+	}else{		
+		ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+		specialkeynum=isSpecialKey(scancode);	
+
+		if(isAscii(ascii)){
+			if(isLetter(ascii)){
+				if(lockFlag[CapsLock]){ 
+					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+				}else if(specialKey[Shift-LOCKSKEYS]){
+					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+				}
+				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){
+					// CODIGO CONTROL+R
+					return;
+				}						
+			}
+			putinbuffer(ascii);
+		}else if(specialkeynum>=0){
+			if(specialkeynum<LOCKSKEYS){
+				LockOnOff(specialkeynum);
+			}else if(specialkeynum>=LOCKSKEYS){
+				SpecialKeyOnOff(specialkeynum,true);
+			}
+			return;
+		}
+	} 
+}
+// __write(STD_OUT,"WACHII",6);

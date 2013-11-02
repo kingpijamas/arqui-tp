@@ -7,25 +7,19 @@ void int_08() {
     // char *video = (char *) 0xb8000;
     // video[tickpos+=2]='a';
 
-	if (flag%2==0){
+	/*if (flag%2==0){
 		__write(STD_OUT,"buffer",6);
 	}else{
 		__write(REG_OUT,"pepe",4);
 	}
-	flag++;
+	flag++;*/
 
 	//TODO just for testing purposes
 	//__write(STD_OUT,NULL,0);
 }
 
-int s=80*11;
-
-//s sirve para ir probando, deberia ocuparse el driver de video
 void int_09(char scancode){
-	putinbuffer(scancode,s);
-	if(isScanCode(scancode)==0){
-		s=s+2;
-	}
+	forBuffer(scancode);
 }
 
 void int_80(int sysCallNo, void ** args) {
