@@ -9,6 +9,6 @@
 
 void int_08();
 void int_09(char scancode);
-void int_80(int sysCallNo, void** args);
+size_t int_80(int sysCallNo, void** args);
 
 #endif

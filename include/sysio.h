@@ -8,6 +8,10 @@
 // System write
 size_t __sys_write(int fd, const void* buffer, size_t count);
 
+//System read
+size_t __sys_read(int fd, void* buffer, size_t count);
+
+size_t __readstdin(int fd, void* buffer, size_t count);
 
 //Code taken from http://wiki.osdev.org/Inline_Assembly/Examples
 static inline unsigned char inb( unsigned short port ) {

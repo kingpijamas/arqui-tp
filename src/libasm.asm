@@ -143,9 +143,14 @@ _Sys_Call:
 
         ; Make the call
         int 80h
+        pop eax
 
         ; Destroy the stack frame
-        popa
+        pop di
+        pop si
+        pop bx
+        pop dx
+        pop cx
         mov esp, ebp
         pop ebp
         ret

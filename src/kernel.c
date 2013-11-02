@@ -34,8 +34,28 @@ kmain() {
 
 	__init_graphics();
 		
+
+
+	while(1) {
+		char ch=ZERO;
+		while(isEmpty()){
+		};
+
+
+		char* buffer;
+		__read(STD_IN, buffer,1);
+		__write(STD_OUT,buffer,1);
+
+		//para probar write y getchar
+		//ch= getChar();	
+		//__write(STD_OUT,&ch,1);
 	}
 	
+}
+
+size_t __read(int fd, void* buffer, size_t count){
+	size_t nread=_Sys_Call(SYS_READ,fd,buffer,count);
+	return nread;
 }
 
 //WARNING, this function will assume that a character is being printed no matter what

@@ -49,7 +49,7 @@ void int_08() {
 		// 	strlen("\n\nLegen...dary!\n"));
 
 		// rprintf("largo:%d\n",printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n"));
-		printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
+		//	printf("\n\nLegen...\n%s%s\n%s%s","\n\t...wait for it!\n","\n\t\t...wait for it!\n","...dary!","\n\nLegen...dary!\n");
 		// rprintf("da: %d\n",__printUntil(REG_OUT,"hola\n mundo!",' '));
 		// rprintf("deberia dar: %d\n",strlen("hola\n"));
 	}
@@ -63,14 +63,14 @@ void int_09(char scancode){
 	forBuffer(scancode);
 }
 
-void int_80(int sysCallNo, void ** args) {
+size_t int_80(int sysCallNo, void ** args) {
+	size_t nsize;
 	switch(sysCallNo){
 		case SYS_WRITE:
 			__sys_write((int)args[0],(void*)args[1],(int)args[2]);
 			break;
 		case SYS_READ:
-			//TODO
-			/*__sys_read(fd,buf,count);*/
+			nsize=__sys_read((int)args[0],(void*)args[1],(int)args[2]);
 		break;
 		default:;
 			//TODO	
