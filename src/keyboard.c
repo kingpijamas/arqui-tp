@@ -140,14 +140,15 @@ void forBuffer(unsigned char scancode) {
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
 					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-				}else if(specialKey[Shift-LOCKSKEYS]){
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){
 					// CODIGO CONTROL+R
 					return;
 				}						
 			}
+			if(specialKey[Shift-LOCKSKEYS]){
+					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+				}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){
 			if(specialkeynum<LOCKSKEYS){
