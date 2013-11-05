@@ -1,32 +1,31 @@
 #include "../include/video.h"
 
-colour std_out_background_colour=DEFAULT_STD_OUT_BACKGROUND_COLOUR;
-colour std_out_text_colour=DEFAULT_STD_OUT_TEXT_COLOUR;
-colour reg_out_background_colour=DEFAULT_REG_OUT_BACKGROUND_COLOUR;
-colour reg_out_text_colour=DEFAULT_REG_OUT_TEXT_COLOUR;
+colour STD_DISPLAY_background_colour    =    DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
+colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COLOUR;
+colour REG_DISPLAY_background_colour    =    DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
+colour REG_DISPLAY_text_colour          =    DEFAULT_REG_DISPLAY_TEXT_COLOUR;
 
-int std_out_offset;
-int reg_out_offset;
+int STD_DISPLAY_offset;
+int REG_DISPLAY_offset;
 
-int cursor_focus;//the fd the cursor is focusing
+int cursor_focus;//the disp the cursor is focusing
 int cursor_row;
 int cursor_col;
 
 //Doesn't move the cursor. That is the shell's responsibility. (CHECK THIS)
 void __init_graphics(){
-    std_out_offset=__getOffsetOf(STD_OUT_MIN_ROW);
-    reg_out_offset=__getOffsetOf(REG_OUT_MIN_ROW);
-    __paint_area(STD_OUT,std_out_background_colour,std_out_text_colour);
-    __paint_area(REG_OUT,reg_out_background_colour,reg_out_text_colour);
+    STD_DISPLAY_offset=__getOffsetOf(STD_DISPLAY_MIN_ROW);
+    REG_DISPLAY_offset=__getOffsetOf(REG_DISPLAY_MIN_ROW);
+    __paint_area(STD_DISPLAY,STD_DISPLAY_background_colour,STD_DISPLAY_text_colour);
+    __paint_area(REG_DISPLAY,REG_DISPLAY_background_colour,REG_DISPLAY_text_colour);
 }
 
-size_t __print(int fd, const void * buffer, size_t count){
-    switch(fd){
-        case STD_ERR:
-        case STD_OUT:
-            return __bounded_print(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, &std_out_offset, buffer, count);
-        case REG_OUT:
-            return __bounded_print(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, &reg_out_offset, buffer, count);
+size_t __print(int disp, const void * buffer, size_t count){
+    switch(disp){
+        case STD_DISPLAY:
+            return __bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, &STD_DISPLAY_offset, buffer, count);
+        case REG_DISPLAY:
+            return __bounded_print(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, &REG_DISPLAY_offset, buffer, count);
         default:
             return INVALID_DISPLAY;
     }
@@ -67,14 +66,13 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
     return written;
 }
 
-int __paint_area(int fd, colour backgroundColour, colour textColour){
-    switch(fd){
-        case STD_ERR:
-        case STD_OUT:
-            __bounded_paint_area(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
+int __paint_area(int disp, colour backgroundColour, colour textColour){
+    switch(disp){
+        case STD_DISPLAY:
+            __bounded_paint_area(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
             break;
-        case REG_OUT:
-            __bounded_paint_area(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
+        case REG_DISPLAY:
+            __bounded_paint_area(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
             break;
         default:
             return INVALID_DISPLAY;
@@ -92,14 +90,13 @@ void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour
     }
 }
 
-int __shift_up(int fd, int lines){
-    switch(fd){
-        case STD_ERR:
-        case STD_OUT:
-            __bounded_shift_up(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, lines);
+int __shift_up(int disp, int lines){
+    switch(disp){
+        case STD_DISPLAY:
+            __bounded_shift_up(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, lines);
             break;
-        case REG_OUT:
-            __bounded_shift_up(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, lines);
+        case REG_DISPLAY:
+            __bounded_shift_up(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, lines);
             break;
         default:
             return INVALID_DISPLAY;
@@ -129,15 +126,14 @@ void __bounded_shift_up(int minRow, int maxRow, int lines){
     }
 }
 
-int __set_cursor_position_in(int fd, int relRow, int relCol){
+int __set_cursor_position_in(int disp, int relRow, int relCol){
     int ans;
-    switch(fd){
-        case STD_ERR:
-        case STD_OUT:
-            ans=__bounded_set_cursor_position(STD_OUT_MIN_ROW, STD_OUT_MAX_ROW, MIN_COL, MAX_COL, relRow, relCol);
+    switch(disp){
+        case STD_DISPLAY:
+            ans=__bounded_set_cursor_position(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, relRow, relCol);
             break;
-        case REG_OUT:
-            ans=__bounded_set_cursor_position(REG_OUT_MIN_ROW, REG_OUT_MAX_ROW, MIN_COL, MAX_COL, relRow, relCol);
+        case REG_DISPLAY:
+            ans=__bounded_set_cursor_position(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, relRow, relCol);
             break;
         default:
             return INVALID_DISPLAY;
@@ -145,7 +141,7 @@ int __set_cursor_position_in(int fd, int relRow, int relCol){
     if(ans!=0){//TODO
         return ans;
     }
-    cursor_focus=fd;
+    cursor_focus=disp;
     cursor_row=relRow;
     cursor_col=relCol;
     return 0;//TODO
