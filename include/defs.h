@@ -31,10 +31,12 @@ typedef int bool;
 #define ACS_STACK        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 
 //File descriptors
-#define STD_IN           0
-#define STD_OUT          1
-#define STD_ERR          2
-#define REG_OUT          3
+  typedef enum {
+    STD_IN=0,
+    STD_OUT=1,
+    STD_ERR=2,
+    REG_OUT=3
+  } FILE_DESC;
 
 //System Calls
 #define SYS_READ         0x03
