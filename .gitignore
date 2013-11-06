@@ -26,3 +26,6 @@ bochsout.txt
 *.d
 bin/
 img/
+
+*.img
+*.bin

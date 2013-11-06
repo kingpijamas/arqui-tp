@@ -6,14 +6,7 @@
 #include "../include/string.h"
 #include "../include/stdarg.h"
 
-//check the
-//	extern int __stdin=STD_IN
-//	extern int* stdin = &__stdin
-//
-// + using FILE *
-//
-//	hack
-typedef int FILE;
+#define FILE FILE_DESC
 
 //Auxiliary
 typedef enum {PF_CHAR, PF_PARAMETER, PF_FLAGS, PF_WIDTH, PF_PRECISION, PF_LENGTH} format_state_t;

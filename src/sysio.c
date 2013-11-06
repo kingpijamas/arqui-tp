@@ -1,14 +1,14 @@
 #include "../include/sysio.h"
-#include "../include/keyboard.h"
 
 
 size_t __sys_write(int fd, const void* buffer, size_t count){
 	switch(fd){
 		case STD_ERR:
 		case STD_OUT:
+			__print(STD_DISPLAY,buffer,count);break;
 		case REG_OUT:
-			__print(fd,buffer,count);break;
-		default:
+			__print(REG_DISPLAY,buffer,count);break;
+		default://TODO Should never happen. Maybe treat this as STD_OUT?
 			return -1;
 	}
 }
