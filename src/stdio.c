@@ -192,10 +192,129 @@ int __printDigit(FILE stream, int d, int base, bool caps){
 	return 0;
 }
 
-int scanf(char *format, ...){
+int scanf(const char *format, ...){
 	int ret;
 	va_list args;
 
+	// Initialized args to retrieve the additonal arguments after format
 	va_start(args,format);
-	//TODO
+	ret=vscanf(format, args);
+	return ret;
+}
+
+bool isSpace(char c){
+	return c==' ';
+}
+
+bool isTab(int c){
+	return c=='\t';
+}
+
+bool isNumber(char c){
+	return c>='0' && c<='9';
+}
+
+int scanfdecimal(int* arg, char curr){
+	int i=0;
+	while(!isSpace(curr) && isNumber(curr)){
+		int number=(curr-'0');
+		(*arg)=(*arg)*10+number;
+		putc(curr,STD_OUT);
+		curr=getChar();
+	}
+	return i==0?0:1;
+}
+
+/* Coloca chars del buffer en el parámetro arg, termina al recibir un enter.
+Devuelve si colocó algo en args o no*/
+int scanfstring(char* arg, char curr){
+	int i=0;
+
+	while(curr!='\n'){ 		
+		if(curr!='\0'){ 
+			arg[i++]=curr;
+			putc(curr,STD_OUT);
+		}
+		curr=getChar();
+	}
+	arg[i]='\0';
+	return i==0?0:1;
+}
+
+int scanfchar(char* arg, char curr){
+	int i=0;
+	while(curr!='\n'){
+		if(curr!='\0'){
+			arg[i++]=curr;
+			putc(curr,STD_OUT);
+		}
+		curr=getChar();
+	}
+	return i;
+}
+
+int vscanf(const char * format, va_list args){
+
+	char c,curr;
+	int i=0,items=0;
+	bool conversion;
+
+	while(format[i]!='\0'){
+		do {
+			c=format[i];
+		} while(isSpace(c) || isTab(c)); //Blanks or tabs are ignored
+
+		curr=getChar();		
+
+		//if(!isSpace(curr)){ //Ignora espacios
+			if(c!='%'){
+				if(c!=curr){
+					return;
+				}else{
+					i++;
+					putc(curr,STD_OUT);
+				}
+			}else{
+				i++; 
+				c=format[i];
+
+				if (format[i]=='\0'){
+					break;
+				}
+
+				switch(c){
+					case 'd':
+						{	int* arg;
+							arg=va_arg(args,int*);
+							if(isNumber(curr)){
+								items=items+scanfdecimal(arg,curr);
+							}
+							i++;
+							//putc(curr,STD_OUT);
+							break;
+						}
+					case 's':
+						{
+							char* arg;
+							arg=va_arg(args,char*);
+							items=items+scanfstring(arg,curr);
+							i++;
+							printf("%s",arg);
+							break;
+						}
+					case 'c':
+						{
+							char* arg;
+							arg=va_arg(args,char*);
+							items=items+scanfchar(arg,curr);
+						}
+
+
+				}
+			}
+
+		//}
+		i++;
+	}	
+	return i;
 }

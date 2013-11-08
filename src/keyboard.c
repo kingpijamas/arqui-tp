@@ -24,7 +24,6 @@ unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
 {ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'-',ZERO,'5',ZERO,'+',ZERO}, //f6-f10, Num Lock
 }; 
 
-//shift
 unsigned char spKeyKeyboard[KEYMAPROWS][KEYMAPSCOLS] = {	
 {ZERO,ZERO,'!','\"','#','$','%','^','&','*','(',')','_','+','\b','\t'},
 {'Q','W','E','R','T','Y','U','I','O','P','{','}','\n',ZERO,'A','S'},
@@ -40,21 +39,20 @@ bool isEmpty(){
 
 /* Retorna el primer elemento del buffer*/
 char getChar(){
-//	if(isEmpty()){
-//		return;
-//	}else{
-		char caracter=buffer[first];
-		first++;
+	if(isEmpty()){
+		return '\0';
+	}
 
-		if(first>=SIZE_BUFFER){
-			first=bufferstart;
-		}
-		if(full){
-			full=false;
-		}
-		return caracter;
+	char caracter=buffer[first];
+	first++;
 
-	//}
+	if(first>=SIZE_BUFFER){
+		first=bufferstart;
+	}
+	if(full){
+		full=false;
+	}
+	return caracter;
 }
 
 void clearBuffer(){

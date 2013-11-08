@@ -37,12 +37,17 @@ kmain() {
 
 
 	while(1) {
-		char ch=ZERO;
-		while(isEmpty()){
-		};
-		char* buffer;
-		__read(STD_IN, buffer,1);
-		__write(STD_OUT,buffer,1);
+		//char ch=ZERO;
+		//while(isEmpty()){
+		//};
+
+		char arg;
+		//printf("%s","hola");
+		scanf("%d",arg);
+
+		//char* buffer;
+		//__read(STD_IN, buffer,1);
+		//__write(STD_OUT,buffer,1);
 
 		//para probar write y getchar
 		//ch= getChar();	
