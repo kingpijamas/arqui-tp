@@ -253,6 +253,53 @@ int scanfchar(char* arg, char curr){
 	return i;
 }
 
+bool isLetterHexa(char curr){
+	if((curr>='a' && curr<='f')||(curr>='A' && curr<='F')){
+		return true;
+	} return false;
+}
+
+
+bool isCharOK(char curr, int base){
+	if(base==OCTALBASE){
+		if(curr>='0' && curr<'8'){
+			return true;
+		}
+		return false;
+	}else if(base==HEXABASE){
+		if(!isNumber(curr) && !isLetterHexa(curr)){
+			return false;
+		} return true;
+	} 
+	return false;
+}
+
+int BaseValue(char curr, int base){
+	if(base==OCTALBASE){
+		return curr-'0';
+	}else if(base==HEXABASE){
+		switch(curr){
+			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': return curr-'a'+10; break;
+			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': return curr-'A'+10; break;
+		}
+	}
+	return 0;
+}
+
+int scanfbase(int* arg, char curr, int base){
+	int i=0;
+	while(curr!='\n' && isCharOK(curr,base)){
+		if(curr!='\0'){ 
+			int currValue=BaseValue(curr, base);
+			(*arg)=(*arg)*base+currValue;
+			putc(curr,STD_OUT);
+			i++;
+		}
+		curr=getChar();
+	}
+	return i==0?0:1;
+}
+
 int vscanf(const char * format, va_list args){
 
 	char c,curr;
@@ -290,7 +337,6 @@ int vscanf(const char * format, va_list args){
 								items=items+scanfdecimal(arg,curr);
 							}
 							i++;
-							//putc(curr,STD_OUT);
 							break;
 						}
 					case 's':
@@ -307,8 +353,24 @@ int vscanf(const char * format, va_list args){
 							char* arg;
 							arg=va_arg(args,char*);
 							items=items+scanfchar(arg,curr);
+							i++;
+							break;
 						}
-
+					case 'o':
+						{
+							int* arg;
+							arg=va_arg(args,int*);
+							items=items+scanfbase(arg,curr,OCTALBASE);
+							i++;
+							break;
+						}
+					case 'x':{
+							int * arg;
+							arg=va_arg(args,int*);
+							items=items+scanfbase(arg,curr,HEXABASE);
+							i++;
+							break;
+					}
 
 				}
 			}

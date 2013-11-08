@@ -41,13 +41,13 @@ kmain() {
 		//while(isEmpty()){
 		//};
 
-		char arg;
+		//char arg;
 		//printf("%s","hola");
-		scanf("%d",arg);
+		//scanf("%o",arg);
 
-		//char* buffer;
-		//__read(STD_IN, buffer,1);
-		//__write(STD_OUT,buffer,1);
+		char* buffer;
+		__read(STD_IN, buffer,1);
+		__write(STD_OUT,buffer,1);
 
 		//para probar write y getchar
 		//ch= getChar();	
