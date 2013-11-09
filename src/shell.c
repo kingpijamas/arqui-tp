@@ -7,7 +7,7 @@ int testflag=0;
 
 void shell(){
 	__load_shell_buffer();
-	//__draw_shell();
+	__draw_shell();
 }
 
 void __aux_fill_buffer(char * str){
@@ -43,7 +43,7 @@ int __draw_prompt(){
 	return printf("%s@%s:~%s",USER_NAME,PC_NAME,SHELL_PROMPT_END);
 }
 
-//TODO \ts aren't supported yet
+//TODO \n\bs and \n\ts are not supported
 void __echo(int promptLength){
 	int i,printed=0;
 	for (i=0;i<SHELL_BUFFER_SIZE && buffer[i]!=NULL_CHAR;i++) {

@@ -23,9 +23,12 @@ void __init_graphics(){
 }
 
 size_t __print(int disp, const void * buffer, size_t count){
+    int ans;
     switch(disp){
         case STD_DISPLAY:
-            return __bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, &STD_DISPLAY_offset, buffer, count);
+            ans=__bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, &STD_DISPLAY_offset, buffer, count);
+            __bounded_set_cursor_position(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, 0, WIDTH, __getLineOf(STD_DISPLAY_offset), (STD_DISPLAY_offset)%WIDTH);
+            return ans;
         case REG_DISPLAY:
             return __bounded_print(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, &REG_DISPLAY_offset, buffer, count);
         default:
@@ -66,8 +69,6 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
                 }
                 video[((*offset)++)*2]=c;
         }
-//        rprintf("<%d>")
-
     }
     return written;
 }
@@ -141,11 +142,8 @@ int __set_cursor_position_in(int disp, int relRow, int relCol){
 }
 
 //Code taken from http://wiki.osdev.org/Text_Mode_Cursor
-int __bounded_set_cursor_position(int minRow, int maxRow, int minCol, int maxCol, int relRow, int relCol){
-    int row=minRow+relRow;
-    int col=minCol+relCol;
-
-    if(relRow<0 || row>maxRow || relCol<0 || col>maxCol){
+int __bounded_set_cursor_position(int minRow, int maxRow, int minCol, int maxCol, int row, int col){
+    if(row<0 || row>maxRow || col<0 || col>maxCol){
         return INVALID_CURSOR;
     }
 
