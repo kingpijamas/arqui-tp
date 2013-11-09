@@ -3,6 +3,7 @@
 #include "../include/inthandlers.h"
 #include "../include/video.h"
 #include "../include/keyboard.h"
+#include "../include/shell.h"
 
 /********************************** 
 *
