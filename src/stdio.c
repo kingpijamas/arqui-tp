@@ -215,13 +215,25 @@ bool isNumber(char c){
 }
 
 int scanfdecimal(int* arg, char curr){
-	int i=0;
+	int i=0; bool sign;
+	
+	if(curr=='-'){
+		sign=true;
+		curr=getChar();
+	}
+
 	while(!isSpace(curr) && isNumber(curr)){
 		int number=(curr-'0');
 		(*arg)=(*arg)*10+number;
 		putc(curr,STD_OUT);
+		i++;
 		curr=getChar();
 	}
+
+	if(i>0 && sign){
+		(*arg)=(*arg)*SIGN;
+	}
+
 	return i==0?0:1;
 }
 
@@ -300,6 +312,8 @@ int scanfbase(int* arg, char curr, int base){
 	return i==0?0:1;
 }
 
+//TODO test arg for %d %o %x (with printf %i)
+//TODO replace getChar() with READ
 int vscanf(const char * format, va_list args){
 
 	char c,curr;
@@ -313,69 +327,67 @@ int vscanf(const char * format, va_list args){
 
 		curr=getChar();		
 
-		//if(!isSpace(curr)){ //Ignora espacios
-			if(c!='%'){
-				if(c!=curr){
-					return;
-				}else{
-					i++;
-					putc(curr,STD_OUT);
-				}
+		if(c!='%'){
+			if(c!=curr){
+				return;
 			}else{
-				i++; 
-				c=format[i];
+				i++;
+				putc(curr,STD_OUT);
+			}
+		}else{
+			i++; 
+			c=format[i];
 
-				if (format[i]=='\0'){
+			if (format[i]=='\0'){
+				break;
+			}
+
+		switch(c){
+			case 'd':
+				{	int* arg;
+					arg=va_arg(args,int*);
+					if(isNumber(curr)){
+						items=items+scanfdecimal(arg,curr);
+					}
+					i++;
+					break;
+				}
+			case 's':
+				{
+					char* arg;
+					arg=va_arg(args,char*);
+					items=items+scanfstring(arg,curr);
+					i++;
+					//printf("%s",arg);
+					break;
+				}
+			case 'c':
+				{
+					char* arg;
+					arg=va_arg(args,char*);
+					items=items+scanfchar(arg,curr);
+					i++;
+					break;
+				}
+			case 'o':
+				{
+					int* arg;
+					arg=va_arg(args,int*);
+					items=items+scanfbase(arg,curr,OCTALBASE);
+					i++;
+					break;
+				}
+			case 'x':{
+					int * arg;
+					arg=va_arg(args,int*);
+					items=items+scanfbase(arg,curr,HEXABASE);
+					i++;
 					break;
 				}
 
-				switch(c){
-					case 'd':
-						{	int* arg;
-							arg=va_arg(args,int*);
-							if(isNumber(curr)){
-								items=items+scanfdecimal(arg,curr);
-							}
-							i++;
-							break;
-						}
-					case 's':
-						{
-							char* arg;
-							arg=va_arg(args,char*);
-							items=items+scanfstring(arg,curr);
-							i++;
-							printf("%s",arg);
-							break;
-						}
-					case 'c':
-						{
-							char* arg;
-							arg=va_arg(args,char*);
-							items=items+scanfchar(arg,curr);
-							i++;
-							break;
-						}
-					case 'o':
-						{
-							int* arg;
-							arg=va_arg(args,int*);
-							items=items+scanfbase(arg,curr,OCTALBASE);
-							i++;
-							break;
-						}
-					case 'x':{
-							int * arg;
-							arg=va_arg(args,int*);
-							items=items+scanfbase(arg,curr,HEXABASE);
-							i++;
-							break;
-					}
-
-				}
 			}
+		}
 
-		//}
 		i++;
 	}	
 	return i;

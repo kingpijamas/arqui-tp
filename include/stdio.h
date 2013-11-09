@@ -9,6 +9,7 @@
 #define FILE FILE_DESC
 #define OCTALBASE 8
 #define HEXABASE 16
+#define SIGN -1
 
 //Auxiliary
 typedef enum {PF_CHAR, PF_PARAMETER, PF_FLAGS, PF_WIDTH, PF_PRECISION, PF_LENGTH} format_state_t;
