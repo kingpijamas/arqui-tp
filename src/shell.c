@@ -1,5 +1,7 @@
 #include "../include/shell.h"
 
+//char[] 
+
 void draw_shell(){
 
 }
