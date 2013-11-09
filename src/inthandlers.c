@@ -14,10 +14,9 @@ void int_08() {
 	//printf("Baby, you've been going so crazy;Lately, nothing seems to be going right;Solo, \twhy do you have to get so low;You're so...;You've been waiting in the sun too long");
 }
 
-void int_09(char scancode, int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx){
-	int eax=0;
+void int_09(char scancode, int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx, int eax, int cs,int eip){
 	//_ppeax();
-	forBuffer(scancode,gs,fs,es,ds,ss,edi,esi,ebp,esp,ebx,edx,ecx,eax);
+	forBuffer(scancode,gs,fs,es,ds,ss,edi,esi,ebp,esp,ebx,edx,ecx,eax,cs,eip);
 
 }
 

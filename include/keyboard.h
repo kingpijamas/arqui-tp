@@ -59,7 +59,6 @@ int isSpecialKey(unsigned char scancode);
 
 void putinbuffer(unsigned char ascii);
 
-void forBuffer(unsigned char scancode,int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx,int eax);
+void forBuffer(unsigned char scancode,int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx, int eax, int cs, int eip);
 
 #endif
-
