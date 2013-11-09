@@ -39,7 +39,6 @@ size_t __readstdin(int fd, void* buffer, size_t count){
 			while(ch=='\0'){
 				ch= getChar();	
 			}
-			putc(ch,STD_OUT);
 			aux=(char*)buffer;
 			*(aux+i)=ch;
 		}

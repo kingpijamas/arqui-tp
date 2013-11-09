@@ -192,6 +192,17 @@ int __printDigit(FILE stream, int d, int base, bool caps){
 	return 0;
 }
 
+char getc(int fd){
+	char ch;
+	__read(fd,&ch,1);
+	return ch;
+}
+
+char readChar(){
+	return getc(STD_IN);
+}
+
+
 int scanf(const char *format, ...){
 	int ret;
 	va_list args;
@@ -219,7 +230,7 @@ int scanfdecimal(int* arg, char curr){
 	
 	if(curr=='-'){
 		sign=true;
-		curr=getChar();
+		curr=readChar();
 	}
 
 	while(!isSpace(curr) && isNumber(curr)){
@@ -227,7 +238,7 @@ int scanfdecimal(int* arg, char curr){
 		(*arg)=(*arg)*10+number;
 		putc(curr,STD_OUT);
 		i++;
-		curr=getChar();
+		curr=readChar();
 	}
 
 	if(i>0 && sign){
@@ -247,7 +258,7 @@ int scanfstring(char* arg, char curr){
 			arg[i++]=curr;
 			putc(curr,STD_OUT);
 		}
-		curr=getChar();
+		curr=readChar();
 	}
 	arg[i]='\0';
 	return i==0?0:1;
@@ -260,7 +271,7 @@ int scanfchar(char* arg, char curr){
 			arg[i++]=curr;
 			putc(curr,STD_OUT);
 		}
-		curr=getChar();
+		curr=readChar();
 	}
 	return i;
 }
@@ -307,13 +318,12 @@ int scanfbase(int* arg, char curr, int base){
 			putc(curr,STD_OUT);
 			i++;
 		}
-		curr=getChar();
+		curr=readChar();
 	}
 	return i==0?0:1;
 }
 
 //TODO test arg for %d %o %x (with printf %i)
-//TODO replace getChar() with READ
 int vscanf(const char * format, va_list args){
 
 	char c,curr;
@@ -325,7 +335,7 @@ int vscanf(const char * format, va_list args){
 			c=format[i];
 		} while(isSpace(c) || isTab(c)); //Blanks or tabs are ignored
 
-		curr=getChar();		
+		curr=readChar();		
 
 		if(c!='%'){
 			if(c!=curr){
