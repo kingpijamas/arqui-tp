@@ -70,9 +70,14 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         iret
 
 _int_09_hand:
+        pushad ;Push EAX,ECX,EDX,EBX,original ESP,EBP,ESI and EDI
+        ;push eip
+        ;push cs
+        push ss
         push ds
         push es
-        pusha
+        push fs
+        push gs
 
         in al, 60h
 
@@ -83,9 +88,14 @@ _int_09_hand:
         mov al,20h ; EOI command code
         out 20h,al ; IO base address for master pic
         
-        popa
+        pop gs
+        pop fs
         pop es
         pop ds
+        pop ss
+        ;pop cs
+        ;pop eip
+        popad
 
         iret
 
@@ -141,6 +151,7 @@ _Sys_Call:
         ; Destroy the stack frame
         pop di
         pop si
+        ;pop bp
         pop bx
         pop dx
         pop cx

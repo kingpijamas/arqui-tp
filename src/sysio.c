@@ -17,24 +17,32 @@ size_t __sys_read(int fd, void* buffer, size_t count){
 	size_t nread;
 
 	switch(fd){
-		case STD_IN: nread=__readstdin(fd, buffer,count);break;
+		case STD_IN: {
+			//__write(STD_OUT,"sys",3);
+			nread=__readstdin(fd, buffer,count);break;
+		}
 		default: nread=-1; break;
 	}
 	return nread;
 }
 
-// TODO ver si moverlo a keyboard.c
 size_t __readstdin(int fd, void* buffer, size_t count){
-	size_t nread=0;
-	char aux;
+	//TODO look why interruptions where off
+	_Sti();
 
-	while(count>0){
-		aux=getChar();
-		if(aux!=ZERO){
-			((char *)buffer)[nread]=aux;
-			count--;
-			nread++;
+	size_t i;
+	char ch;
+	char* aux;
+	if(fd==STD_IN){
+		for(i=0;i<count;i++){
+			ch='\0';
+			while(ch=='\0'){
+				ch= getChar();	
+			}
+			putc(ch,STD_OUT);
+			aux=(char*)buffer;
+			*(aux+i)=ch;
 		}
 	}
-	return nread;
+	return i;
 }

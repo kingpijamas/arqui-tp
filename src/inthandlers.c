@@ -59,8 +59,9 @@ void int_08() {
 	flag++;
 }
 
-void int_09(char scancode){
+void int_09(char scancode, int gs){
 	forBuffer(scancode);
+	//printf("%s%i\n","gs:",gs);
 }
 
 size_t int_80(int sysCallNo, void ** args) {

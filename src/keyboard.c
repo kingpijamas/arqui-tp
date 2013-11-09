@@ -3,7 +3,7 @@
 #include "../include/defs.h"
 #include "../include/keyboard.h"
 
-//TODO sacar. Es para el write de prueba
+//TODO Just for testing purpose.
 #include "../include/kernel.h"
 
 
@@ -37,7 +37,7 @@ bool isEmpty(){
 	return (first==last && full==false);
 }
 
-/* Retorna el primer elemento del buffer*/
+/* Returns first element of the buffer*/
 char getChar(){
 	if(isEmpty()){
 		return '\0';
@@ -53,6 +53,7 @@ char getChar(){
 		full=false;
 	}
 	return caracter;
+
 }
 
 void clearBuffer(){
@@ -84,7 +85,7 @@ void SpecialKeyOnOff(int i, bool onoff){
 	specialKey[i-LOCKSKEYS]=onoff;
 }
 
-/* Devuelve el numero de tecla especial, sino -1*/
+/* Returns special key's number if scancode is a specials key, else -1*/
 int isSpecialKey(unsigned char scancode){
 	int numKey=-1;
 	switch(scancode){
@@ -104,16 +105,16 @@ int isSpecialKey(unsigned char scancode){
 
 void putinbuffer(unsigned char ascii){
 	if(full==false){
-				buffer[last]=ascii;
-				last++;
-				if(last==SIZE_BUFFER && first!=bufferstart){
-					last=bufferstart;
-				}else if(last==first){
-					full=true;
-				}
-			}				
-		//para probar
-//		__write(STD_OUT,buffer,last-first);
+		buffer[last]=ascii;
+		last++;
+		if(last==SIZE_BUFFER && first!=bufferstart){
+			last=bufferstart;
+		}else if(last==first){
+			full=true;
+		}
+	}				
+		//test
+		//__write(STD_OUT,buffer,last-first);
 }
 
 void forBuffer(unsigned char scancode) {	
@@ -126,7 +127,7 @@ void forBuffer(unsigned char scancode) {
 		specialindex=specialkeynum-LOCKSKEYS;
 
 		if(specialkeynum>=LOCKSKEYS && specialKey[specialindex]){
-			//si es un breakcode solo me interesa para alt, control y shift encendidos.
+			//If it's a breakcode we mind only for alt, control and shift.
 			SpecialKeyOnOff(specialkeynum,false);
 		}
 		return;
@@ -140,7 +141,7 @@ void forBuffer(unsigned char scancode) {
 					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){
-					// CODIGO CONTROL+R
+					// CONTROL+R
 					return;
 				}						
 			}
@@ -158,4 +159,4 @@ void forBuffer(unsigned char scancode) {
 		}
 	} 
 }
-// __write(STD_OUT,"WACHII",6);
+// __write(STD_OUT,"Here",4);
