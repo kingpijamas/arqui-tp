@@ -7,12 +7,12 @@ int testflag=0;
 
 void shell(){
 	__load_shell_buffer();
-	__draw_shell();
+	//__draw_shell();
 }
 
 void __aux_fill_buffer(char * str){
 	int i;
-	for(i=0;str[i]!='\0';i++){
+	for(i=0;i<SHELL_BUFFER_SIZE && str[i]!='\0';i++){
 		buffer[i]=str[i];
 	}
 }
@@ -43,6 +43,7 @@ int __draw_prompt(){
 	return printf("%s@%s:~%s",USER_NAME,PC_NAME,SHELL_PROMPT_END);
 }
 
+//TODO \ts aren't supported yet
 void __echo(int promptLength){
 	int i,printed=0;
 	for (i=0;i<SHELL_BUFFER_SIZE && buffer[i]!=NULL_CHAR;i++) {
@@ -56,13 +57,19 @@ void __echo(int promptLength){
 		}
 
 		printed+=iputc(buffer[i],STD_OUT);
-		buffer[i]=NULL_CHAR;
 
 		if(printed==LINE_WIDTH){
 			printf("\n");
 			printed=0;
 		}
 	}
+	__clear_buffer(i);
 	printf("*");//FIXME here just for debugging purposes
 	printf("\n");
+}
+
+void __clear_buffer(int toClear){
+	for(;toClear>0;toClear--){
+		buffer[toClear-1]=NULL_CHAR;
+	}
 }

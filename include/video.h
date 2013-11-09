@@ -71,8 +71,8 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
 int __paint_area(int fd, colour backgroundColour, colour textColour);
 void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour backgroundColour, colour textColour);
 
-int __shift_up(int fd, int lines);
-void __bounded_shift_up(int minRow, int maxRow, int lines);
+// int __shift_up(int fd, int lines);
+void __bounded_shift_up(int minRow, int maxRow, int *offset, int lines);
 
 int __set_cursor_position_in(int fd, int relRow, int relCol);
 int __bounded_set_cursor_position(int minRow, int maxRow, int minCol, int maxCol, int relRow, int relCol);

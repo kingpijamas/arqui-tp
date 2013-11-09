@@ -1,5 +1,7 @@
 #include "../include/video.h"
 
+#include "../include/stdio.h"
+
 colour STD_DISPLAY_background_colour    =    DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
 colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COLOUR;
 colour REG_DISPLAY_background_colour    =    DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
@@ -12,12 +14,12 @@ int cursor_focus;//the disp the cursor is focusing
 int cursor_row;
 int cursor_col;
 
-//Doesn't move the cursor. That is the shell's responsibility. (CHECK THIS)
 void __init_graphics(){
     STD_DISPLAY_offset=__getOffsetOf(STD_DISPLAY_MIN_ROW);
     REG_DISPLAY_offset=__getOffsetOf(REG_DISPLAY_MIN_ROW);
     __paint_area(STD_DISPLAY,STD_DISPLAY_background_colour,STD_DISPLAY_text_colour);
     __paint_area(REG_DISPLAY,REG_DISPLAY_background_colour,REG_DISPLAY_text_colour);
+    __set_cursor_position_in(STD_DISPLAY,0,0);
 }
 
 size_t __print(int disp, const void * buffer, size_t count){
@@ -34,11 +36,16 @@ size_t __print(int disp, const void * buffer, size_t count){
 size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count){
     char *video = (char*)VIDEO_ADDRESS;
     char c;
-    int line, aux;
+    int line, tab;
     size_t written;
 
-    for(written=0; written < count && __getLineOf(*offset) <= maxRow; written++){
+    for(written=0; written < count; written++){
         c=((char *)buffer)[written];
+        
+        if (__getLineOf(*offset) > maxRow) {
+            __bounded_shift_up(minRow,maxRow,offset,1);
+        }
+
         switch(c){
             case '\n':
                 (*offset)=__getOffsetOf(__getLineOf(*offset)+1);
@@ -49,10 +56,7 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
                 }
                 break;
             case '\t':
-                if(((*offset)+TAB_LENGTH) % MAX_COL == 0){
-                    (*offset)=__getOffsetOf(__getLineOf((*offset)+TAB_LENGTH));
-                }
-                for(aux=0;aux<TAB_LENGTH;aux++){
+                for(tab=0; tab<TAB_LENGTH && (__getLineOf((*offset)+TAB_LENGTH)==__getLineOf(*offset)); tab++){
                     video[((*offset)++)*2]=' ';
                 }
                 break;
@@ -62,6 +66,8 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
                 }
                 video[((*offset)++)*2]=c;
         }
+//        rprintf("<%d>")
+
     }
     return written;
 }
@@ -90,21 +96,7 @@ void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour
     }
 }
 
-int __shift_up(int disp, int lines){
-    switch(disp){
-        case STD_DISPLAY:
-            __bounded_shift_up(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, lines);
-            break;
-        case REG_DISPLAY:
-            __bounded_shift_up(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, lines);
-            break;
-        default:
-            return INVALID_DISPLAY;
-    }
-    return 0;//TODO
-}
-
-void __bounded_shift_up(int minRow, int maxRow, int lines){
+void __bounded_shift_up(int minRow, int maxRow, int *offset, int lines){
     char *video = (char*)VIDEO_ADDRESS;
     char c;
     int line, i;
@@ -122,6 +114,7 @@ void __bounded_shift_up(int minRow, int maxRow, int lines){
         for(i=0; i<WIDTH; i++){
             video[2*(killOffset+i)]='\0';
         }
+        *offset=killOffset;
         maxRow--;
     }
 }

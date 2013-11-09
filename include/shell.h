@@ -20,6 +20,7 @@ void __load_shell_buffer();
 void __draw_shell();
 void __echo(int promptLength);
 int __draw_prompt();
+void __clear_buffer(int toClear);
 
 void __aux_fill_buffer(char* str);
 
