@@ -70,15 +70,16 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         iret
 
 _int_09_hand:
+        push cs
+        ;push ip
         pushad ;Push EAX,ECX,EDX,EBX,original ESP,EBP,ESI and EDI
-        ;push eip
-        ;push cs
         push ss
         push ds
         push es
         push fs
         push gs
 
+        and eax,0
         in al, 60h
 
         push eax
@@ -93,10 +94,9 @@ _int_09_hand:
         pop es
         pop ds
         pop ss
-        ;pop cs
-        ;pop eip
         popad
-
+        pop eax ;eax=cs
+        
         iret
 
 _ppeax:

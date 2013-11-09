@@ -117,7 +117,7 @@ void putinbuffer(unsigned char ascii){
 		//__write(STD_OUT,buffer,last-first);
 }
 
-void forBuffer(unsigned char scancode,int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx,int eax) {	
+void forBuffer(unsigned char scancode,int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx,int eax,int cs, int eip) {	
     unsigned char ascii=ZERO;
    	int specialkeynum=-1; 
    	int specialindex;
@@ -142,19 +142,21 @@ void forBuffer(unsigned char scancode,int gs, int fs,int es, int ds, int ss, int
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){					
 					// CONTROL+R
-					printf("%s%i\n","gs:",gs);
-					printf("%s%i\n","fs:",fs);
-					printf("%s%i\n","es:",es);
-					printf("%s%i\n","ds:",ds);
-					printf("%s%i\n","ss:",ss);
-					printf("%s%i\n","edi:",edi);
-					printf("%s%i\n","esi:",esi);
-					printf("%s%i\n","ebp:",ebp);
-					printf("%s%i\n","esp:",esp);
-					printf("%s%i\n","ebx:",ebx);
-					printf("%s%i\n","edx:",edx);
-					printf("%s%i\n","ecx:",ecx);
-					printf("%s%i\n","eax:",eax);
+					rprintf("%s%i\t","eax:",eax);			
+					rprintf("%s%i\t","ebx:",ebx);
+					rprintf("%s%i\n","ecx:",ecx);
+					rprintf("%s%i\t","edx:",edx);
+					rprintf("%s%i\t","cs:",cs);
+					rprintf("%s%i\n","gs:",gs);
+					rprintf("%s%i\t","fs:",fs);
+					rprintf("%s%i\t","es:",es);
+					rprintf("%s%i\n","ds:",ds);
+					rprintf("%s%i\t","ss:",ss);
+					rprintf("%s%i\t","edi:",edi);
+					rprintf("%s%i\n","esi:",esi);
+					rprintf("%s%i\t","ebp:",ebp);
+					rprintf("%s%i\t","esp:",esp);
+					rprintf("%s%i\n","eip:",eip);
 					return;
 				}						
 			}
