@@ -99,6 +99,11 @@ _int_09_hand:
 
         iret
 
+_ppeax:
+        pop eax
+        push eax
+        ret
+
 _int_80_hand:
         ; Build stack frame:
         push ebp

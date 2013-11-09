@@ -2,6 +2,8 @@
 
 int flag=0;
 
+int _ppeax(void);
+
 void int_08() {
 	//rprintf("%s","hola mundo!");
 	// int i;
@@ -59,9 +61,11 @@ void int_08() {
 	flag++;
 }
 
-void int_09(char scancode, int gs){
-	forBuffer(scancode);
-	//printf("%s%i\n","gs:",gs);
+void int_09(char scancode, int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx){
+	int eax=0;
+	//_ppeax();
+	forBuffer(scancode,gs,fs,es,ds,ss,edi,esi,ebp,esp,ebx,edx,ecx,eax);
+
 }
 
 size_t int_80(int sysCallNo, void ** args) {

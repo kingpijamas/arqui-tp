@@ -117,7 +117,7 @@ void putinbuffer(unsigned char ascii){
 		//__write(STD_OUT,buffer,last-first);
 }
 
-void forBuffer(unsigned char scancode) {	
+void forBuffer(unsigned char scancode,int gs, int fs,int es, int ds, int ss, int edi,int esi, int ebp, int esp,int ebx, int edx, int ecx,int eax) {	
     unsigned char ascii=ZERO;
    	int specialkeynum=-1; 
    	int specialindex;
@@ -140,8 +140,21 @@ void forBuffer(unsigned char scancode) {
 				if(lockFlag[CapsLock]){ 
 					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 				}
-				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){
+				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){					
 					// CONTROL+R
+					printf("%s%i\n","gs:",gs);
+					printf("%s%i\n","fs:",fs);
+					printf("%s%i\n","es:",es);
+					printf("%s%i\n","ds:",ds);
+					printf("%s%i\n","ss:",ss);
+					printf("%s%i\n","edi:",edi);
+					printf("%s%i\n","esi:",esi);
+					printf("%s%i\n","ebp:",ebp);
+					printf("%s%i\n","esp:",esp);
+					printf("%s%i\n","ebx:",ebx);
+					printf("%s%i\n","edx:",edx);
+					printf("%s%i\n","ecx:",ecx);
+					printf("%s%i\n","eax:",eax);
 					return;
 				}						
 			}
