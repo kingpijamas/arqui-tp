@@ -8,10 +8,6 @@ int fputc(int ch, FILE stream){
 	return EOF;
 }
 
-int putc(int ch, FILE stream){
-	return fputc(ch,stream);
-}
-
 int fprintf(FILE stream, const char *format, ...){
 	int ret;
 	va_list args;
@@ -66,9 +62,6 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 				break;
 			case PF_PARAMETER:
 				switch(c){
-					// case '.':
-					// 	state=PF_PRECISION;
-					// 	break;
 					case '%':
 						written+=bfputc('%',stream);
 						break;
@@ -92,60 +85,12 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 					case 'X':
 						written+=__printHexadecimal(stream,va_arg(vlist,int),true);
 						break;
-					case 'u':
-						//TODO do sth
-						break;
-					case 'f':
-					case 'F':
-						//TODO do sth
-						break;
-					case 'e':
-						//TODO do sth
-						break;
-					case 'E':
-						//TODO do sth
-						break;
-					case 'a':
-						//TODO do sth
-						break;
-					case 'A':
-						//TODO do sth
-						break;
-					case 'g':
-						//TODO do sth
-						break;
-					case 'G':
-						//TODO do sth
-						break;
 					case 'n':
 						written+=__printDecimal(stream,written);
-						break;
-					case 'p':
-						//TODO do sth
 						break;
 				}
 				state=PF_CHAR;
 				break;
-			// case PF_FLAGS:
-			// 	switch(c){
-			// 		case '+':
-			// 			break;
-			// 		case ' ':
-			// 			break;
-			// 		case '-':
-			// 			break;
-			// 		case '#':
-			// 			break;
-			// 		case '0':
-			// 			break;
-			// 	}
-			// 	break;
-			// case PF_WIDTH:
-			// 	break;
-			// case PF_PRECISION:
-			// 	break;
-			// case PF_LENGTH:
-			// 	break;
 		}
 	}
 	return written;
@@ -155,10 +100,6 @@ int __printUntil(FILE stream, const char * str, char limit){
 	int i;
 	for(i=0;str[i]!=limit && str[i]!='\0';i++){;}
 	return __write(stream,str,i);
-}
-
-int auxPrint(const char * str){
-	return __printString(REG_OUT,str);
 }
 
 int __printString(FILE stream, const char * str){
@@ -297,7 +238,7 @@ bool isCharOK(char curr, int base){
 	return false;
 }
 
-int BaseValue(char curr, int base){
+int baseValue(char curr, int base){
 	if(base==OCTALBASE){
 		return curr-'0';
 	}else if(base==HEXABASE){
@@ -313,7 +254,7 @@ int scanfbase(int* arg, char curr, int base){
 	int i=0;
 	while(curr!='\n' && isCharOK(curr,base)){
 		if(curr!='\0'){ 
-			int currValue=BaseValue(curr, base);
+			int currValue=baseValue(curr, base);
 			(*arg)=(*arg)*base+currValue;
 			putc(curr,STD_OUT);
 			i++;

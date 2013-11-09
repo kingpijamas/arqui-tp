@@ -77,6 +77,7 @@ size_t int_80(int sysCallNo, void ** args) {
 			nsize=__sys_read((int)args[0],(void*)args[1],(int)args[2]);
 		break;
 		default:;
-			//TODO	
+			//TODO
 	}
+	//FIXME: shouldn't we return here?
 }

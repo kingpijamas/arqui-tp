@@ -16,6 +16,9 @@ typedef int bool;
 #define true             1
 #define false            0
 
+typedef int size_t;
+typedef short int ssize_t;
+
 // Flags para derechos de acceso de los segmentos
 #define ACS_PRESENT      0x80            // segmento presente en memoria
 #define ACS_CSEG         0x18            // segmento de codigo
@@ -23,7 +26,7 @@ typedef int bool;
 #define ACS_READ         0x02            // segmento de lectura
 #define ACS_WRITE        0x02            // segmento de escritura
 #define ACS_IDT          ACS_DSEG
-#define ACS_INT_386     	0x0E		        // Interrupt GATE 32 bits
+#define ACS_INT_386      0x0E		        // Interrupt GATE 32 bits
 #define ACS_INT          ( ACS_PRESENT | ACS_INT_386 )
 
 #define ACS_CODE         (ACS_PRESENT | ACS_CSEG | ACS_READ)
@@ -44,9 +47,6 @@ typedef int bool;
 
 //C constants and defs
 #define EOF             -1
-
-typedef int size_t;
-typedef short int ssize_t;
 
 #pragma pack (1) 		// Alinear las siguiente estructuras a 1 byte
 
