@@ -12,4 +12,5 @@ gcc -c ../src/sysio.c -o sysio.o -fno-builtin
 gcc -c ../src/shell.c -o shell.o -fno-builtin
 gcc -c ../src/stdio.c -o stdio.o -fno-builtin
 gcc -c ../src/string.c -o string.o -fno-builtin
-ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o inthandlers.o sysio.o keyboard.o video.o shell.o stdio.o string.o
+gcc -c ../src/atapi.c -o atapi.o -fno-builtin
+ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o inthandlers.o sysio.o keyboard.o video.o shell.o stdio.o string.o atapi.o

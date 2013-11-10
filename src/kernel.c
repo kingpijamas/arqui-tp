@@ -46,20 +46,20 @@ kmain() {
 		//__read(STD_IN, buffer,2);
 		
 		//SCANF WORKING
-		//char arg;
-		//scanf("%s",arg);
+		char *arg;
+		scanf("%s",arg);
 
 		//GET CHAR AND WRITE WORKING!
-		while(ch=='\0'){
-			ch= getChar();	
-		}
-		//__write(STD_OUT,&ch,1);
+		// while(ch=='\0'){
+		// 	ch= getChar();	
+		// }
+		// //__write(STD_OUT,&ch,1);
 		
-		//GET CHAR AND PUTCHAR WORKING!
-		//while(ch=='\0'){
-		//	ch= getChar();	
-		//}
-		putc(ch,STD_OUT);
+		// //GET CHAR AND PUTCHAR WORKING!
+		// //while(ch=='\0'){
+		// //	ch= getChar();	
+		// //}
+		// putc(ch,STD_OUT);
 		
 		//shell();
 	}

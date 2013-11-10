@@ -198,6 +198,7 @@ int scanfstring(char* arg, char curr){
 		}
 		curr=readChar();
 	}
+	putc(curr,STD_OUT);
 	arg[i]='\0';
 	return i==0?0:1;
 }
