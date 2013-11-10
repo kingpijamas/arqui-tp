@@ -1,4 +1,5 @@
 #include "../include/kernel.h"
+#include "../include/atapi.h"
 
 DESCR_INT idt[0x81];	// IDT de 81 entradas
 IDTR idtr;				// IDTR
@@ -35,6 +36,11 @@ kmain() {
 	__init_graphics();
 		
 
+		// ata_identify(0x1F0,0xA0);
+		ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
+
+		ata_identify(0x170,0xB0);
+		ata_identify(0x1F0,0xB0);
 
 	while(true) {
 
@@ -46,8 +52,8 @@ kmain() {
 		//__read(STD_IN, buffer,2);
 		
 		//SCANF WORKING
-		char *arg;
-		scanf("%s",arg);
+		// char *arg;
+		// scanf("%s",arg);
 
 		//GET CHAR AND WRITE WORKING!
 		// while(ch=='\0'){
@@ -62,6 +68,10 @@ kmain() {
 		// putc(ch,STD_OUT);
 		
 		//shell();
+
+		//bugean
+		
+
 	}
 	
 }
