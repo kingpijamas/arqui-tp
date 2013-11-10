@@ -20,11 +20,6 @@ void		_int_08_hand();			/* Timer tick */
 void		_int_09_hand();
 void		_int_80_hand();			/**/
 
-int 		_ppeax(void);
-
-void 		_pops();
-void 		_pushs();
-
 size_t		_Sys_Call();			/**/
 
 void		_debug(void);

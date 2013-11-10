@@ -70,15 +70,15 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         iret
 
 _int_09_hand:
-        ;push cs
         pushad ;Push EAX,ECX,EDX,EBX,original ESP,EBP,ESI and EDI
         push ss
         push ds
         push es
         push fs
         push gs
+        push cs
 
-        and eax,0
+        mov eax,0
         in al, 60h
 
         push eax
@@ -88,20 +88,15 @@ _int_09_hand:
         mov al,20h ; EOI command code
         out 20h,al ; IO base address for master pic
         
+        pop eax ;eax=cs
         pop gs
         pop fs
         pop es
         pop ds
         pop ss
         popad
-        ;pop eax ;eax=cs
         
         iret
-
-_ppeax:
-        pop eax
-        push eax
-        ret
 
 _int_80_hand:
         ; Build stack frame:
