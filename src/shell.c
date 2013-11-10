@@ -19,18 +19,16 @@ void shell(){
 }
 
 void __load_shell_buffer(int promptLength){
-	int i,printed;
 	char curr;
-
-	for(i=0,printed=promptLength; i<SHELL_BUFFER_SIZE; i++){
+	int i=0,printed=promptLength;
+	
+	do{
 		curr=readChar();
 
 		if(curr=='\n'){
-			printf("\n");
-			return;
+			// printf("\n");
+			break;
 		}
-		
-		// rprintf("\t%c",curr);
 
 		if(curr=='\b'){
 			if(printed==promptLength){
@@ -48,8 +46,11 @@ void __load_shell_buffer(int promptLength){
 			printf("\n");
 			printed=0;
 		}
-	}
-	printf("\n");//TODO: could never get here unless SHELL_BUFFER_SIZE<KEYBOARD_BUFFER_SIZE
+		
+		i++;
+	} while(i<SHELL_BUFFER_SIZE);
+	
+	printf("\n");
 }
 
 int __draw_prompt(){
