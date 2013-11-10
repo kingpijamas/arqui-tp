@@ -2,21 +2,19 @@
 #define VIDEO_H
 
 #include "../include/defs.h"
-//TODO just for debugging purposes
-#include "../include/inthandlers.h"
 
 #define VIDEO_ADDRESS			0xb8000
 #define BASE_PORT				0x3D4
+
+#define VIDEO_BUFFER_SIZE		MAX(VIDEO_AREA(WIDTH,REG_DISPLAY_HEIGHT),VIDEO_AREA(WIDTH,STD_DISPLAY_HEIGHT))
 
 //FIXME all these should be some sort of enum
 #define INVALID_DISPLAY 		-1
 #define INVALID_CURSOR			-2
 
-//TODO display identifiers
 #define STD_DISPLAY				0
 #define REG_DISPLAY 			1
 
-//TODO should I change all these for static consts?
 #define WIDTH					80
 #define HEIGHT  				25
 
@@ -61,23 +59,22 @@
 #define DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR	MAGENTA
 #define DEFAULT_REG_DISPLAY_TEXT_COLOUR			WHITE
 
+#define MAX(x,y)								(x>y)? x:y
+#define VIDEO_AREA(width,height)				(width*height)
+
 typedef char colour;
 
 void __init_graphics();
-
-size_t __print(int fd, const void * buffer, size_t count);
+size_t __print(int disp, const void * buffer, size_t count);
 size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
-
-int __paint_area(int fd, colour backgroundColour, colour textColour);
+int __paint_area(int disp, colour backgroundColour, colour textColour);
 void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour backgroundColour, colour textColour);
-
-// int __shift_up(int fd, int lines);
-void __bounded_shift_up(int minRow, int maxRow, int *offset, int lines);
-
-int __set_cursor_position_in(int fd, int relRow, int relCol);
-int __bounded_set_cursor_position(int minRow, int maxRow, int minCol, int maxCol, int relRow, int relCol);
-
-int __getLineOf(int offset);
-int __getOffsetOf(int line);
+void __shift_up(int minRow, int maxRow, int *offset, int rows);
+int __set_cursor_position(int offset);
+int __getRowOf(int offset);
+int __getColOf(int offset);
+int __getOffsetOf(int row,int col);
+void __setOffset(int * offset, int row, int col);
+#define __getOffsetOfRow(row)					__getOffsetOf(row,0)
 
 #endif

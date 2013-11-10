@@ -2,18 +2,10 @@
 
 char buffer[SHELL_BUFFER_SIZE]={NULL_CHAR};
 
-int test=0;
-
 void shell(){
-	// if(test==0){
-	// 	printf("hola mono\b");
-	// }
-	// test++;
 	int promptLength;
 	promptLength=__draw_prompt();
-	// rprintf("antes:%s*\n",buffer);
 	__load_shell_buffer(promptLength);
-	// rprintf("despues:%s*\n",buffer);
 	__echo();
 	__clear_shell_buffer();
 }
@@ -26,7 +18,6 @@ void __load_shell_buffer(int promptLength){
 		curr=readChar();
 
 		if(curr=='\n'){
-			// printf("\n");
 			break;
 		}
 
@@ -46,7 +37,7 @@ void __load_shell_buffer(int promptLength){
 			printf("\n");
 			printed=0;
 		}
-		
+
 		i++;
 	} while(i<SHELL_BUFFER_SIZE);
 	
