@@ -4,7 +4,7 @@
 #include "../include/defs.h"
 #include "../include/kasm.h"
 
-#define SIZE_BUFFER 80
+#define SIZE_BUFFER 400
 #define KEYMAPROWS 8
 #define KEYMAPSCOLS 16
 #define bufferstart 0

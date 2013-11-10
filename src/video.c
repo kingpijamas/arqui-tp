@@ -56,7 +56,7 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
                 break;
             case '\b':
             	if(((*offset)-1) > minRow){
-                    video[((*offset)--)*2]='\0';
+                    video[(--(*offset))*2]='\0';
                 }
                 break;
             case '\t':

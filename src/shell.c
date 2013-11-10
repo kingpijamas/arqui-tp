@@ -2,53 +2,38 @@
 
 char buffer[SHELL_BUFFER_SIZE]={NULL_CHAR};
 
-//FIXME
-int testflag=0;
+int test=0;
 
 void shell(){
-	__load_shell_buffer();
-	__draw_shell();
+	// if(test==0){
+	// 	printf("hola mono\b");
+	// }
+	// test++;
+	int promptLength;
+	promptLength=__draw_prompt();
+	// rprintf("antes:%s*\n",buffer);
+	__load_shell_buffer(promptLength);
+	// rprintf("despues:%s*\n",buffer);
+	__echo();
+	__clear_shell_buffer();
 }
 
-void __aux_fill_buffer(char * str){
-	int i;
-	for(i=0;i<SHELL_BUFFER_SIZE && str[i]!='\0';i++){
-		buffer[i]=str[i];
-	}
-}
+void __load_shell_buffer(int promptLength){
+	int i,printed;
+	char curr;
 
-void __load_shell_buffer(){
- 	//scanf();
-	int aux;
-	if(testflag<5){
-		aux=testflag%5;
-		switch(aux){
-			//case 0: __aux_fill_buffer("x");break;
-			//case 1: __aux_fill_buffer("m\b\b\b");break;
-			//case 2: __aux_fill_buffer("pepe es un mano\b\b\b\bmono");break;
-			//case 3: __aux_fill_buffer("hola\n\b mundo!\n");break;
-			case 4: __aux_fill_buffer("Baby, you've been going so crazy;Lately, nothing seems to be going right;Solo, why do you have to get so low;You're so...;You've been waiting in the sun too long");
-			default:break;
+	for(i=0,printed=promptLength; i<SHELL_BUFFER_SIZE; i++){
+		curr=readChar();
+
+		if(curr=='\n'){
+			printf("\n");
+			return;
 		}
- 	}
- 	testflag++;
-}
+		
+		// rprintf("\t%c",curr);
 
-void __draw_shell(){
-	int aux=__draw_prompt();
-	__echo(aux);
-}
-
-int __draw_prompt(){
-	return printf("%s@%s:~%s",USER_NAME,PC_NAME,SHELL_PROMPT_END);
-}
-
-//TODO \n\bs and \n\ts are not supported
-void __echo(int promptLength){
-	int i,printed=0;
-	for (i=0;i<SHELL_BUFFER_SIZE && buffer[i]!=NULL_CHAR;i++) {
-		if(buffer[i]=='\b'){
-			if(printed==0){
+		if(curr=='\b'){
+			if(printed==promptLength){
 				break;
 			}else{
 				//IMPORTANT: this is necessary because below 1 is being added below
@@ -56,6 +41,7 @@ void __echo(int promptLength){
 			}
 		}
 
+		buffer[i]=curr;
 		printed+=iputc(buffer[i],STD_OUT);
 
 		if(printed==LINE_WIDTH){
@@ -63,13 +49,21 @@ void __echo(int promptLength){
 			printed=0;
 		}
 	}
-	__clear_buffer(i);
-	printf("*");//FIXME here just for debugging purposes
-	printf("\n");
+	printf("\n");//TODO: could never get here unless SHELL_BUFFER_SIZE<KEYBOARD_BUFFER_SIZE
 }
 
-void __clear_buffer(int toClear){
-	for(;toClear>0;toClear--){
-		buffer[toClear-1]=NULL_CHAR;
+int __draw_prompt(){
+	return printf("%s@%s:~%s",USER_NAME,PC_NAME,SHELL_PROMPT_END);
+}
+
+//TODO \n\bs and \n\ts are not supported
+void __echo(){
+	printf("%s*\n",buffer);
+}
+
+void __clear_shell_buffer(){
+	int toClear;
+	for(toClear=SHELL_BUFFER_SIZE;toClear>=0;toClear--){
+		buffer[toClear]=NULL_CHAR;
 	}
 }

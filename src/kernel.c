@@ -37,31 +37,33 @@ kmain() {
 
 
 	while(true) {
-
-		char ch='\0';
+		// char * arg;
+		// scanf("%s",arg);
+		//printf("%s",arg);
 		// char ch='\0';
+		// // char ch='\0';
 
-		//TODO take a look at this
-		//char* buffer;
-		//__read(STD_IN, buffer,2);
+		// //TODO take a look at this
+		// //char* buffer;
+		// //__read(STD_IN, buffer,2);
 		
-		//SCANF WORKING
-		//char arg;
-		//scanf("%s",arg);
+		// //SCANF WORKING
+		// //char arg;
+		// //scanf("%s",arg);
 
-		//GET CHAR AND WRITE WORKING!
-		while(ch=='\0'){
-			ch= getChar();	
-		}
-		//__write(STD_OUT,&ch,1);
+		// //GET CHAR AND WRITE WORKING!
+		// while(ch=='\0'){
+		// 	ch=getChar();	
+		// }
+		// //__write(STD_OUT,&ch,1);
 		
-		//GET CHAR AND PUTCHAR WORKING!
-		//while(ch=='\0'){
-		//	ch= getChar();	
-		//}
-		putc(ch,STD_OUT);
+		// //GET CHAR AND PUTCHAR WORKING!
+		// //while(ch=='\0'){
+		// //	ch= getChar();	
+		// //}
+		// putc(ch,STD_OUT);
 		
-		//shell();
+		shell();
 	}
 	
 }
