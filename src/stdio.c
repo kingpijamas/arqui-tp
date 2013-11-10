@@ -311,9 +311,9 @@ int vscanf(const char * format, va_list args){
 				}
 			case 'c':
 				{
-					int arg;
-					arg=va_arg(args,int);
-					items=items+scanfchar((unsigned char)arg,curr);
+					int* arg;
+					arg=va_arg(args,int*);
+					items=items+scanfchar((char*)arg,curr);
 					i++;
 					break;
 				}

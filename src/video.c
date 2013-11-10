@@ -55,8 +55,7 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
                 (*offset)=__getOffsetOf(__getLineOf(*offset)+1);
                 break;
             case '\b':
-            	rprintf("%s","llegue");
-                if(((*offset)-1) > minRow){
+            	if(((*offset)-1) > minRow){
                     video[((*offset)--)*2]='\0';
                 }
                 break;
