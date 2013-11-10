@@ -4,8 +4,6 @@
 #include "../include/defs.h"
 #include "../include/kernel.h"
 #include "../include/sysio.h"
-#include "../include/stdio.h"
-#include "../include/shell.h"
 #include "../include/kasm.h"
 
 void int_08();

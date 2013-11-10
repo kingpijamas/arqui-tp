@@ -41,9 +41,6 @@ int rprintf(const char *format, ...){
 	return ret;
 }
 
-
-//TODO
-//	%[parameter][flags][width][.precision][length]
 int vfprintf(FILE stream, const char *format, va_list vlist){
 	char c;
 	int i,written=0;
@@ -57,17 +54,17 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 						state=PF_PARAMETER;
 						break;
 					default:
-						written+=bfputc(c,stream);
+						written+=iputc(c,stream);
 				}
 				break;
 			case PF_PARAMETER:
 				switch(c){
 					case '%':
-						written+=bfputc('%',stream);
+						written+=iputc('%',stream);
 						break;
 					case 'c':
 						//IMPORTANT: int here stands for 'char', va_arg won't work otherwise
-						written+=bfputc(va_arg(vlist, int),stream);
+						written+=iputc(va_arg(vlist, int),stream);
 						break;
 					case 's':
 						written+=__printString(stream,va_arg(vlist,char *));
@@ -109,7 +106,7 @@ int __printString(FILE stream, const char * str){
 int __printInt(FILE stream, int i, int base, bool caps){
 	int written=0;
 	if(i<0){
-		written+=bfputc('-',stream);
+		written+=iputc('-',stream);
 		i*=-1;
 	}
 	if(i>=base){
@@ -120,13 +117,13 @@ int __printInt(FILE stream, int i, int base, bool caps){
 
 int __printDigit(FILE stream, int d, int base, bool caps){
 	if(d<10){
-		return bfputc('0'+d, stream);
+		return iputc('0'+d, stream);
 	}
 	if(d<16){
 		if(caps){
-			return bfputc('a'+d-10, stream);
+			return iputc('a'+d-10, stream);
 		}else{
-			return bfputc('A'+d-10, stream);
+			return iputc('A'+d-10, stream);
 		}
 	}
 	//TODO will never happen

@@ -37,7 +37,9 @@ kmain() {
 
 
 	while(true) {
+
 		char ch='\0';
+		// char ch='\0';
 
 		//TODO take a look at this
 		//char* buffer;
@@ -46,6 +48,8 @@ kmain() {
 		//SCANF WORKING
 		char arg;
 		//scanf("%s",arg);
+		// char arg;
+		// scanf("%s",arg);
 
 		//GET CHAR AND WRITE WORKING!
 		//while(ch=='\0'){
@@ -57,20 +61,18 @@ kmain() {
 		//while(ch=='\0'){
 		//	ch= getChar();	
 		//}
-		//putc(ch,STD_OUT);	
+		//putc(ch,STD_OUT);
+		
+		shell();
 	}
 	
 }
 
 size_t __read(int fd, void* buffer, size_t count){
-	size_t nread=_Sys_Call(SYS_READ,fd,buffer,count);
-	return nread;
+	return _Sys_Call(SYS_READ,fd,buffer,count);
 }
 
-//WARNING, this function will assume that a character is being printed no matter what
-//this is a problem when printing to REG_OUT
 size_t __write(int fd, const void* buffer, size_t count){
-	//FIXME not returning
 	_Sys_Call(SYS_WRITE,fd,buffer,count);
 	return count;
 }
