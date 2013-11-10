@@ -1,4 +1,5 @@
 #include "../include/video.h"
+#include "../include/stdio.h"
 
 colour STD_DISPLAY_background_colour    =    DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
 colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COLOUR;
@@ -44,6 +45,7 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
                 (*offset)=__getOffsetOf(__getLineOf(*offset)+1);
                 break;
             case '\b':
+            	rprintf("%s","llegue");
                 if(((*offset)-1) > minRow){
                     video[((*offset)--)*2]='\0';
                 }

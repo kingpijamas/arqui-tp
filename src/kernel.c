@@ -39,14 +39,13 @@ kmain() {
 	while(true) {
 		char ch='\0';
 
-
 		//TODO take a look at this
 		//char* buffer;
 		//__read(STD_IN, buffer,2);
 		
 		//SCANF WORKING
 		char arg;
-		scanf("%s",arg);
+		//scanf("%s",arg);
 
 		//GET CHAR AND WRITE WORKING!
 		//while(ch=='\0'){
