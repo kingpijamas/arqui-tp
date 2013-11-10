@@ -36,8 +36,10 @@ kmain() {
 	__init_graphics();
 		
 
-		// ata_identify(0x1F0,0xA0);
-		ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
+
+		
+		// ata_identify(0x1F0,ATA_DRIVE_MASTER);
+		// ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
 
 		ata_identify(0x170,0xB0);
 		ata_identify(0x1F0,0xB0);
