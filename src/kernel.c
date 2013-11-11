@@ -34,19 +34,23 @@ kmain() {
 	_Sti();
 
 	__init_graphics();
-		
+	
+	printf("hola");
+	int size=atapi_drive_readcapacity(ATA_DRIVE_SLAVE);
+	printf("hola2");
+	rprintf("%d",size);
 
+	// ata_identify(0x1F0,ATA_DRIVE_MASTER);
+	// ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
 
-		
-		// ata_identify(0x1F0,ATA_DRIVE_MASTER);
-		// ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
+	// ata_identify(0x170,0xB0);
+	// ata_identify(0x1F0,0xB0);
 
-		ata_identify(0x170,0xB0);
-		ata_identify(0x1F0,0xB0);
+	// atapi_drive_start_stop();
 
 	while(true) {
 
-		char ch='\0';
+		// char ch='\0';
 		// char ch='\0';
 
 		//TODO take a look at this
@@ -54,8 +58,8 @@ kmain() {
 		//__read(STD_IN, buffer,2);
 		
 		//SCANF WORKING
-		// char *arg;
-		// scanf("%s",arg);
+		 char *arg;
+		 scanf("%s",arg);
 
 		//GET CHAR AND WRITE WORKING!
 		// while(ch=='\0'){
@@ -69,7 +73,7 @@ kmain() {
 		// //}
 		// putc(ch,STD_OUT);
 		
-		//shell();
+		// shell();
 
 		//bugean
 		

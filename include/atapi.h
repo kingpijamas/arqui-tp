@@ -1,7 +1,31 @@
  #include "../include/sysio.h"
+ #include "../include/i386.h"
+
+  typedef unsigned char uint8;
+  typedef unsigned short uint16;
+  typedef unsigned int uint32;
+  typedef unsigned long long int uint64;
+
+ typedef struct
+ {
+   uint32 ata_type, ata_bus, ata_drive;
+ } ata_info;
+ 
+ extern ata_info pata_drives[4];
 
  /* The default and seemingly universal sector size for CD-ROMs. */
   #define ATAPI_SECTOR_SIZE 2048
+
+ 
+ #define ATA_BUS_PRIMARY     0x1F0
+ #define ATA_BUS_SECONDARY   0x170
+ 
+ #define ATA_IRQ_PRIMARY     0x0E
+ #define ATA_IRQ_SECONDARY   0x0F
+ #define ATA_VECTOR_PRIMARY   0x27
+ #define ATA_VECTOR_SECONDARY 0x28
+ #define ATA_IRQ(bus)        (bus==ATA_BUS_PRIMARY ? ATA_IRQ_PRIMARY : ATA_IRQ_SECONDARY)
+ #define ATA_VECTOR(bus)     (bus==ATA_BUS_PRIMARY ? ATA_VECTOR_PRIMARY : ATA_VECTOR_SECONDARY)
  
   /* The default ISA IRQ numbers of the ATA controllers. */
   #define ATA_IRQ_PRIMARY     0x0E
@@ -31,9 +55,6 @@
  #define ATA_TYPE_SATA 3
  #define ATA_TYPE_SATAPI 4
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
 
   /* ATA specifies a 400ns delay after drive switching -- often
    * implemented as 4 Alternative Status queries. */
