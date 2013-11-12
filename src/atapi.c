@@ -43,30 +43,27 @@
                   :"0" (buf), "1" (count), "d" (usPort)
                   :"flags");
   }
+
+  static inline void
+  outw(uint16 us, uint16 usPort){
+    asm volatile("outl %0,%1"::"a"(us),"Nd"(usPort));
+  }
  
- /* Note: on the primary bus, the standar set of ATA IO ports is 0x1F7 
- You will need a buffer, DMA buffer or PIO buffer.
- If it is going to be a PIO buffer, then you need to know the size of the buffer. Call this size "maxByteCount.
- It must be an unsigned word, and 0 is illegal.*/
-  int atapi_drive_eject(uint32 drive,uint32 bus){
+ /* 0 - 0 Stop the Disc.
+  * 0 - 1 Start the Disc and read the TOC
+  * 1 - 0 Eject the disk if possible
+  * 1 - 1 Load the disk */
+  int atapi_drive_startstop(uint32 drive,uint32 bus){
      printf("\n%s\n","entre");
-   //Operation code and 10 reserved spaces
-   uint8 readcapacity_cmd[12]={0x1B,0,0,0,2,0,0,0,0,0,0,0}; 
-   uint8 *buffer;
-   //Size of the buffer (cd sector size, take a look at this)
-   // uint32 maxByteCount=ATAPI_SECTOR_SIZE;
-   
-   //not using DMA mode.
-   bool isDMA=0;
+   //Operation code and bit 1 of byte 4 -LoEj(eject)- as 1.
+   uint8 startstop_cmd[12]={0x1B,0,0,0,2,0,0,0,0,0,0,0}; 
    uint8 status;
-   int size;
  
    status = inb(ATA_COMMAND(bus)); //status register
    rprintf("%x",status);
 
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
-      rprintf("%x",status);
-      //BUSY
+    //BUSY
     // If the first bit of the status register (BUSY) isn't 0, the device is busy,
     // so keep looping until it isn't.
    }
@@ -107,7 +104,9 @@
    rprintf("%s\n","OK3");
 
   /* Send ATAPI/SCSI command as 6 words, to the data port */
-  outsw(ATA_DATA(bus), (uint16 *)readcapacity_cmd,6);
+  outsw(ATA_DATA(bus), (uint16 *)startstop_cmd,6);
+   // outw(ATA_DATA(bus),)
+
 
   inb(ATA_DCR(bus));
 
@@ -126,6 +125,7 @@
    _Sti();
 
    return 1;
+ }
 
 //    /* Device is in the primary slave. Select the target device by setting 
 //     * the master/slave bit in the Device Selector Register. 
@@ -200,7 +200,7 @@
 
 //  return size;
 
- }
+ // }
 
 
 // void

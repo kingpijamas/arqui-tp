@@ -46,7 +46,7 @@ kmain() {
 	while(true) {
 		
 		printf("hola");
-		int size=atapi_drive_eject(ATA_DRIVE_SLAVE,ATA_BUS_PRIMARY);
+		int size=atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_PRIMARY);
 		printf("hola2");
 		rprintf("%d",size);
 
