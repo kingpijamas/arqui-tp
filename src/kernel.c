@@ -33,36 +33,8 @@ kmain() {
 	_Sti();
 
 	__init_graphics();
-		
 
-
-	while(true) {
-		// char * arg;
-		// scanf("%s",arg);
-		//printf("%s",arg);
-		// char ch='\0';
-		// // char ch='\0';
-
-		// //TODO take a look at this
-		// //char* buffer;
-		// //__read(STD_IN, buffer,2);
-		
-		// //SCANF WORKING
-		// //char arg;
-		// //scanf("%s",arg);
-
-		// //GET CHAR AND WRITE WORKING!
-		// while(ch=='\0'){
-		// 	ch=getChar();	
-		// }
-		// //__write(STD_OUT,&ch,1);
-		
-		// //GET CHAR AND PUTCHAR WORKING!
-		// //while(ch=='\0'){
-		// //	ch= getChar();	
-		// //}
-		// putc(ch,STD_OUT);
-		
+	while(true) {		
 		shell();
 	}
 	

@@ -2,21 +2,19 @@
 
 char buffer[SHELL_BUFFER_SIZE]={NULL_CHAR};
 
-int testflag2=0;
+ShellCommand commands[SHELL_COMMAND_COUNT]={
+												{"echo",echo},
+											};
 
 void shell(){
 	int promptLength;
 	 promptLength=__draw_prompt();
-	// if(testflag2==0){
-	// 	printf("a\n*\n\b");
-	// 	testflag2++;
-	// }
 	 __load_shell_buffer(promptLength);
-	 __echo();
+	 __parse_shell_command();
 	 __clear_shell_buffer();
 }
 
-void __load_shell_buffer(int promptLength){
+void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every now and then. Maybe it's bochs?
 	char curr;
 	int i=0,printed=promptLength;
 	
@@ -24,7 +22,8 @@ void __load_shell_buffer(int promptLength){
 		curr=readChar();
 
 		if(curr=='\n'){
-			break;
+			printf("\n");
+			return;
 		}
 
 		if(curr=='\b'){
@@ -34,7 +33,7 @@ void __load_shell_buffer(int promptLength){
 				//IMPORTANT: this is necessary because below 1 is being added below
 				printed-=2;
 			}
-		}
+		}//FIXME: it takes \bs and puts them on the buffer: WRONG!
 
 		buffer[i]=curr;
 		printed+=iputc(buffer[i],STD_OUT);
@@ -46,17 +45,59 @@ void __load_shell_buffer(int promptLength){
 
 		i++;
 	} while(i<SHELL_BUFFER_SIZE);
-	
-	printf("\n");
+	// printf("salgo %d\n",i);
+}
+
+void __parse_shell_command(){
+	ParsingStates state=NAME;
+	char * name="\0";
+	char * arg="\0";
+	int i;
+
+	for(i=0; buffer[i]!='\0'; i++){ //consider "" to escape whitespaces
+		switch(buffer[i]){
+			default:
+				switch(state){
+					case NAME:
+						if(strcmp("\0",name)==0){
+							name=buffer+i;
+						}
+						break;
+					case ARG:
+						if(strcmp("\0",arg)==0){
+							arg=buffer+i;
+						}
+						break;
+				}
+				break;
+			case ' ':
+			case '\t':
+				buffer[i]='\0';
+				switch(state){
+					case NAME:
+						state=ARG;
+						break;
+					case ARG:
+						return;//TODO: multiple args?
+				}
+				break;
+		}
+	}
+	__invoke_shell_command(name,arg);	
+}
+
+void __invoke_shell_command(char * name, char * arg){
+	int i;
+	for(i=0;i<SHELL_COMMAND_COUNT;i++){
+		if(strcmp(name,commands[i].name)==0){
+			return (*(commands[i].cmd))(arg);
+		}
+	}
+	return echo(name);//TODO helṕ
 }
 
 int __draw_prompt(){
 	return printf("%s@%s:~%s",USER_NAME,PC_NAME,SHELL_PROMPT_END);
-}
-
-//TODO \n\bs and \n\ts are not supported
-void __echo(){
-	printf("%s*\n",buffer);
 }
 
 void __clear_shell_buffer(){

@@ -82,7 +82,6 @@ void __bounded_print_char(int minRow, int * offset, char c);
 size_t __test_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
 void __test_print_char(int minRow, int * offset, char c);
 
-
 void __shift_up(int minRow, int maxRow, int *offset, int rows);
 int __set_cursor_position(int offset);
 int __getRowOf(int offset);

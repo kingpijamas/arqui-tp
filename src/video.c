@@ -16,9 +16,6 @@ int vbindex=0;
 int STD_DISPLAY_offset;
 int REG_DISPLAY_offset;
 
-int testflag=0;
-int testflag1=0;
-
 size_t __test_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count){
     char c;
     int row;
@@ -70,9 +67,6 @@ void __init_graphics(){
     __paint_area(REG_DISPLAY,REG_DISPLAY_background_colour,REG_DISPLAY_text_colour);
     __set_cursor_position(0);
 
-    // rprintf("vbuffer=");
-    // testflag++;
-    // rprintf("%d",VIDEO_BUFFER_SIZE);
 }
 
 size_t __print(int disp, const void * buffer, size_t count){
@@ -80,7 +74,6 @@ size_t __print(int disp, const void * buffer, size_t count){
     switch(disp){
         case STD_DISPLAY:
             ans=__bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, &STD_DISPLAY_offset, buffer, count);
-            //FIXME: use __set_cursor_position!
             __set_cursor_position(STD_DISPLAY_offset);
             return ans;
         case REG_DISPLAY:
@@ -94,11 +87,6 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
     char c;
     int row;
     size_t written;
-
-    // if(testflag==0){
-    //     testflag++;
-    //     rprintf("vbindex=%d VIDEO_BUFFER_SIZE=%d",vbindex/*,written,*/,VIDEO_BUFFER_SIZE/*,(vbindex+written)%VIDEO_BUFFER_SIZE*/);
-    // }
     
     //TODO not a circular buffer
     for(written=0; written < count; written++/*, vbindex=(vbindex+written)%VIDEO_BUFFER_SIZE*/){
@@ -113,7 +101,7 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
         __bounded_print_char(minRow,offset,c);
 
         vbindex++;
-
+        vbindex%=VIDEO_BUFFER_SIZE;
     }
     return written;
 }
@@ -123,11 +111,7 @@ void __bounded_print_char(int minRow, int * offset, char c){
     int tab;
 
     switch(c){
-        case '\n':
-            __setOffset(offset,__getRowOf(*offset)+1,0);
-            return;
         case '\b':
-            //rprintf("Es un \\b. __getRowOf((*offset)-1)=%d minRow=%d\n",__getRowOf((*offset)-1),minRow);
             if(__getRowOf((*offset)-1) >= minRow){
                 switch(__getVBElem(vbindex-1)->c){
                     case '\t':
@@ -140,20 +124,22 @@ void __bounded_print_char(int minRow, int * offset, char c){
                 __clearVBElem(vbindex--);
             }
             __clearVBElem(vbindex--);
-            return;
-        case '\t'://FIXME: \t bug when on the screen's edge
-            //rprintf("\n__getColOf(*offset)=%d MAX_COL=%d\n",__getColOf(*offset),MAX_COL);
+            break;
+        case '\n':
+            __setOffset(offset,__getRowOf(*offset)+1,0);
+            break;
+        case '\t'://FIXME: \t length bug when on the screen's edge
             for(tab=0; tab<TAB_LENGTH && (__getColOf(*offset)+tab)<=MAX_COL; tab++){
+                // rprintf("getCol+tab=%d maxCol=%d\n",__getColOf(*offset)+tab,MAX_COL);
                 video[((*offset)++)*2]=TAB_CHAR;
             }
-            //rprintf("tab=%d",tab);
-            return;
+            break;
         default:
             if(__getColOf((*offset)+1) % MAX_COL == 0){
                 (*offset)=__getOffsetOfRow(__getRowOf((*offset)+1));
             }
             video[((*offset)++)*2]=c;
-            return;
+            break;
     }
 }
 
