@@ -5,6 +5,11 @@ static char shell_buffer[SHELL_BUFFER_SIZE]={'\0'};
 static ShellCommand commands[SHELL_COMMAND_COUNT]={
 												{"echo",echo_cmd},
 												{"logo",logo_cmd},
+												{"putc",putChar_test_cmd},
+												{"printf",printf_test_cmd},
+												{"getc",getChar_test_cmd},
+												{"scanf",scanf_test_cmd},
+												{"help",help_cmd}
 												// {"clear",clear}
 											};
 static bool firstCall=true;

@@ -16,6 +16,21 @@ void echo_cmd(int argc, char ** args){
 	printf("\n");
 }
 
+void __print_help_line(const char * cmdName,const char * description){
+	printf("\t%s\t-\t%s\n",cmdName,description);
+}
+
+void help_cmd(int argc, char ** args){
+	printf("List of available commands:\n");
+	__print_help_line("echo  ","Displays parameter(s) in STD_OUT");
+	__print_help_line("putc  ","Test for the 'putc' function from <stdio.h>");
+	__print_help_line("printf","Test for the 'printf' function from <stdio.h>");
+	__print_help_line("getc  ","Test for the 'getc' function from <stdio.h>");
+	__print_help_line("scanf ","Test for the 'scanf' function from <stdio.h>");	
+	__print_help_line("logo  ","Prints the logo");
+	__print_help_line("help  ","Prints a list of all available commands");
+}
+
 void logo_cmd(int argc, char ** args){
 	int i;
 	for(i=0; strcmp("\0",logo[i])!=0; i++){
@@ -23,6 +38,46 @@ void logo_cmd(int argc, char ** args){
 	}
 }
 
-// void printf_cmd(int argc, char ** args){
+void putChar_test_cmd(int argc, char ** args){
+	printf("Testing putc..\n\n\t");
+	char c='A';
+	putc(c,STD_OUT);
+	printf("\n\nYou typed: '%c'\n",c);
+}
 
-// }
+void printf_test_cmd(int argc, char ** args){
+	printf("Testing printf..\n\n");
+	int num=3327;
+	printf("\tPrinting an int (decimal notation).. %d\n",num);
+	printf("\tPrinting the same int (octal notation).. %o\n",num);
+	printf("\tPrinting the same int (hex notation).. %x\n",num);
+	printf("\tPrinting the same int (HEX notation).. %X\n",num);
+	printf("\tPrinting a string.. %s\n","hello world!");
+	printf("\tThis:*\t* is a \\t\n");
+}
+
+void getChar_test_cmd(int argc, char ** args){//FIXME!
+	printf("Testing getChar..\n\n");
+
+	printf("Please type a character:\n\n");
+	printf("You typed...'%c'\n\n",readChar());
+}
+
+void scanf_test_cmd(int argc, char ** args){//FIXME!
+	printf("Testing scanf..\n\n");
+
+	char c;
+	printf("Please type a character:\n");
+	scanf("%c",&c);
+	printf("\nYou typed...'%c'\n\n",c);
+
+	int num;
+	printf("Please type a number:\n");
+	scanf("%d",&num);
+	printf("\nYou typed...'%d'\n\n",num);
+
+	char * ans;
+	printf("Please type some text:\n");
+	scanf("%s",ans);
+	printf("You typed...\"%s\"\n\n",ans);
+}
