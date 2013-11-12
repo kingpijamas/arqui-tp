@@ -22,13 +22,16 @@ void __print_help_line(const char * cmdName,const char * description){
 
 void help_cmd(int argc, char ** args){
 	printf("List of available commands:\n");
-	__print_help_line("echo  ","Displays parameter(s) in STD_OUT");
-	__print_help_line("putc  ","Test for the 'putc' function from <stdio.h>");
-	__print_help_line("printf","Test for the 'printf' function from <stdio.h>");
-	__print_help_line("getc  ","Test for the 'getc' function from <stdio.h>");
-	__print_help_line("scanf ","Test for the 'scanf' function from <stdio.h>");	
-	__print_help_line("logo  ","Prints the logo");
-	__print_help_line("help  ","Prints a list of all available commands");
+	__print_help_line("echo    ","Displays parameter(s) in STD_OUT");
+	__print_help_line("putc    ","Test for the 'putc' function from <stdio.h>");
+	__print_help_line("printf  ","Test for the 'printf' function from <stdio.h>");
+	__print_help_line("getc    ","Test for the 'getc' function from <stdio.h>");
+	__print_help_line("scanf   ","Test for the 'scanf' function from <stdio.h>");
+	__print_help_line("abrirCD ","Opens the CD reader");
+	__print_help_line("cerrarCD","Closes the CD reader");
+	__print_help_line("infoCD  ","Displays the size of the current CD in the CD reader");
+	__print_help_line("logo    ","Prints the logo");
+	__print_help_line("help    ","Prints a list of all available commands");
 }
 
 void logo_cmd(int argc, char ** args){
@@ -82,4 +85,11 @@ void scanf_test_cmd(int argc, char ** args){//FIXME!
 	printf("Please type some text:\n");
 	scanf("%s",ans);
 	printf("You typed...\"%s\"\n\n",ans);
+}
+
+void openCD_cmd(int argc, char ** args){//TODO
+}
+void infoCD_cmd(int argc, char ** args){//TODO
+}
+void closeCD_cmd(int argc, char ** args){//TODO
 }

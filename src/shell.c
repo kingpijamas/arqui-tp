@@ -9,7 +9,10 @@ static ShellCommand commands[SHELL_COMMAND_COUNT]={
 												{"printf",printf_test_cmd},
 												{"getc",getChar_test_cmd},
 												{"scanf",scanf_test_cmd},
-												{"help",help_cmd}
+												{"help",help_cmd},
+												{"abrirCD",openCD_cmd},
+												{"infoCD",infoCD_cmd},
+												{"cerrarCD",closeCD_cmd}
 												// {"clear",clear}
 											};
 static bool firstCall=true;

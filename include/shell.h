@@ -19,7 +19,7 @@
 #define SHELL_BUFFER_SIZE	SIZE_BUFFER //TODO: not the nicest name
 #define LINE_WIDTH			WIDTH //WIDTH
 
-#define SHELL_COMMAND_COUNT 7
+#define SHELL_COMMAND_COUNT 10
 #define MAX_SHELL_ARGS		10
 
 
