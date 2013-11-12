@@ -82,7 +82,7 @@ void __load_shell_buffer(int promptLength){
 	int i=0,printed=promptLength;
 
 	do{
-		curr=readChar();
+		curr=getChar();
 
 		if(curr=='\n'){
 			printf("\n");

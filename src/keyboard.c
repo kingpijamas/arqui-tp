@@ -38,7 +38,7 @@ bool isEmpty(){
 }
 
 /* Returns first element of the keyboard_buffer*/
-char getChar(){
+char getKBChar(){
 	if(isEmpty()){
 		return '\0';
 	}

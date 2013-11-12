@@ -53,14 +53,16 @@ void printf_test_cmd(int argc, char ** args){
 	printf("\tPrinting the same int (hex notation).. %x\n",num);
 	printf("\tPrinting the same int (HEX notation).. %X\n",num);
 	printf("\tPrinting a string.. %s\n","hello world!");
-	printf("\tThis:*\t* is a \\t\n");
+	printf("\tThis: *\t* is a \\t\n");
+	printf("\tThis: *\b* is a \\b\n");
+	printf("\tThis: *\n*\t\t  is a \\n\n");
 }
 
 void getChar_test_cmd(int argc, char ** args){//FIXME!
 	printf("Testing getChar..\n\n");
 
 	printf("Please type a character:\n\n");
-	printf("You typed...'%c'\n\n",readChar());
+	printf("You typed...'%c'\n\n",getChar());
 }
 
 void scanf_test_cmd(int argc, char ** args){//FIXME!
