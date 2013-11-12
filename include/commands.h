@@ -3,6 +3,6 @@
 
 #include "../include/stdio.h"
 
-void echo(char * arg);
+void echo(int argc, char ** args);
 
 #endif

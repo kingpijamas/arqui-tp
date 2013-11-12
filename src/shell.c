@@ -17,7 +17,7 @@ void shell(){
 void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every now and then. Maybe it's bochs?
 	char curr;
 	int i=0,printed=promptLength;
-	
+
 	do{
 		curr=readChar();
 
@@ -31,10 +31,11 @@ void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every no
 				break;
 			}else{
 				//IMPORTANT: this is necessary because below 1 is being added below
+				//FIXME doesn't delete chars from the buffer!
 				printed-=2;
 			}
 		}//FIXME: it takes \bs and puts them on the buffer: WRONG!
-
+		//FIXME: apparently there are \ns in the buffer!
 		buffer[i]=curr;
 		printed+=iputc(buffer[i],STD_OUT);
 
@@ -49,51 +50,44 @@ void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every no
 }
 
 void __parse_shell_command(){
-	ParsingStates state=NAME;
-	char * name="\0";
-	char * arg="\0";
-	int i;
+	char * args[MAX_SHELL_ARGS+1]={"\0"};
+	int i=0,argc=0;
 
-	for(i=0; buffer[i]!='\0'; i++){ //consider "" to escape whitespaces
-		switch(buffer[i]){
+	char c;
+	bool expectingParam=true;
+	while(buffer[i]!='\0' && argc < MAX_SHELL_ARGS+1){
+		c=buffer[i];
+		switch(c){
 			default:
-				switch(state){
-					case NAME:
-						if(strcmp("\0",name)==0){
-							name=buffer+i;
-						}
-						break;
-					case ARG:
-						if(strcmp("\0",arg)==0){
-							arg=buffer+i;
-						}
-						break;
+				if(expectingParam==true){
+					args[argc]=buffer+i;
+					argc++;
+					expectingParam=false;
 				}
 				break;
-			case ' ':
 			case '\t':
+			case ' ':
 				buffer[i]='\0';
-				switch(state){
-					case NAME:
-						state=ARG;
-						break;
-					case ARG:
-						return;//TODO: multiple args?
-				}
+				expectingParam=true;
 				break;
 		}
+		i++;
 	}
-	__invoke_shell_command(name,arg);	
+	__invoke_shell_command(argc,args);
 }
 
-void __invoke_shell_command(char * name, char * arg){
+void __invoke_shell_command(int argc, char ** args){
 	int i;
+	char * name=args[0];
+
 	for(i=0;i<SHELL_COMMAND_COUNT;i++){
 		if(strcmp(name,commands[i].name)==0){
-			return (*(commands[i].cmd))(arg);
+			(*(commands[i].cmd))(argc-1,args+1);
+			return;
 		}
 	}
-	return echo(name);//TODO helṕ
+	echo(argc,args);
+	return;
 }
 
 int __draw_prompt(){

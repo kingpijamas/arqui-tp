@@ -19,20 +19,17 @@
 #define LINE_WIDTH			WIDTH //WIDTH
 
 #define SHELL_COMMAND_COUNT 1
+#define MAX_SHELL_ARGS		10
 
 typedef struct {
     char * name;
-    void (*cmd)(char*);
+    void (*cmd)(int,char**);
 } ShellCommand;
-
-typedef enum {
-	NAME,ARG
-} ParsingStates;
 
 void shell();
 void __load_shell_buffer(int promptLength);
 void __parse_shell_command();
-void __invoke_shell_command(char * name, char * arg);
+void __invoke_shell_command(int argc, char ** args);
 int __draw_prompt();
 void __clear_shell_buffer();
 
