@@ -34,11 +34,6 @@ kmain() {
 	_Sti();
 
 	__init_graphics();
-	
-	printf("hola");
-	int size=atapi_drive_readcapacity(ATA_DRIVE_SLAVE);
-	printf("hola2");
-	rprintf("%d",size);
 
 	// ata_identify(0x1F0,ATA_DRIVE_MASTER);
 	// ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
@@ -49,6 +44,11 @@ kmain() {
 	// atapi_drive_start_stop();
 
 	while(true) {
+		
+		printf("hola");
+		int size=atapi_drive_eject(ATA_DRIVE_SLAVE,ATA_BUS_PRIMARY);
+		printf("hola2");
+		rprintf("%d",size);
 
 		// char ch='\0';
 		// char ch='\0';

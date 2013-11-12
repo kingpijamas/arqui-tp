@@ -48,75 +48,157 @@
  You will need a buffer, DMA buffer or PIO buffer.
  If it is going to be a PIO buffer, then you need to know the size of the buffer. Call this size "maxByteCount.
  It must be an unsigned word, and 0 is illegal.*/
-  int atapi_drive_readcapacity(uint32 drive){
+  int atapi_drive_eject(uint32 drive,uint32 bus){
      printf("\n%s\n","entre");
    //Operation code and 10 reserved spaces
-   uint8 readcapacity_cmd[12]={0x25,0,0,0,0,0,0,0,0,0,0,0}; 
+   uint8 readcapacity_cmd[12]={0x1B,0,0,0,2,0,0,0,0,0,0,0}; 
    uint8 *buffer;
    //Size of the buffer (cd sector size, take a look at this)
-   uint32 maxByteCount=ATAPI_SECTOR_SIZE;
+   // uint32 maxByteCount=ATAPI_SECTOR_SIZE;
+   
    //not using DMA mode.
    bool isDMA=0;
    uint8 status;
-   uint32 bus=ATA_BUS_PRIMARY;
    int size;
  
-   /* Device is in the primary slave. Select the target device by setting 
-    * the master/slave bit in the Device Selector Register. 
-    * There are no other bits needed */
-   outb(bus, drive & (1<<4));
-    printf("\n%s\n","OK1");
-   
-  /* Set the feature 0 for PIO */
-   outb(ATA_FEATURES(bus),isDMA);
-   printf("\n%s\n","ok2");
+   status = inb(ATA_COMMAND(bus)); //status register
+   rprintf("%x",status);
 
-  /* The Sectorcount Register and LBA Low Register are unused currently. 
-   Send maxByteCount in LBA Mid and LBA High Registers */
-   outb(ATA_ADDRESS2(bus), (maxByteCount & 0xFF));
-   outb(ATA_ADDRESS3(bus), (maxByteCount >> 8));
-   printf("\n%s\n","ok3");
+   while(status=inb(ATA_COMMAND(bus)) & 0x80){
+      rprintf("%x",status);
+      //BUSY
+    // If the first bit of the status register (BUSY) isn't 0, the device is busy,
+    // so keep looping until it isn't.
+   }
+
+   _Cli();
+   rprintf("cli");
+
+   while(!(status=inb(ATA_COMMAND(bus)) & 0x60)){
+    rprintf("%x%s",status,"2");
+    //NOT READY
+   }
+
+   //TODO reemplazar por drive
+   outb(ATA_DRIVE_SELECT(bus),0x10); //0 master, 10h slave
+
+   /* Set Nien on device control register to 1 to skip waiting state. 
+   nIEN is the second bit from the right here */
+   outb(ATA_DCR(bus),0x10); 
 
   /* Send the ATAPI PACKAGE command to the command register */
-   outb(ATA_COMMAND(bus),0xA0);
-    printf("\n%s\n","ok4");
- 
-  //Code for waiting an IRQ taken from wiki.osdev.org/ATAPI 
-   status= (inb(ATA_COMMAND(bus)) & 0x80);
-   printf("\n%x\n",status);
-   if(status==0){
-    rprintf("ATA bus %X drive %X does not exist\n",bus,drive);
+   outb(ATA_COMMAND(bus),0xA0);   
+
+   //wait 400ns
+   ATA_SELECT_DELAY(bus);
+
+   rprintf("%s\n","OK1");
+
+   while(status=inb(ATA_COMMAND(bus)) & 0x80){
+   //BUSY
    }
-   while(status= (inb(ATA_COMMAND(bus)) & 0x80)){ //BUSY
-     asm volatile ("pause");
-  }
-  while(!(status= (inb(ATA_COMMAND(bus)) & 0x80)) && !(status & 0x1)){
-    asm volatile ("pause");
- }
- /* DRQ or ERROR */
- if(status & 0x1){
-    size=-1;
-    return size;
- }
 
- /* Send ATAPI/SCSI command as 6 words, to the data port */
- outsw(ATA_DATA(bus), (uint16 *)readcapacity_cmd,6);
+   rprintf("%s\n","OK2");
 
- /* Wait for IRQ --not implementing scheduler, so skipping this*/
+   while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+    //DATA TRANSFER REQUESTED
+   }
 
- /* Read actual size because is PIO mode.
-  * transfer size= (bytecount = LBA high << 8 | LBA mid) */
- size= (((int) inb(ATA_ADDRESS3(bus))) << 8)|(int)(inb(ATA_ADDRESS2(bus)));
+   rprintf("%s\n","OK3");
 
- /* PIO transfer */
- insw(ATA_DATA(bus),buffer,size/2);
+  /* Send ATAPI/SCSI command as 6 words, to the data port */
+  outsw(ATA_DATA(bus), (uint16 *)readcapacity_cmd,6);
 
- status=inb(ATA_COMMAND(bus)) & 0x88;
- while(status){
-  asm volatile ("pause");
- }
+  inb(ATA_DCR(bus));
 
- return size;
+
+   while(status=inb(ATA_COMMAND(bus)) & 0x80){
+   //BUSY
+   }
+   rprintf("%s\n","OK4");
+
+   // while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+   //  //DATA TRANSFER REQUESTED
+   // }
+
+   rprintf("%s\n","OK5");
+
+   _Sti();
+
+   return 1;
+
+//    /* Device is in the primary slave. Select the target device by setting 
+//     * the master/slave bit in the Device Selector Register. 
+//     * There are no other bits needed */
+//    outb(bus, drive & (1<<4));
+//    ATA_SELECT_DELAY(bus);
+//    rprintf("%s\n","OK1");
+   
+//   /* Set the feature 0 for PIO */
+//    outb(ATA_FEATURES(bus),isDMA);
+//    rprintf("%s\n","ok2");
+
+//   /* The Sectorcount Register and LBA Low Register are unused currently. 
+//    Send maxByteCount in LBA Mid and LBA High Registers */
+//    outb(ATA_ADDRESS2(bus),0x0008);
+//    outb(ATA_ADDRESS3(bus),0x0008);
+//    // outb(ATA_ADDRESS2(bus), (maxByteCount & 0xFF));
+//    // outb(ATA_ADDRESS3(bus), (maxByteCount >> 8));
+//    rprintf("%s\n","ok3");
+
+//   /* Send the ATAPI PACKAGE command to the command register */
+//    outb(ATA_COMMAND(bus),0xA0);
+//    rprintf("%s\n","ok4");
+ 
+//  // TODO REVISAR. Code for waiting an IRQ taken from wiki.osdev.org/ATAPI 
+//    status= (inb(ATA_COMMAND(bus)) & 0x80);
+//    rprintf("%s","status:");
+//    rprintf("%x\n",status);
+   
+//    if(status==0){
+//     rprintf("ATA bus %X drive %X does not exist\n",bus,drive);
+//     return size;
+//    }
+   
+//   while(status= (inb(ATA_COMMAND(bus)) & 0x80)){ //BUSY
+//      printf("%s\n","while1");
+//      asm volatile ("pause");
+//   }
+
+// _Cli();
+
+//   //No está ocupado y no hay error
+//   while(!(status= (inb(ATA_COMMAND(bus)) & 0x8)) && !(status & 0x1)){
+//     asm volatile ("pause");
+//     printf("%s\n","while2");
+//  }
+
+//  /* DRQ or ERROR */
+//  if(status & 0x1){
+//     size=-1;
+//     return size;
+//  }
+
+ //  Send ATAPI/SCSI command as 6 words, to the data port 
+ // outsw(ATA_DATA(bus), (uint16 *)readcapacity_cmd,6);
+
+// _Sti();
+
+//  /* Wait for IRQ --not implementing scheduler, so skipping this*/
+
+//  /* Read actual size because is PIO mode.
+//   * transfer size= (bytecount = LBA high << 8 | LBA mid) */
+//  size= (((int) inb(ATA_ADDRESS3(bus))) << 8)|(int)(inb(ATA_ADDRESS2(bus)));
+
+//  /* PIO transfer */
+//  insw(ATA_DATA(bus),buffer,size/2);
+
+//  status=inb(ATA_COMMAND(bus)) & 0x88;
+//  while(status){
+//   asm volatile ("pause");
+//  }
+
+//  return size;
 
  }
 
