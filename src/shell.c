@@ -63,43 +63,20 @@ void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every no
 	int i=0,printed=promptLength;
 
 	do{
-		// rprintf("aca llego\n");
-		// __print_buffer();
 		curr=readChar();
-		// __print_buffer();
-		// rprintf("\n");
-		// __print_char_index(curr,i);
-		// rprintf("\n");
-		// __print_buffer();				
 
-		// rprintf("A");
 		if(curr=='\n'){
-			// rprintf("salgo x aca\n");
 			printf("\n");
 			return;
 		}
-		// rprintf("B");
+
 		if(curr=='\b'){
-			// rprintf("B1");
-			if(printed>promptLength+1){
-				//IMPORTANT: this is necessary because below 1 is being added below
-				//FIXME doesn't delete chars from the shell_buffer!
-				printed-=2;
-				// rprintf("borro:%d\n",i);
+			if(printed>promptLength){
+				printed--;
 				shell_buffer[--i]='\0';
-				// rprintf("\tbuffer[%d]=%c\n\n",i,curr);
-				// __print_buffer();
-				// rprintf("\n");
-				// iputc('\b',STD_OUT);
+				iputc('\b',STD_OUT);
 			}
-			break;
-		}else{//FIXME: it takes \bs and puts them on the shell_buffer: WRONG!
-			//FIXME: apparently there are \ns in the shell_buffer! <== cannot happen I think
-			// rprintf("llega: ");
-			// rprintf("C");
-			// rprintf("\tbuffer[%d]=%c\n",i,curr);
-			// __print_char(curr);
-			// rprintf("\n");
+		}else{
 			shell_buffer[i]=curr;
 			printed+=iputc(shell_buffer[i],STD_OUT);
 
@@ -110,12 +87,7 @@ void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every no
 
 			i++;
 		}
-		// rprintf("D");
-		// rprintf("\ni=%d SHELL_BUFFER_SIZE=%d\n",i,SHELL_BUFFER_SIZE);
 	} while(i<SHELL_BUFFER_SIZE);
-	// rprintf("no, cagada\n");
-	// rprintf("\ni=%d\n",i);
-	printf("\n");
 }
 
 void __parse_shell_command(){
@@ -133,12 +105,6 @@ void __parse_shell_command(){
 					argc++;
 					expectingParam=false;
 				}
-				break;
-			case '\n':
-				rprintf("problemas: \\n\n");//TODO just for debugging purposes
-				break;
-			case '\b':
-				rprintf("problemas: \\b\n");//TODO just for debugging purposes
 				break;
 			case '\t':
 			case ' ':
