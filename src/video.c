@@ -16,49 +16,6 @@ static int vbindex=0;
 static int STD_DISPLAY_offset;
 static int REG_DISPLAY_offset;
 
-size_t __test_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count){
-    char c;
-    int row;
-    size_t written;
-    
-    //TODO not a circular buffer
-    for(written=0; written < count; written++){
-        c=((char *)buffer)[written];
-
-        if (__getRowOf(*offset) > maxRow) {
-            __shift_up(minRow,maxRow,offset,1);
-        }
-
-        __test_print_char(minRow,offset,c);
-
-    }
-    return written;
-}
-
-void __test_print_char(int minRow, int * offset, char c){
-    char *video = (char*)VIDEO_ADDRESS;
-    int tab;
-    
-    switch(c){
-        case '\n':
-            __setOffset(offset,__getRowOf(*offset)+1,0);
-            return;
-        case '\b':
-            return;
-        case '\t':
-            for(tab=0; tab<TAB_LENGTH && (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset)); tab++){
-                video[((*offset)++)*2]='\0';
-            }
-            return;
-        default:
-            if(__getColOf((*offset)+1) % MAX_COL == 0){
-                (*offset)=__getOffsetOfRow(__getRowOf((*offset)+1));
-            }
-            video[((*offset)++)*2]=c;
-            return;
-    }
-}
-
 void __init_graphics(){
     STD_DISPLAY_offset=__getOffsetOfRow(STD_DISPLAY_MIN_ROW);
     vbindex=0;
@@ -73,35 +30,39 @@ size_t __print(int disp, const void * buffer, size_t count){
     int ans;
     switch(disp){
         case STD_DISPLAY:
-            ans=__bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, &STD_DISPLAY_offset, buffer, count);
+            ans=__bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, true, &STD_DISPLAY_offset, buffer, count);
             __set_cursor_position(STD_DISPLAY_offset);
             return ans;
         case REG_DISPLAY:
-            return /*__bounded*/__test_print(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, &REG_DISPLAY_offset, buffer, count);
+            return __bounded_print(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, false, &REG_DISPLAY_offset, buffer, count);
         default:
             return INVALID_DISPLAY;
     }
 }
 
-size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count){
+size_t __bounded_print(int minRow, int maxRow, bool usesVB, int * offset, const void* buffer, size_t count){
     char c;
     int row;
     size_t written;
     
-    //TODO not a circular buffer
-    for(written=0; written < count; written++/*, vbindex=(vbindex+written)%VIDEO_BUFFER_SIZE*/){
+    for(written=0; written < count; written++){
         c=((char *)buffer)[written];
 
-        __setVBElem(vbindex,c,*offset);
-        
+        if(usesVB==true){
+            __setVBElem(vbindex,c,*offset);
+        }
+
         if (__getRowOf(*offset) > maxRow) {
             __shift_up(minRow,maxRow,offset,1);
         }
 
-        __bounded_print_char(minRow,offset,c);
-
-        vbindex++;
-        vbindex%=VIDEO_BUFFER_SIZE;
+        if(usesVB==true){
+            __bounded_print_char(minRow,offset,c);
+            vbindex++;
+            vbindex%=VIDEO_BUFFER_SIZE;
+        }else{
+            __bounded_print_char_noVB(minRow,offset,c);
+        }
     }
     return written;
 }
@@ -142,6 +103,32 @@ void __bounded_print_char(int minRow, int * offset, char c){
             break;
     }
 }
+
+
+void __bounded_print_char_noVB(int minRow, int * offset, char c){
+    char *video = (char*)VIDEO_ADDRESS;
+    int tab;
+    
+    switch(c){
+        case '\n':
+            __setOffset(offset,__getRowOf(*offset)+1,0);
+            return;
+        case '\b':
+            return;
+        case '\t':
+            for(tab=0; tab<TAB_LENGTH && (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset)); tab++){
+                video[((*offset)++)*2]='\0';
+            }
+            return;
+        default:
+            if(__getColOf((*offset)+1) % MAX_COL == 0){
+                (*offset)=__getOffsetOfRow(__getRowOf((*offset)+1));
+            }
+            video[((*offset)++)*2]=c;
+            return;
+    }
+}
+
 
 int __paint_area(int disp, colour backgroundColour, colour textColour){
     switch(disp){
