@@ -48,81 +48,99 @@
   outw(uint16 us, uint16 usPort){
     asm volatile("outl %0,%1"::"a"(us),"Nd"(usPort));
   }
- 
- /* 0 - 0 Stop the Disc.
-  * 0 - 1 Start the Disc and read the TOC
-  * 1 - 0 Eject the disk if possible
-  * 1 - 1 Load the disk */
+
+ //ATA software reset mechanism, SRST (bit 2 in the Device Control Register)
+ void ata_sreset (uint32 bus)
+{
+  //Set the SRST bit to initiate the software reset protocol
+   outb (0x02, ATA_DCR (bus));
+   //Clear SRST
+   outb (0x00, ATA_DCR (bus));
+ }
+
+void
+ata_drive_select (uint32 bus, uint32 drive)
+ {
+   outb (drive, ATA_DRIVE_SELECT (bus));
+   ATA_SELECT_DELAY (bus);
+ }
+
   int atapi_drive_startstop(uint32 drive,uint32 bus){
      printf("\n%s\n","entre");
    //Operation code and bit 1 of byte 4 -LoEj(eject)- as 1.
    uint8 startstop_cmd[12]={0x1B,0,0,0,2,0,0,0,0,0,0,0}; 
+   uint8 allowremoval_cmd[12]={0x1E,0,0,0,0,0,0,0,0,0,0,0};
    uint8 status;
  
-   status = inb(ATA_COMMAND(bus)); //status register
    rprintf("%x",status);
 
-   while(status=inb(ATA_COMMAND(bus)) & 0x80){
+   while((status=inb(ATA_COMMAND(bus))) & 0x80){
+    rprintf("while1");
     //BUSY
     // If the first bit of the status register (BUSY) isn't 0, the device is busy,
     // so keep looping until it isn't.
    }
-
-   _Cli();
-   rprintf("cli");
-
-   while(!(status=inb(ATA_COMMAND(bus)) & 0x60)){
-    rprintf("%x%s",status,"2");
-    //NOT READY
-   }
+   // // _Cli();
+   // while(!((status=inb(ATA_COMMAND(bus))) & 0x60)){
+   //  rprintf("%x%s",status,"2");
+   //  //NOT READY
+   // }
+   // /* DRQ or ERROR */
+   // if(status & 0x1){
+   //    return -1;
+   // }
 
    //TODO reemplazar por drive
    outb(ATA_DRIVE_SELECT(bus),0x10); //0 master, 10h slave
 
+   outb(ATA_FEATURES(bus),0x0);
+
    /* Set Nien on device control register to 1 to skip waiting state. 
    nIEN is the second bit from the right here */
-   outb(ATA_DCR(bus),0x10); 
+   // outb(ATA_DCR(bus),0x10); 
 
   /* Send the ATAPI PACKAGE command to the command register */
    outb(ATA_COMMAND(bus),0xA0);   
-
    //wait 400ns
    ATA_SELECT_DELAY(bus);
+   while(status=inb(ATA_COMMAND(bus)) & 0x80){
+    }
+   while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+    //DATA TRANSFER REQUESTED
+   }
+   
 
-   rprintf("%s\n","OK1");
-
+  /* Send ATAPI/SCSI command as 6 words, to the data port */
+   outsw(ATA_DATA(bus), (uint16 *)allowremoval_cmd,6);
+  //wait 400ns
+   ATA_SELECT_DELAY(bus);
+   // inb(ATA_DCR(bus));
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
    //BUSY
    }
-
-   rprintf("%s\n","OK2");
-
    while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
     //DATA TRANSFER REQUESTED
    }
 
-   rprintf("%s\n","OK3");
+    outb(ATA_COMMAND(bus),0xA0);   
+   //wait 400ns
+   ATA_SELECT_DELAY(bus);
+   while(status=inb(ATA_COMMAND(bus)) & 0x80){
+    }
+   while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+    //DATA TRANSFER REQUESTED
+   }
 
   /* Send ATAPI/SCSI command as 6 words, to the data port */
-  outsw(ATA_DATA(bus), (uint16 *)startstop_cmd,6);
-   // outw(ATA_DATA(bus),)
-
-
-  inb(ATA_DCR(bus));
-
-
+   outsw(ATA_DATA(bus), (uint16 *)startstop_cmd,6);
+  //wait 400ns
+   ATA_SELECT_DELAY(bus);
+   // inb(ATA_DCR(bus));
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
    //BUSY
    }
-   rprintf("%s\n","OK4");
 
-   // while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
-   //  //DATA TRANSFER REQUESTED
-   // }
-
-   rprintf("%s\n","OK5");
-
-   _Sti();
+   // _Sti();
 
    return 1;
  }

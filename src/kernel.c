@@ -46,9 +46,14 @@ kmain() {
 	while(true) {
 		
 		printf("hola");
-		int size=atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_PRIMARY);
+		// ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_SLAVE);
+
+		ata_sreset(ATA_BUS_PRIMARY);
+		ata_sreset(ATA_BUS_SECONDARY);
+		_ejectCD();
+		// int size=atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_SECONDARY);
 		printf("hola2");
-		rprintf("%d",size);
+		// rprintf("%d",size);
 
 		// char ch='\0';
 		// char ch='\0';

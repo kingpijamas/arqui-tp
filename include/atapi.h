@@ -61,4 +61,9 @@
   #define ATA_SELECT_DELAY(bus) \
     {inb(ATA_DCR(bus));inb(ATA_DCR(bus));inb(ATA_DCR(bus));inb(ATA_DCR(bus));}
  	
- 	int  atapi_drive_read_sector (uint32 bus, uint32 drive, uint32 lba, uint8 *buffer);
+ 	void ata_sreset (uint32 bus);
+
+  static inline void outw(uint16 us, uint16 usPort);
+  static inline void outsw (uint16 usPort, void *buf, int count);
+  
+  int atapi_drive_startstop(uint32 drive,uint32 bus);

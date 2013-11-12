@@ -22,4 +22,6 @@ void		_int_80_hand();			/**/
 
 size_t		_Sys_Call();			/**/
 
+void 		_ejectCD();
+
 void		_debug(void);
