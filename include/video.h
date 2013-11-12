@@ -33,6 +33,7 @@
 #define STD_DISPLAY_MAX_ROW 	STD_DISPLAY_MIN_ROW+STD_DISPLAY_HEIGHT-1
 
 #define TAB_LENGTH				4
+#define TAB_CHAR				' '
 
 //Text mode colours
 #define BLACK					0x0
@@ -64,6 +65,11 @@
 
 typedef char colour;
 
+typedef struct {
+    char c;
+    int startOffset;
+} VBElem;
+
 void __init_graphics();
 
 int __paint_area(int disp, colour backgroundColour, colour textColour);
@@ -83,6 +89,11 @@ int __getRowOf(int offset);
 int __getColOf(int offset);
 int __getOffsetOf(int row,int col);
 void __setOffset(int * offset, int row, int col);
+void __resetOffset(int * currOffset, int prevOffset);
 #define __getOffsetOfRow(row)					__getOffsetOf(row,0)
+
+void __setVBElem(int index, char c, int currOffset);
+void __clearVBElem(int index);
+VBElem * __getVBElem(int index);
 
 #endif

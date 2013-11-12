@@ -2,12 +2,18 @@
 
 char buffer[SHELL_BUFFER_SIZE]={NULL_CHAR};
 
+int testflag2=0;
+
 void shell(){
 	int promptLength;
-	promptLength=__draw_prompt();
-	__load_shell_buffer(promptLength);
-	__echo();
-	__clear_shell_buffer();
+	 promptLength=__draw_prompt();
+	// if(testflag2==0){
+	// 	printf("a\n*\n\b");
+	// 	testflag2++;
+	// }
+	 __load_shell_buffer(promptLength);
+	 __echo();
+	 __clear_shell_buffer();
 }
 
 void __load_shell_buffer(int promptLength){

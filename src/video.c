@@ -10,7 +10,7 @@ colour REG_DISPLAY_text_colour          =    DEFAULT_REG_DISPLAY_TEXT_COLOUR;
 
 //TODO dont forget to shift this buffer up when the screen is shifted upwards
 //TODO since it doesn't make much sense to have a video buffer for the reg_disp, maybe this should be implied in the name
-char video_buffer[VIDEO_BUFFER_SIZE]={'\0'};
+VBElem video_buffer[VIDEO_BUFFER_SIZE]={{'\0',-1}};
 int vbindex=0;
 
 int STD_DISPLAY_offset;
@@ -104,39 +104,16 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
     for(written=0; written < count; written++/*, vbindex=(vbindex+written)%VIDEO_BUFFER_SIZE*/){
         c=((char *)buffer)[written];
 
-        // if(testflag==0){
-            video_buffer[vbindex]=c;
-        // }
-
-        // if(testflag==1){
-            //testflag++;
-            // switch(video_buffer[vbindex]){
-            //     case '\n':
-            //         rprintf("\\n");
-            //         break;
-            //     case '\b':
-            //         rprintf("\\b");
-            //         break;
-            //     case '\t':
-            //         rprintf("\\t");
-            //         //rprintf("\\t");
-            //         break;
-            //     default:
-            //         rprintf("%c",video_buffer[vbindex]);
-            // }
-            // rprintf("(%d)\n",vbindex);
-            //testflag--;
-        // }
-
+        __setVBElem(vbindex,c,*offset);
+        
         if (__getRowOf(*offset) > maxRow) {
             __shift_up(minRow,maxRow,offset,1);
         }
 
         __bounded_print_char(minRow,offset,c);
 
-        // if (testflag==0){
-            vbindex++;
-        // }
+        vbindex++;
+
     }
     return written;
 }
@@ -144,52 +121,32 @@ size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer,
 void __bounded_print_char(int minRow, int * offset, char c){
     char *video = (char*)VIDEO_ADDRESS;
     int tab;
-    
+
     switch(c){
         case '\n':
             __setOffset(offset,__getRowOf(*offset)+1,0);
             return;
         case '\b':
-            // testflag=1;
-            // rprintf("__getRowOf((*offset)-1)=%d minRow=%d\n",__getRowOf((*offset)+1),minRow);
-            // testflag=0;
-            rprintf("Es un \\b. __getRowOf((*offset)-1)=%d minRow=%d\n",__getRowOf((*offset)-1),minRow);
+            //rprintf("Es un \\b. __getRowOf((*offset)-1)=%d minRow=%d\n",__getRowOf((*offset)-1),minRow);
             if(__getRowOf((*offset)-1) >= minRow){
-                //rprintf("...%c|%c|%c... at <%s>\n",video_buffer[vbindex-3],video_buffer[vbindex-2],video_buffer[vbindex-1],video_buffer);
-                switch(video_buffer[vbindex-1]){
+                switch(__getVBElem(vbindex-1)->c){
                     case '\t':
-                        //FIXME calcular bien el ancho del tab!!! No hace falta. Ver el primer caracter
-                        //caso 1: me paso de linea
-                        rprintf("borro un tab\n");
-                        if ( __getRowOf((*offset)-TAB_LENGTH) < __getRowOf(*offset) ){
-                            rprintf("caso tab de arriba\n");
-                            for(tab=0; tab<TAB_LENGTH && video[((*offset)-1)*2]=='\0'; tab++){
-                               video[(--(*offset))*2]='\0';
-                            }
-                        }else{//caso 2: me paso de linea
-                            rprintf("caso tab de abajo\n");
-                            for(tab=0; tab<TAB_LENGTH; tab++){
-                               video[(--(*offset))*2]='\0';
-                            }
-                        }
-                        break;
-                    case '\n'://TODO
+                    case '\n':
+                        __resetOffset(offset,__getVBElem(vbindex-1)->startOffset);
                         break;
                     default:
-                        rprintf("no borro un tab\n");
                         video[(--(*offset))*2]='\0';
                 }
-                //\b suceeded, so two chars have to be removed from the video buffer (\b will be removed here, the previous one will be removed below)
-                video_buffer[vbindex--]='\0';
+                __clearVBElem(vbindex--);
             }
-            //whether or not the \b succeeds, it has to be removed from the video buffer
-            video_buffer[vbindex--]='\0';
+            __clearVBElem(vbindex--);
             return;
-        case '\t':
-            for(tab=0; tab<TAB_LENGTH && (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset)); tab++){
-                //IMPORTANT: \ts have to be \0s, since spaces would make removing \ts with length<TAB_LENGTH impossible
-                video[((*offset)++)*2]='\0';
+        case '\t'://FIXME: \t bug when on the screen's edge
+            //rprintf("\n__getColOf(*offset)=%d MAX_COL=%d\n",__getColOf(*offset),MAX_COL);
+            for(tab=0; tab<TAB_LENGTH && (__getColOf(*offset)+tab)<=MAX_COL; tab++){
+                video[((*offset)++)*2]=TAB_CHAR;
             }
+            //rprintf("tab=%d",tab);
             return;
         default:
             if(__getColOf((*offset)+1) % MAX_COL == 0){
@@ -281,3 +238,22 @@ int __getOffsetOf(int row,int col){
 void __setOffset(int * offset, int row, int col){
     *offset=__getOffsetOf(row,col);
 }
+
+void __resetOffset(int * currOffset, int prevOffset){
+    *currOffset=prevOffset;
+}
+
+VBElem * __getVBElem(int index){
+    return &(video_buffer[index]);
+}
+
+void __setVBElem(int index, char c, int currOffset){
+    video_buffer[index].c=c;
+    video_buffer[index].startOffset=currOffset;
+}
+
+void __clearVBElem(int index){
+    video_buffer[index].c='\0';
+    video_buffer[index].startOffset=-1;
+}
+
