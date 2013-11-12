@@ -3,18 +3,18 @@
 
 #include "../include/stdio.h"
 
-colour STD_DISPLAY_background_colour    =    DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
-colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COLOUR;
-colour REG_DISPLAY_background_colour    =    DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
-colour REG_DISPLAY_text_colour          =    DEFAULT_REG_DISPLAY_TEXT_COLOUR;
+static colour STD_DISPLAY_background_colour    =    DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
+static colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COLOUR;
+static colour REG_DISPLAY_background_colour    =    DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
+static colour REG_DISPLAY_text_colour          =    DEFAULT_REG_DISPLAY_TEXT_COLOUR;
 
 //TODO dont forget to shift this buffer up when the screen is shifted upwards
 //TODO since it doesn't make much sense to have a video buffer for the reg_disp, maybe this should be implied in the name
-VBElem video_buffer[VIDEO_BUFFER_SIZE]={{'\0',-1}};
-int vbindex=0;
+static VBElem video_buffer[VIDEO_BUFFER_SIZE]={{'\0',-1}};
+static int vbindex=0;
 
-int STD_DISPLAY_offset;
-int REG_DISPLAY_offset;
+static int STD_DISPLAY_offset;
+static int REG_DISPLAY_offset;
 
 size_t __test_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count){
     char c;

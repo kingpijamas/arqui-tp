@@ -13,5 +13,5 @@ void echo(int argc, char ** args){
 		printf(" %s",args[i]);
 	}
 	
-	printf("\n");
+	printf("*\n");
 }

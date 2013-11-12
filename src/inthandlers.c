@@ -1,15 +1,6 @@
 #include "../include/inthandlers.h"
 
-#include "../include/stdio.h"
-// #include "../include/video.h"
-
-int flag=0;
-
 void int_08() {
-	//if((flag++)){
-	//	rprintf("%d\n",flag);
-	//}
-	//printf("Baby, you've been going so crazy;Lately, nothing seems to be going right;Solo, \twhy do you have to get so low;You're so...;You've been waiting in the sun too long");
 }
 
 void int_09(char scancode, int cs, int gs, int fs, int es, int ds, int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax, int eip){
