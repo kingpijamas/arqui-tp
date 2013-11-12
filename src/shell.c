@@ -1,17 +1,31 @@
 #include "../include/shell.h"
 
-static char shell_buffer[SHELL_BUFFER_SIZE]={NULL_CHAR};
+static char shell_buffer[SHELL_BUFFER_SIZE]={'\0'};
 
 static ShellCommand commands[SHELL_COMMAND_COUNT]={
-												{"echo",echo},
+												{"echo",echo_cmd},
+												{"logo",logo_cmd},
+												// {"clear",clear}
 											};
+static bool firstCall=true;
 
 void shell(){
+	if(firstCall){
+		__print_welcome_message();
+		firstCall=false;
+		return;
+	}
+
 	int promptLength;
 	 promptLength=__draw_prompt();
 	 __load_shell_buffer(promptLength);
 	 __parse_shell_command();
 	 __clear_shell_buffer();
+}
+
+void __print_welcome_message(){
+	logo_cmd(0,(char **)NULL);
+	printf("%s\n",WELCOME_MSG);
 }
 
 void __print_char(char curr){
@@ -58,7 +72,7 @@ void __print_buffer(){
 	rprintf(" >");
 }
 
-void __load_shell_buffer(int promptLength){//FIXME weird behaviour here every now and then. Maybe it's bochs?
+void __load_shell_buffer(int promptLength){
 	char curr;
 	int i=0,printed=promptLength;
 
@@ -127,7 +141,7 @@ void __invoke_shell_command(int argc, char ** args){
 			return;
 		}
 	}
-	echo(argc,args);
+	echo_cmd(argc,args);
 	return;
 }
 
@@ -137,12 +151,7 @@ int __draw_prompt(){
 
 void __clear_shell_buffer(){
 	int toClear;
-	// rprintf("antes\n");
-	// __print_buffer();
 	for(toClear=SHELL_BUFFER_SIZE;toClear>=0;toClear--){
-		shell_buffer[toClear]=NULL_CHAR;
+		shell_buffer[toClear]='\0';
 	}
-	// rprintf("\ndespues:");
-	// __print_buffer();
-	// rprintf("\n");
 }

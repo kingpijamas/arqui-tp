@@ -1,6 +1,6 @@
 #include "../include/commands.h"
 
-void echo(int argc, char ** args){
+void echo_cmd(int argc, char ** args){
 	int i;
 
 	if(argc==0){
@@ -13,5 +13,16 @@ void echo(int argc, char ** args){
 		printf(" %s",args[i]);
 	}
 	
-	printf("*\n");
+	printf("\n");
 }
+
+void logo_cmd(int argc, char ** args){
+	int i;
+	for(i=0; strcmp("\0",logo[i])!=0; i++){
+		printf("%s\n",logo[i]);
+	}
+}
+
+// void printf_cmd(int argc, char ** args){
+
+// }

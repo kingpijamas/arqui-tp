@@ -13,13 +13,15 @@
 #define USER_NAME			"user"
 #define PC_NAME				"PC"
 #define SHELL_PROMPT_END	"$ "
-#define NULL_CHAR			'\0'
+
+#define WELCOME_MSG			"Welcome to changOS!"
 
 #define SHELL_BUFFER_SIZE	SIZE_BUFFER //TODO: not the nicest name
 #define LINE_WIDTH			WIDTH //WIDTH
 
-#define SHELL_COMMAND_COUNT 1
+#define SHELL_COMMAND_COUNT 2
 #define MAX_SHELL_ARGS		10
+
 
 typedef struct {
     char * name;
@@ -27,6 +29,8 @@ typedef struct {
 } ShellCommand;
 
 void shell();
+
+void __print_welcome_message();
 void __load_shell_buffer(int promptLength);
 void __parse_shell_command();
 void __invoke_shell_command(int argc, char ** args);
