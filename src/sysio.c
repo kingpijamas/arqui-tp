@@ -8,7 +8,7 @@ size_t __sys_write(int fd, const void* buffer, size_t count){
 			__print(STD_DISPLAY,buffer,count);break;
 		case REG_OUT:
 			__print(REG_DISPLAY,buffer,count);break;
-		default://TODO Should never happen. Maybe treat this as STD_OUT?
+		default:
 			return -1;
 	}
 }

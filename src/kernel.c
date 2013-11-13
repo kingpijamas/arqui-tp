@@ -49,8 +49,6 @@ kmain() {
 	int ata;
 	int j;
 	while(true) {
-			
-		printf("hola");
 		// ata_sreset(ATA_BUS_SECONDARY);
 		// ata_sreset(ATA_BUS_PRIMARY);
 
@@ -126,7 +124,6 @@ kmain() {
 
 		//bugean
 		
-	while(true) {		
 		shell();
 	}
 	

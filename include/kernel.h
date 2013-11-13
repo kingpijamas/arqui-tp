@@ -16,8 +16,6 @@
 
 #define OS_PID	0
 
-//TODO what is this?
-int (*player)(void);
 
 typedef enum eINT_80 {WRITE=0, READ} tINT_80;
 typedef enum eUSER {U_KERNEL=0, U_NORMAL} tUSERS;

@@ -6,18 +6,14 @@
 #include "../include/commands.h"
 #include "../include/string.h"
 
-//TODO these are just for constants
-#include "../include/keyboard.h"
-#include "../include/video.h"
-
 #define USER_NAME			"user"
 #define PC_NAME				"PC"
 #define SHELL_PROMPT_END	"$ "
 
 #define WELCOME_MSG			"Welcome to changOS!"
 
-#define SHELL_BUFFER_SIZE	SIZE_BUFFER //TODO: not the nicest name
-#define LINE_WIDTH			WIDTH //WIDTH
+#define SHELL_BUFFER_SIZE	400
+#define LINE_WIDTH			80
 
 #define SHELL_COMMAND_COUNT 10
 #define MAX_SHELL_ARGS		10
