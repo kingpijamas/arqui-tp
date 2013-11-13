@@ -4,7 +4,7 @@
 #include "../include/defs.h"
 #include "../include/kasm.h"
 
-#define SIZE_BUFFER 80
+#define SIZE_BUFFER 400
 #define KEYMAPROWS 8
 #define KEYMAPSCOLS 16
 #define bufferstart 0
@@ -40,25 +40,15 @@ typedef int bool;
 #define Del 7
 
 bool isEmpty();
-
-char getChar();
-
+char getKBChar();
 void clearBuffer();
-
 bool isBreakCode(unsigned char scancode);
-
 bool isLetter(unsigned char ascii);
-
 bool isAscii(unsigned char ascii);
-
 void LockOnOff(int i);
-
 void SpecialKeyOnOff(int i, bool onoff);
-
 int isSpecialKey(unsigned char scancode);
-
 void putinbuffer(unsigned char ascii);
-
 void forBuffer(unsigned char scancode, int cs, int gs, int fs, int es, int ds, int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax, int eip);
 
 #endif

@@ -2,21 +2,19 @@
 #define VIDEO_H
 
 #include "../include/defs.h"
-//TODO just for debugging purposes
-#include "../include/inthandlers.h"
 
 #define VIDEO_ADDRESS			0xb8000
 #define BASE_PORT				0x3D4
+
+#define VIDEO_BUFFER_SIZE		VIDEO_AREA(WIDTH,STD_DISPLAY_HEIGHT)
 
 //FIXME all these should be some sort of enum
 #define INVALID_DISPLAY 		-1
 #define INVALID_CURSOR			-2
 
-//TODO display identifiers
 #define STD_DISPLAY				0
 #define REG_DISPLAY 			1
 
-//TODO should I change all these for static consts?
 #define WIDTH					80
 #define HEIGHT  				25
 
@@ -35,6 +33,7 @@
 #define STD_DISPLAY_MAX_ROW 	STD_DISPLAY_MIN_ROW+STD_DISPLAY_HEIGHT-1
 
 #define TAB_LENGTH				4
+#define TAB_CHAR				' '
 
 //Text mode colours
 #define BLACK					0x0
@@ -61,23 +60,40 @@
 #define DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR	MAGENTA
 #define DEFAULT_REG_DISPLAY_TEXT_COLOUR			WHITE
 
+#define VIDEO_AREA(width,height)				(width*height)
+
 typedef char colour;
+
+typedef struct {
+    char c;
+    int startOffset;
+} VBElem;
 
 void __init_graphics();
 
-size_t __print(int fd, const void * buffer, size_t count);
-size_t __bounded_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
-
-int __paint_area(int fd, colour backgroundColour, colour textColour);
+int __paint_area(int disp, colour backgroundColour, colour textColour);
 void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour backgroundColour, colour textColour);
 
-// int __shift_up(int fd, int lines);
-void __bounded_shift_up(int minRow, int maxRow, int *offset, int lines);
+size_t __print(int disp, const void * buffer, size_t count);
+size_t __bounded_print(int minRow, int maxRow, bool usesVB, int * offset, const void* buffer, size_t count);
+void __bounded_print_char(int minRow, int * offset, char c);
+void __bounded_print_char_noVB(int minRow, int * offset, char c);
 
-int __set_cursor_position_in(int fd, int relRow, int relCol);
-int __bounded_set_cursor_position(int minRow, int maxRow, int minCol, int maxCol, int relRow, int relCol);
 
-int __getLineOf(int offset);
-int __getOffsetOf(int line);
+size_t __test_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
+void __test_print_char(int minRow, int * offset, char c);
+
+void __shift_up(int minRow, int maxRow, int *offset, int rows);
+int __set_cursor_position(int offset);
+int __getRowOf(int offset);
+int __getColOf(int offset);
+int __getOffsetOf(int row,int col);
+void __setOffset(int * offset, int row, int col);
+void __resetOffset(int * currOffset, int prevOffset);
+#define __getOffsetOfRow(row)					__getOffsetOf(row,0)
+
+void __setVBElem(int index, char c, int currOffset);
+void __clearVBElem(int index);
+VBElem * __getVBElem(int index);
 
 #endif

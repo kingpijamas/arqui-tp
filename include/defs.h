@@ -33,20 +33,9 @@ typedef short int ssize_t;
 #define ACS_DATA         (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 #define ACS_STACK        (ACS_PRESENT | ACS_DSEG | ACS_WRITE)
 
-//File descriptors
-  typedef enum {
-    STD_IN=0,
-    STD_OUT=1,
-    STD_ERR=2,
-    REG_OUT=3
-  } FILE_DESC;
-
 //System Calls
 #define SYS_READ         0x03
 #define SYS_WRITE        0x04
-
-//C constants and defs
-#define EOF             -1
 
 #pragma pack (1) 		// Alinear las siguiente estructuras a 1 byte
 
@@ -59,7 +48,6 @@ typedef short int ssize_t;
     attribs,
     base_h;
   } DESCR_SEG;
-
 
 // Descriptor de interrupcion
   typedef struct {
@@ -76,5 +64,13 @@ typedef short int ssize_t;
     dword base;
   } IDTR;
 
+
+//File descriptors
+  typedef enum {
+    STD_IN=0,
+    STD_OUT=1,
+    STD_ERR=2,
+    REG_OUT=3
+  } FILE_DESC;
 
 #endif

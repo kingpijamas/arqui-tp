@@ -136,7 +136,7 @@ char getc(int fd){
 	return ch;
 }
 
-char readChar(){
+char getChar(){
 	return getc(STD_IN);
 }
 
@@ -168,7 +168,7 @@ int scanfdecimal(int* arg, char curr){
 	
 	if(curr=='-'){
 		sign=true;
-		curr=readChar();
+		curr=getChar();
 	}
 
 	while(!isSpace(curr) && isNumber(curr)){
@@ -176,7 +176,7 @@ int scanfdecimal(int* arg, char curr){
 		(*arg)=(*arg)*10+number;
 		putc(curr,STD_OUT);
 		i++;
-		curr=readChar();
+		curr=getChar();
 	}
 
 	if(i>0 && sign){
@@ -196,7 +196,7 @@ int scanfstring(char* arg, char curr){
 			arg[i++]=curr;
 			putc(curr,STD_OUT);
 		}
-		curr=readChar();
+		curr=getChar();
 	}
 	putc(curr,STD_OUT);
 	arg[i]='\0';
@@ -210,7 +210,7 @@ int scanfchar(char* arg, char curr){
 			arg[i++]=curr;
 			putc(curr,STD_OUT);
 		}
-		curr=readChar();
+		curr=getChar();
 	}
 	return i;
 }
@@ -257,7 +257,7 @@ int scanfbase(int* arg, char curr, int base){
 			putc(curr,STD_OUT);
 			i++;
 		}
-		curr=readChar();
+		curr=getChar();
 	}
 	return i==0?0:1;
 }
@@ -274,7 +274,7 @@ int vscanf(const char * format, va_list args){
 			c=format[i];
 		} while(isSpace(c) || isTab(c)); //Blanks or tabs are ignored
 
-		curr=readChar();		
+		curr=getChar();		
 
 		if(c!='%'){
 			if(c!=curr){

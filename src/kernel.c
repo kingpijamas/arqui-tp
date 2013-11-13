@@ -1,8 +1,8 @@
 #include "../include/kernel.h"
 #include "../include/atapi.h"
 
-DESCR_INT idt[0x81];	// IDT de 81 entradas
-IDTR idtr;				// IDTR
+static DESCR_INT idt[0x81];	// IDT de 81 entradas
+static IDTR idtr;			// IDTR
 
 /**********************************************
 kmain() 
@@ -42,6 +42,7 @@ kmain() {
 	// ata_identify(0x1F0,0xB0);
 
 	// atapi_drive_start_stop();
+
 	int CD_BUS;
 	int CD_DRIVE;
 
@@ -92,10 +93,10 @@ kmain() {
 		// ata_sreset(ATA_BUS_PRIMARY);
 		
 		// atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_SECONDARY);
-		rprintf("closing");
-		_ejectCD();
+		//rprintf("closing");
+		//_ejectCD();
 		// int size=atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_SECONDARY);
-		printf("fin");
+		//printf("fin");
 		// rprintf("%d",size);
 
 		// char ch='\0';
@@ -106,8 +107,8 @@ kmain() {
 		//__read(STD_IN, buffer,2);
 		
 		//SCANF WORKING
-		 char *arg;
-		 scanf("%s",arg);
+		 //char *arg;
+		 //scanf("%s",arg);
 
 		//GET CHAR AND WRITE WORKING!
 		// while(ch=='\0'){
@@ -125,7 +126,8 @@ kmain() {
 
 		//bugean
 		
-
+	while(true) {		
+		shell();
 	}
 	
 }

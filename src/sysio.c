@@ -18,16 +18,14 @@ size_t __sys_read(int fd, void* buffer, size_t count){
 
 	switch(fd){
 		case STD_IN: {
-			//__write(STD_OUT,"sys",3);
-			nread=__readstdin(fd, buffer,count);break;
+			nread=__read_from_stdin(fd, buffer,count);break;
 		}
 		default: nread=-1; break;
 	}
 	return nread;
 }
 
-size_t __readstdin(int fd, void* buffer, size_t count){
-	//TODO look why interruptions where off
+size_t __read_from_stdin(int fd, void* buffer, size_t count){
 	_Sti();
 
 	size_t i;
@@ -37,7 +35,7 @@ size_t __readstdin(int fd, void* buffer, size_t count){
 		for(i=0;i<count;i++){
 			ch='\0';
 			while(ch=='\0'){
-				ch= getChar();	
+				ch=getKBChar();	
 			}
 			aux=(char*)buffer;
 			*(aux+i)=ch;

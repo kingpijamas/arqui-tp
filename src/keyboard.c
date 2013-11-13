@@ -7,16 +7,16 @@
 #include "../include/kernel.h"
 
 
-unsigned char buffer[SIZE_BUFFER];
-int last=0; 
-int first=0; 
-bool full=false;
+static unsigned char keyboard_buffer[SIZE_BUFFER];
+static int last=0; 
+static int first=0; 
+static bool full=false;
 
-bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
-bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
+static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
+static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
 
 
-unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
+static unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
 {ZERO,ZERO,'1','2','3','4','5','6','7','8','9','0','-','=','\b','\t'}, //01 esc
 {'q','w','e','r','t','y','u','i','o','p','[',']','\n',ZERO,'a','s'}, //L control
 {'d','f','g','h','j','k','l',';','\'','`',ZERO,'\\','z','x','c','v'}, // L shift
@@ -24,7 +24,7 @@ unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
 {ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'-',ZERO,'5',ZERO,'+',ZERO}, //f6-f10, Num Lock
 }; 
 
-unsigned char spKeyKeyboard[KEYMAPROWS][KEYMAPSCOLS] = {	
+static unsigned char spKeyKeyboard[KEYMAPROWS][KEYMAPSCOLS] = {	
 {ZERO,ZERO,'!','\"','#','$','%','^','&','*','(',')','_','+','\b','\t'},
 {'Q','W','E','R','T','Y','U','I','O','P','{','}','\n',ZERO,'A','S'},
 {'D','F','G','H','J','K','L',';','[',']',ZERO,'>','Z','X','C','V'},	
@@ -37,13 +37,13 @@ bool isEmpty(){
 	return (first==last && full==false);
 }
 
-/* Returns first element of the buffer*/
-char getChar(){
+/* Returns first element of the keyboard_buffer*/
+char getKBChar(){
 	if(isEmpty()){
 		return '\0';
 	}
 
-	char caracter=buffer[first];
+	char caracter=keyboard_buffer[first];
 	first++;
 
 	if(first>=SIZE_BUFFER){
@@ -105,7 +105,7 @@ int isSpecialKey(unsigned char scancode){
 
 void putinbuffer(unsigned char ascii){
 	if(full==false){
-		buffer[last]=ascii;
+		keyboard_buffer[last]=ascii;
 		last++;
 		if(last==SIZE_BUFFER && first!=bufferstart){
 			last=bufferstart;
@@ -114,7 +114,7 @@ void putinbuffer(unsigned char ascii){
 		}
 	}				
 		//test
-		//__write(STD_OUT,buffer,last-first);
+		//__write(STD_OUT,keyboard_buffer,last-first);
 }
 
 void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax, int eip) {	
