@@ -92,8 +92,8 @@ void openCD_cmd(int argc, char ** args){//TODO
 	_ejectCD();
 }
 void infoCD_cmd(int argc, char ** args){//TODO
-	__infoCD();
+	_infoCD();
 }
 void closeCD_cmd(int argc, char ** args){//TODO
-	_CloseCD();
+	_closeCD();
 }
