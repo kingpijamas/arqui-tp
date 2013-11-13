@@ -1,0 +1,448 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Trabajo Práctico Especial
+\end_layout
+
+\begin_layout Author
+Teresa Di Tada y Juan Pablo Rey
+\end_layout
+
+\begin_layout Section*
+Objetivo 
+\end_layout
+
+\begin_layout Standard
+Realizar un sistema booteable por una PC que muestre algunas de las característi
+cas del modo protegido de los microprocesadores de Intel y utilice recursos
+ de hardware.
+\end_layout
+
+\begin_layout Part*
+Consideraciones de diseño 
+\end_layout
+
+\begin_layout Standard
+En concordancia a lo aprendido hasta ahora en la materia, se mantuvo un
+ diseño en capas; enfatizando sobre todo la separación entre kernel y user
+ space siempre que fuera posible.
+ 
+\end_layout
+
+\begin_layout Standard
+Se implementaron system calls estándar a la usanza Linux: se implementó
+ la 
+\begin_inset Formula $INT80h$
+\end_inset
+
+ como único modo de comunicación con el kernel y se implementaron las llamadas
+ a sistema __write y __read, las cuales mantienen la misma especificación
+ que sus homólogas de Linux (sys_write y sys_read).
+ 
+\end_layout
+
+\begin_layout Standard
+Cabe aclarar que, al no contar ni con un filesystem ni con alocación de
+ memoria ni con un scheduler por cuestiones de simplicidad y no atinencia
+ a los contenidos de la materia, no siempre fue posible atenerse a las convencio
+nes de Linux y/o 
+\begin_inset Formula $C$
+\end_inset
+
+, pero se hizo lo posible para minimizar la distorsión.
+\end_layout
+
+\begin_layout Standard
+Se emularon entonces la entrada y salida estándar, junto con una salida
+ especial para la pantalla de los registros (denominada “REG_OUT”).
+ De esta forma se mantuvo el código lo más modular posible, permitiendo
+ mantener la prolijidad al mismo tiempo que la posible extensión y el fácil
+ mantenimiento del sistema a futuro.
+\end_layout
+
+\begin_layout Standard
+La única anomalía de diseño fue entonces la relacionada a la impresión de
+ los registros y descriptores del microprocesador siempre que se presionara
+ 
+\begin_inset Formula $Ctrl+Alt+R$
+\end_inset
+
+.
+ Puesto que se requería que esta pudiera gatillarse en cualquier momento
+ de la interacción entre el usuario con la PC, se decidió junto con la cátedra
+ que lo mas sencillo era que, por un lado, el driver de teclado se encargara
+ de manejar esa “interrupción”, llamando él mismo a las funciones de impresión
+ cuando correspondiera (lo cual viola el concepto modular del sistema por
+ permitir a un driver el comunicarse por su cuenta con capas de nivel más
+ alto); por otra parte, las rutinas de 
+\begin_inset Formula $ASM$
+\end_inset
+
+ fueron modificadas para que guardaran todos sus parámetros /*TODO:CHECK!*/.
+\end_layout
+
+\begin_layout Part*
+Implementación
+\end_layout
+
+\begin_layout Standard
+Se detallan a continuación los módulos más relevantes del sistema operativo:
+\end_layout
+
+\begin_layout Subsection*
+Kernel:
+\end_layout
+
+\begin_layout Standard
+Componente principal del S.O., es la que se encarga de inicializar el sistema,
+ de mantener corriendo el shell contiuamente para que el usuario pueda usarlo
+ indefinidamente y, lo más importante, contiene las funciones __read() y
+ __write(), las cuales permiten abstraer al sistema operativo en sí mismo
+ de la arquitectura, lo cual le brinda portabilidad y robustez.
+\end_layout
+
+\begin_layout Subsection*
+Inthandlers:
+\end_layout
+
+\begin_layout Standard
+Contiene todas las rutinas manejadoras de interrupción, entre ellas la del
+ timer tick (la cual no hace nada, puesto que, como se mencionó previamente,
+ no hay un scheduler), la del teclado y la 
+\begin_inset Formula $INT80h$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection*
+Video:
+\end_layout
+
+\begin_layout Standard
+Contiene todo lo relacionado al manejo de video, el cual se manejó como
+ si fueran dos displays separados (STD_DISPLAY y REG_DISPLAY).
+ 
+\end_layout
+
+\begin_layout Standard
+Las funciones que se exponen de esta librería solo necesitan del identificador
+ del display para poder saber todas las restricciones de impresión necesarias
+ (especialmente las relacionadas al tamaño del display virtual en cuestión).
+\end_layout
+
+\begin_layout Standard
+Por otra parte, se decidió colorear los displays para marcar su diferencia
+ sin perder espacio de pantalla, coloreando solo una vez cada display al
+ inicializar la librería y no tocando las celdas relacionadas al color durante
+ el resto de la ejecución del S.O.
+\end_layout
+
+\begin_layout Standard
+Cabe aclarar que si bien ambos displays comparten mucha de la misma funcionalida
+d (como el scrolleo automático una vez que se intenta escribir más allá
+ de la última línea y el soporte de caracteres especiales como la tabulación
+ de tamaño variable y el enter), se especializó cada uno para un uso particular
+ (que será el que luego les dará el sistema operativo).
+\end_layout
+
+\begin_layout Standard
+El STD_DISPLAY se pensó de manera tal que permitiera todas las funcionalidades
+ esperables en una salida estándar de un sistema operativo básico, moviendo
+ el cursor a la posición siguiente al último caracter escrito e implementando
+ la posibilidad del borrado de caracteres.
+ Esto último solo se pudo lograr a través del uso de un buffer circular
+ de video, el cual guarda la posición previa a escribir cada caracter, permitien
+do entonces el borrado de caracteres de tamaño variable como la tabulación
+ (la cual, siguiendo el estándar clásico, no cambia de línea a menos que
+ no quepa ningún caracter común en la misma).
+\end_layout
+
+\begin_layout Standard
+Mientras tanto, se decidió no implementar la funcionalidad de borrado de
+ caracteres en el REG_DISPLAY, puesto que no se le vio utilidad a esta funcional
+idad en una pantalla especializada para la impresión automatizada de registros
+\end_layout
+
+\begin_layout Subsection*
+Keyboard
+\end_layout
+
+\begin_layout Standard
+Contiene el driver de teclado; para el mismo se utilizó un buffer circular,
+ el cual permite no tener que refrescarlo ni cambiar su tamaño y la técnica
+ de polling desarrollada previamente en clase.
+ Como se dijo previamente, por los requerimientos del S.O., el driver de teclado
+ también se encarga de “escuchar” la combinación de teclas 
+\begin_inset Formula $Ctrl+Shift+R$
+\end_inset
+
+ y de “manejarla” llamando a las funciones de impresión correspondientes.
+ /*TODO*/
+\end_layout
+
+\begin_layout Subsection*
+Shell
+\end_layout
+
+\begin_layout Standard
+Contiene un shell sencillo el cual da la bienvenida al usuario al iniciar
+ el S.O.
+ para luego encargarse de interpretar los comandos que ingrese el usuario
+ y ejecutarlos.
+ Esto se hace en primera instancia mediante un buffer propio, el cual permite
+ un mejor manejo de los caracteres que se ingresen y permitiendo el pasaje
+ de múltiples parámetros a los comandos sin necesidad de alocar memoria.
+\end_layout
+
+\begin_layout Standard
+No se permite una navegación compleja como en las terminales actuales (no
+ se soportan las flechas ni tampoco combinaciones del estilo de Shift+Enter;
+ sí se soporta el overflow).
+\end_layout
+
+\begin_layout Standard
+Se decidió que el comando por defecto sea 'echo'.
+\end_layout
+
+\begin_layout Subsection*
+Commands
+\end_layout
+
+\begin_layout Standard
+Contiene todos los comandos adicionales del shell, desde 'echo' hasta las
+ funciones de prueba requeridas por la cátedra.
+ Se decidió que todos los comandos recibieran una cantidad “variable” de
+ argumentos de tipo 
+\begin_inset Formula $char*$
+\end_inset
+
+ (con un máximo de SHELL_MAX_ARGS, dado que no se puede alocar memoria)
+ y un entero indicando cuántos argumentos fueron recibidos.
+\end_layout
+
+\begin_layout Subsection*
+Librería estándar de C
+\end_layout
+
+\begin_layout Standard
+Se implementaron las funciones putc, printf, getc y scanf de la librería
+ estándar de 
+\begin_inset Formula $C$
+\end_inset
+
+ con las salvedades previamente mencionadas (nacidas mayoritariamente del
+ no tener un file system).
+ Solo ellas acceden a __write() y __read(), manteniendo la modularidad y
+ el diseño en capas.
+\end_layout
+
+\begin_layout Standard
+Para poder tener argumentos variables, y por la complejidad de implementación
+ de los mismos de una manera no dependiente de la plataforma, se decidió
+ utilizar la implementación 
+\begin_inset Formula $GNU$
+\end_inset
+
+ de 
+\begin_inset Formula $<stdarg.h>$
+\end_inset
+
+.
+ Esta, por estar enteramente basada en macros, es independiente de la plataforma
+ para la que se desee compilar el S.O.
+ a futuro.
+\end_layout
+
+\begin_layout Standard
+También se implementó la función rprintf, la cual es idéntica a printf pero
+ que imprime a REG_OUT en vez de STD_OUT.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part*
+Manual de Uso
+\end_layout
+
+\begin_layout Standard
+Se soportan los siguientes comandos:
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+echo Símil al echo de UNIX, toma uno o múltiples parámetros y los imprime
+ en salida estándar
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+help Imprime una lista de ayuda por salida estándar
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+logo Imprime el logo del S.O.
+ por salida estándar
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+putc Test simple de putc para la cátedra
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+getc Test simple de getc para la cátedra
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+printf Test de printf para la cátedra
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+scanf Test de scanf para la cátedra
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+abrirCD Abre la lectora de CD
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+cerrarCD Cierra la lectora de CD
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+infoCD Muestra por salida estándar el tamaño del CD dentro de la unidad
+\end_layout
+
+\begin_layout Subsection*
+Consideraciones
+\end_layout
+
+\begin_layout Standard
+Se toma a los espacios y tabulaciones entre palabras solo como separadores,
+ por lo que, por ejemplo, los llamados siguientes serán equivalentes entre
+ sí:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+$>echo hola mundo
+\end_layout
+
+\begin_layout Plain Layout
+$>echo
+\begin_inset space \qquad{}
+\end_inset
+
+hola
+\begin_inset space \qquad{}
+\end_inset
+
+
+\begin_inset space \qquad{}
+\end_inset
+
+mundo
+\end_layout
+
+\begin_layout Plain Layout
+$>
+\begin_inset space \qquad{}
+\end_inset
+
+echo 
+\begin_inset space ~
+\end_inset
+
+hola
+\begin_inset space \qquad{}
+\end_inset
+
+ mundo 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
