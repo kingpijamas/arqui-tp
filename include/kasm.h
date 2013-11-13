@@ -25,3 +25,9 @@ size_t		_Sys_Call();			/**/
 void 		_ejectCD();
 
 void		_debug(void);
+
+void 		_closeCD();
+
+void		_infoCD();
+
+void 		_ejectCD();
