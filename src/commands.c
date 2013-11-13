@@ -1,4 +1,5 @@
 #include "../include/commands.h"
+#include "../include/kasm.h"
 
 void echo_cmd(int argc, char ** args){
 	int i;
