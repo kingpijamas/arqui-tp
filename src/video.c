@@ -3,10 +3,14 @@
 
 #include "../include/stdio.h"
 
-static colour STD_DISPLAY_background_colour    =    DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
-static colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COLOUR;
-static colour REG_DISPLAY_background_colour    =    DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
-static colour REG_DISPLAY_text_colour          =    DEFAULT_REG_DISPLAY_TEXT_COLOUR;
+static colour STD_DISPLAY_background_colour    =    
+DEFAULT_STD_DISPLAY_BACKGROUND_COLOUR;
+static colour STD_DISPLAY_text_colour          =    
+DEFAULT_STD_DISPLAY_TEXT_COLOUR;
+static colour REG_DISPLAY_background_colour    =    
+DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
+static colour REG_DISPLAY_text_colour          =   
+ DEFAULT_REG_DISPLAY_TEXT_COLOUR;
 
 static VBElem video_buffer[VIDEO_BUFFER_SIZE]={{'\0',-1}};
 static int vbindex=0;
@@ -18,8 +22,10 @@ void __init_graphics(){
     STD_DISPLAY_offset=__getOffsetOfRow(STD_DISPLAY_MIN_ROW);
     vbindex=0;
     REG_DISPLAY_offset=__getOffsetOfRow(REG_DISPLAY_MIN_ROW);
-    __paint_area(STD_DISPLAY,STD_DISPLAY_background_colour,STD_DISPLAY_text_colour);
-    __paint_area(REG_DISPLAY,REG_DISPLAY_background_colour,REG_DISPLAY_text_colour);
+    __paint_area(STD_DISPLAY,STD_DISPLAY_background_colour,
+        STD_DISPLAY_text_colour);
+    __paint_area(REG_DISPLAY,REG_DISPLAY_background_colour,
+        REG_DISPLAY_text_colour);
     __set_cursor_position(0);
 
 }
@@ -28,7 +34,8 @@ size_t __print(int disp, const void * buffer, size_t count){
     int ans;
     switch(disp){
         case STD_DISPLAY:
-            ans=__bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, true, &STD_DISPLAY_offset, buffer, count);
+            ans=__bounded_print(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW,
+             true, &STD_DISPLAY_offset, buffer, count);
             __set_cursor_position(STD_DISPLAY_offset);
             return ans;
         case REG_DISPLAY:
@@ -113,7 +120,9 @@ void __bounded_print_char_noVB(int minRow, int * offset, char c){
         case '\b':
             return;
         case '\t':
-            for(tab=0; tab<TAB_LENGTH && (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset)); tab++){
+            for(tab=0; tab<TAB_LENGTH && 
+                (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset)); 
+                tab++){
                 video[((*offset)++)*2]='\0';
             }
             return;
@@ -130,22 +139,28 @@ void __bounded_print_char_noVB(int minRow, int * offset, char c){
 int __paint_area(int disp, colour backgroundColour, colour textColour){
     switch(disp){
         case STD_DISPLAY:
-            __bounded_paint_area(STD_DISPLAY_MIN_ROW, STD_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
+            __bounded_paint_area(STD_DISPLAY_MIN_ROW, 
+                STD_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, 
+                textColour);
             break;
         case REG_DISPLAY:
-            __bounded_paint_area(REG_DISPLAY_MIN_ROW, REG_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, backgroundColour, textColour);
+            __bounded_paint_area(REG_DISPLAY_MIN_ROW, 
+                REG_DISPLAY_MAX_ROW, MIN_COL, MAX_COL, 
+                backgroundColour, textColour);
             break;
         default:
             return INVALID_DISPLAY;
     }
 }
 
-void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour backgroundColour, colour textColour){
+void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol,
+ colour backgroundColour, colour textColour){
     char *video = (char*)VIDEO_ADDRESS;
     int i,j;
     for(i=minRow;i<=maxRow;i++){
         for(j=minCol;j<=maxCol;j++){
-            video[2*__getOffsetOf(i,j)+1]=AS_COLOUR_BYTE(backgroundColour,textColour);
+            video[2*__getOffsetOf(i,j)+1]=AS_COLOUR_BYTE(backgroundColour,
+                textColour);
         }
     }
 }

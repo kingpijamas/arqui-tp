@@ -16,7 +16,8 @@
 #define EOF             -1
 
 //Auxiliary
-typedef enum {PF_CHAR, PF_PARAMETER, PF_FLAGS, PF_WIDTH, PF_PRECISION, PF_LENGTH} format_state_t;
+typedef enum {PF_CHAR, PF_PARAMETER, PF_FLAGS, PF_WIDTH, PF_PRECISION, 
+	PF_LENGTH} format_state_t;
 
 int fputc(int ch, FILE stream);
 #define putc(ch,stream)						fputc(ch,stream)
@@ -31,8 +32,11 @@ int __printUntil(FILE stream, const char * str, char limit);
 int __printString(FILE stream, const char * str);
 int __printInt(FILE stream, int i, int base, bool caps);
 int __printDigit(FILE stream, int d, int base, bool caps);
-#define __printOctal(stream,i)				__printInt(stream,i,OCTALBASE,false)
-#define __printDecimal(stream,i)			__printInt(stream,i,DECBASE,false)
-#define __printHexadecimal(stream,i,caps)	__printInt(stream,i,HEXABASE,caps)
+#define __printOctal(stream,i)				
+	__printInt(stream,i,OCTALBASE,false)
+#define __printDecimal(stream,i)			
+	__printInt(stream,i,DECBASE,false)
+#define __printHexadecimal(stream,i,caps)	
+	__printInt(stream,i,HEXABASE,caps)
 
 #endif

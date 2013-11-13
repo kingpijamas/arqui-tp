@@ -14,11 +14,12 @@ static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
 
 
 static unsigned char keyboard[KEYMAPROWS][KEYMAPSCOLS]={
-{ZERO,ZERO,'1','2','3','4','5','6','7','8','9','0','-','=','\b','\t'}, //01 esc
-{'q','w','e','r','t','y','u','i','o','p','[',']','\n',ZERO,'a','s'}, //L control
-{'d','f','g','h','j','k','l',';','\'','`',ZERO,'\\','z','x','c','v'}, // L shift
-{'b','n','m',',','.','/',ZERO,'*',ZERO,' ',ZERO,ZERO,ZERO,ZERO,ZERO,ZERO}, // R shift, L alt, Caps, f1, f2, f3, f4, f5
-{ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'-',ZERO,'5',ZERO,'+',ZERO}, //f6-f10, Num Lock
+{ZERO,ZERO,'1','2','3','4','5','6','7','8','9','0','-','=','\b','\t'}, 
+{'q','w','e','r','t','y','u','i','o','p','[',']','\n',ZERO,'a','s'}, 
+{'d','f','g','h','j','k','l',';','\'','`',ZERO,'\\','z','x','c','v'}, 
+{'b','n','m',',','.','/',ZERO,'*',ZERO,' ',ZERO,ZERO,ZERO,ZERO,ZERO,ZERO},
+{ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,'-',ZERO,'5',ZERO,'+',
+ZERO}, 
 }; 
 
 static unsigned char spKeyKeyboard[KEYMAPROWS][KEYMAPSCOLS] = {	
@@ -114,7 +115,9 @@ void putinbuffer(unsigned char ascii){
 		//__write(STD_OUT,keyboard_buffer,last-first);
 }
 
-void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax, int eip) {	
+void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, 
+	int ds, int ss, int edi, int esi, int ebp, int esp, int ebx, 
+	int edx, int ecx, int eax, int eip) {	
     unsigned char ascii=ZERO;
    	int specialkeynum=-1; 
    	int specialindex;
@@ -136,9 +139,12 @@ void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, in
 		if(isAscii(ascii)){
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					int x=scancode/KEYMAPSCOLS;
+					int y=scancode%KEYMAPSCOLS;
+					ascii=spKeyKeyboard[x][y];
 				}
-				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){					
+				else if(specialKey[Ctrl-LOCKSKEYS] && 
+					(ascii=='r'||ascii=='R') ){					
 					// CONTROL+R
 					rprintf("%s%i\t","eax:",eax);			
 					rprintf("%s%i\t","ebx:",ebx);
@@ -159,7 +165,10 @@ void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, in
 				}						
 			}
 			if(specialKey[Shift-LOCKSKEYS]){
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+
+					int x=scancode/KEYMAPSCOLS;
+					int y=scancode%KEYMAPSCOLS;
+					ascii=spKeyKeyboard[x][y];
 				}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){

@@ -71,15 +71,18 @@ typedef struct {
 void __init_graphics();
 
 int __paint_area(int disp, colour backgroundColour, colour textColour);
-void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, colour backgroundColour, colour textColour);
+void __bounded_paint_area(int minRow, int maxRow, int minCol, int maxCol, 
+	colour backgroundColour, colour textColour);
 
 size_t __print(int disp, const void * buffer, size_t count);
-size_t __bounded_print(int minRow, int maxRow, bool usesVB, int * offset, const void* buffer, size_t count);
+size_t __bounded_print(int minRow, int maxRow, bool usesVB, int * offset,
+ const void* buffer, size_t count);
 void __bounded_print_char(int minRow, int * offset, char c);
 void __bounded_print_char_noVB(int minRow, int * offset, char c);
 
 
-size_t __test_print(int minRow, int maxRow, int * offset, const void* buffer, size_t count);
+size_t __test_print(int minRow, int maxRow, int * offset, 
+	const void* buffer, size_t count);
 void __test_print_char(int minRow, int * offset, char c);
 
 void __shift_up(int minRow, int maxRow, int *offset, int rows);
