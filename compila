@@ -3,7 +3,7 @@ rm -rf *
 nasm -f aout ../src/libasm.asm -o libasm.o
 nasm -f aout ../src/kstart.asm -o kstart.o
 nasm -f aout ../src/loader.asm -o kstart.o
-nasm -f aout ../src/ejectCD.asm -o ejectCD.o
+nasm -f aout ../src/arq.asm -o arq.o
 gcc -c ../src/kernel.c -o kernel.o -fno-builtin  -fno-stack-protector
 gcc -c ../src/libc.c  -o libc.o -fno-builtin  -fno-stack-protector
 gcc -c ../src/inthandlers.c -o inthandlers.o -fno-builtin  -fno-stack-protector
@@ -14,4 +14,4 @@ gcc -c ../src/shell.c -o shell.o -fno-builtin  -fno-stack-protector
 gcc -c ../src/stdio.c -o stdio.o -fno-builtin  -fno-stack-protector
 gcc -c ../src/string.c -o string.o -fno-builtin  -fno-stack-protector
 gcc -c ../src/atapi.c -o atapi.o -fno-builtin  -fno-stack-protector
-ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o inthandlers.o sysio.o keyboard.o video.o shell.o stdio.o string.o atapi.o ejectCD.o
+ld -T ../src/link.ld -o kernel.bin kernel.o kstart.o libc.o libasm.o inthandlers.o sysio.o keyboard.o video.o shell.o stdio.o string.o atapi.o arq.o

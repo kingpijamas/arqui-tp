@@ -42,17 +42,60 @@ kmain() {
 	// ata_identify(0x1F0,0xB0);
 
 	// atapi_drive_start_stop();
+	int CD_BUS;
+	int CD_DRIVE;
 
+	int ata;
+	int j;
 	while(true) {
-		
+			
 		printf("hola");
-		// ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_SLAVE);
+		// ata_sreset(ATA_BUS_SECONDARY);
+		// ata_sreset(ATA_BUS_PRIMARY);
 
-		ata_sreset(ATA_BUS_PRIMARY);
+		
+		rprintf("Slave secundario:");
+		ata=ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_SLAVE);
+		if(ata==ISCD){
+			CD_BUS=ATA_BUS_SECONDARY;
+			CD_DRIVE=ATA_DRIVE_SLAVE;
+		}
+		rprintf("%d\n", ata);
+
+		rprintf("Master Secundario:");
+		ata=ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
+		if(ata==ISCD){
+			CD_BUS=ATA_BUS_SECONDARY;
+			CD_DRIVE=ATA_DRIVE_SLAVE;
+		}
+		rprintf("%d\n", ata);
+
+		rprintf("Slave primario:");
+		ata=ata_identify(ATA_BUS_PRIMARY,ATA_DRIVE_SLAVE);
+		if(ata==ISCD){
+			CD_BUS=ATA_BUS_SECONDARY;
+			CD_DRIVE=ATA_DRIVE_SLAVE;
+		}
+		rprintf("%d\n", ata);
+
+		rprintf("Master Primario:");
+		ata=ata_identify(ATA_BUS_PRIMARY,ATA_DRIVE_MASTER);
+		if(ata==ISCD){
+			CD_BUS=ATA_BUS_SECONDARY;
+			CD_DRIVE=ATA_DRIVE_SLAVE;
+		}
+		rprintf("%d\n",ata);
+		printf("%x\n",CD_BUS);
+		printf("%x\n",CD_DRIVE);
+
 		ata_sreset(ATA_BUS_SECONDARY);
+		ata_sreset(ATA_BUS_PRIMARY);
+		
+		// atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_SECONDARY);
+		rprintf("closing");
 		_ejectCD();
 		// int size=atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_SECONDARY);
-		printf("hola2");
+		printf("fin");
 		// rprintf("%d",size);
 
 		// char ch='\0';

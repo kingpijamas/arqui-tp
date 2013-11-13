@@ -1,10 +1,10 @@
  #include "../include/sysio.h"
  #include "../include/i386.h"
 
-  typedef unsigned char uint8;
-  typedef unsigned short uint16;
-  typedef unsigned int uint32;
-  typedef unsigned long long int uint64;
+ typedef unsigned char uint8;
+ typedef unsigned short uint16;
+ typedef unsigned int uint32;
+ typedef unsigned long long int uint64;
 
  typedef struct
  {
@@ -14,7 +14,7 @@
  extern ata_info pata_drives[4];
 
  /* The default and seemingly universal sector size for CD-ROMs. */
-  #define ATAPI_SECTOR_SIZE 2048
+ #define ATAPI_SECTOR_SIZE 2048
 
  
  #define ATA_BUS_PRIMARY     0x1F0
@@ -55,7 +55,8 @@
  #define ATA_TYPE_SATA 3
  #define ATA_TYPE_SATAPI 4
 
-
+#define NOTCD 0
+#define ISCD 1
   /* ATA specifies a 400ns delay after drive switching -- often
    * implemented as 4 Alternative Status queries. */
   #define ATA_SELECT_DELAY(bus) \

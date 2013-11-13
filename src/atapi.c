@@ -53,34 +53,34 @@
  void ata_sreset (uint32 bus)
 {
   //Set the SRST bit to initiate the software reset protocol
-   outb (0x02, ATA_DCR (bus));
+   outb (ATA_DCR (bus),0x02);
    //Clear SRST
-   outb (0x00, ATA_DCR (bus));
+   outb (ATA_DCR (bus),0x0);
  }
 
 void
 ata_drive_select (uint32 bus, uint32 drive)
  {
-   outb (drive, ATA_DRIVE_SELECT (bus));
+   outb (ATA_DRIVE_SELECT (bus),drive);
    ATA_SELECT_DELAY (bus);
  }
 
   int atapi_drive_startstop(uint32 drive,uint32 bus){
-     printf("\n%s\n","entre");
+    printf("\n%s\n","entre");
    //Operation code and bit 1 of byte 4 -LoEj(eject)- as 1.
    uint8 startstop_cmd[12]={0x1B,0,0,0,2,0,0,0,0,0,0,0}; 
    uint8 allowremoval_cmd[12]={0x1E,0,0,0,0,0,0,0,0,0,0,0};
    uint8 status;
  
-   rprintf("%x",status);
 
-   while((status=inb(ATA_COMMAND(bus))) & 0x80){
-    rprintf("while1");
-    //BUSY
-    // If the first bit of the status register (BUSY) isn't 0, the device is busy,
-    // so keep looping until it isn't.
-   }
-   // // _Cli();
+   // while((status=inb(ATA_COMMAND(bus))) & 0x80){
+   //  rprintf("while1-busy");
+   //  //BUSY
+   //  // If the first bit of the status register (BUSY) isn't 0, the device is busy,
+   //  // so keep looping until it isn't.
+   // }
+
+    // // _Cli();
    // while(!((status=inb(ATA_COMMAND(bus))) & 0x60)){
    //  rprintf("%x%s",status,"2");
    //  //NOT READY
@@ -90,10 +90,11 @@ ata_drive_select (uint32 bus, uint32 drive)
    //    return -1;
    // }
 
+   ata_drive_select (bus, drive);
    //TODO reemplazar por drive
-   outb(ATA_DRIVE_SELECT(bus),0x10); //0 master, 10h slave
+   // outb(ATA_DRIVE_SELECT(bus),0x10); //0 master, 10h slave
 
-   outb(ATA_FEATURES(bus),0x0);
+   outb(ATA_FEATURES(bus),0);
 
    /* Set Nien on device control register to 1 to skip waiting state. 
    nIEN is the second bit from the right here */
@@ -104,39 +105,59 @@ ata_drive_select (uint32 bus, uint32 drive)
    //wait 400ns
    ATA_SELECT_DELAY(bus);
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
+   rprintf("while1");
     }
    while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+    rprintf("while2");
     //DATA TRANSFER REQUESTED
    }
    
 
   /* Send ATAPI/SCSI command as 6 words, to the data port */
-   outsw(ATA_DATA(bus), (uint16 *)allowremoval_cmd,6);
-  //wait 400ns
-   ATA_SELECT_DELAY(bus);
+   // outsw(ATA_DATA(bus), (uint16 *)allowremoval_cmd,6);
+  outb(ATA_DATA(bus),0x1E);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),0);
+
    // inb(ATA_DCR(bus));
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
+   rprintf("while1-allow removal");
    //BUSY
    }
    while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+    rprintf("while2-allow removal");
     //DATA TRANSFER REQUESTED
    }
 
     outb(ATA_COMMAND(bus),0xA0);   
    //wait 400ns
-   ATA_SELECT_DELAY(bus);
+   // ATA_SELECT_DELAY(bus);
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
+     rprintf("while1-2");
     }
    while(!(status=inb(ATA_COMMAND(bus)) & 0x8)){
+    rprintf("while2-2");
     //DATA TRANSFER REQUESTED
    }
 
+
   /* Send ATAPI/SCSI command as 6 words, to the data port */
-   outsw(ATA_DATA(bus), (uint16 *)startstop_cmd,6);
+   // outsw(ATA_DATA(bus), (uint16 *)startstop_cmd,6);
+  outb(ATA_DATA(bus),0x1B);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),2);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),0);
+  outb(ATA_DATA(bus),0);  
+
   //wait 400ns
-   ATA_SELECT_DELAY(bus);
+   // ATA_SELECT_DELAY(bus);
    // inb(ATA_DCR(bus));
    while(status=inb(ATA_COMMAND(bus)) & 0x80){
+     rprintf("while 1 -BUSY- startstop_cmd");
    //BUSY
    }
 
@@ -228,128 +249,109 @@ ata_drive_select (uint32 bus, uint32 drive)
 //    // ATA_SELECT_DELAY (bus);
 //  }
 
+/* Use the ATA IDENTIFY command to find out what kind of drive is
+* attached to the given bus/slot.  */
+uint32
+ata_identify (uint32 bus, uint32 drive)
+ {
+   uint8 status;
+   uint16 buffer[256];
 
-//  /* IRQ handler for both drive controllers. */
-//  static uint32
-//  ata_irq_handler (uint8 vec)
-//  {
-//    // lock_kernel ();
-//    // DLOG ("ata_irq_handler(%x) ata_current_task=%x", vec,
-//          // ata_current_task);
-//    if (vec == ATA_VECTOR_PRIMARY)
-//      ata_primary_irq_count++;
-//    else
-//      ata_secondary_irq_count++;
- 
-//    if (irq_start != 0)
-//      ata_irq_count++;
- 
-//    uint64 finish;
-//    // RDTSC (finish);
-//    if (irq_start != 0) {
-//      irq_response += finish - irq_start;
-//      if (irq_resp_max < finish - irq_start)
-//        irq_resp_max = finish - irq_start;
-//      if (irq_resp_min > finish - irq_start)
-//        irq_resp_min = finish - irq_start;
-//    }
- 
-//    // /* Unblock the task waiting for the IRQ. */
-//    // if (ata_current_task)
-//    //   wakeup (ata_current_task);
- 
-//    // unlock_kernel ();
-//    return 0;
-//  }
+   
+   ata_drive_select (bus, drive);
 
+   // while(!(status=inb(ATA_COMMAND(bus)) & 0x60)){
+   //  rprintf("loop0");
+   // }
 
-  // /* Use the ATA IDENTIFY command to find out what kind of drive is
-  // * attached to the given bus/slot.  */
-// uint32
-// ata_identify (uint32 bus, uint32 drive)
-//  {
-//    uint8 status;
-//    uint16 buffer[256];
+   outb (ATA_COMMAND (bus),0xEC);       /* Send IDENTIFY command */
+   
+   ATA_SELECT_DELAY (bus);
  
-//    ata_drive_select (bus, drive);
+   status = inb (ATA_COMMAND (bus));
+   if (status == 0) {
+     // rprintf ("ATA bus %X drive %X does not exist\n", bus, drive);
+     return NOTCD;
+   }
  
-//    outb (0xEC, ATA_COMMAND (bus));       /* Send IDENTIFY command */
+   if (status & 0x1) {
+     /* Drive does not support IDENTIFY.  Probably a CD-ROM. */
+     goto guess_identity;
+   }
  
-//    ATA_SELECT_DELAY (bus);
+   /* Poll the Status port (0x1F7) until bit 7 (BSY, value = 0x80)
+    * clears, and bit 3 (DRQ, value = 8) sets -- or until bit 0 (ERR,
+    * value = 1) sets. */
  
-//    status = inb (ATA_COMMAND (bus));
-//    if (status == 0) {
-//      rprintf ("ATA bus %X drive %X does not exist\n", bus, drive);
-//      return ATA_TYPE_NONE;
-//    }
- 
-//    if (status & 0x1) {
-//      /* Drive does not support IDENTIFY.  Probably a CD-ROM. */
-//      goto guess_identity;
-//    }
- 
-//    /* Poll the Status port (0x1F7) until bit 7 (BSY, value = 0x80)
-//     * clears, and bit 3 (DRQ, value = 8) sets -- or until bit 0 (ERR,
-//     * value = 1) sets. */
- 
-//    while ((status = inb (ATA_COMMAND (bus))) & 0x80)     /* BUSY */
-//      asm volatile ("pause");
- 
-//    while (!((status = inb (ATA_COMMAND (bus))) & 0x8) && !(status & 0x1))
-//      asm volatile ("pause");
- 
-//    if (status & 0x1) {
-//      rprintf ("ATA bus %X drive %X caused error.\n", bus, drive);
-//      goto guess_identity;
-//    }
- 
-//    /* Read 256 words */
-//    insw (ATA_DATA (bus), buffer, 256);
- 
-//  #ifdef DEBUG_ATA
-//    {
-//      int i, j;
- 
-//      DLOG ("IDENTIFY (bus: %X drive: %X) command output:", bus, drive);
-//      /* dump to com1 */
-//      for (i = 0; i < 32; i++) {
-//        for (j = 0; j < 8; j++) {
-//         rprintf ("%.4X ", buffer[i * 32 + j]);
-//        }
-//        rprintf ("\n");
-//      }
-//    }
-//  #endif
- 
-//    if (buffer[83] & (1 << 10))
-//      rprintf ("LBA48 mode supported.\n");
-//    rprintf ("LBA48 addressable sectors: %.4X %.4X %.4X %.4X\n",
-//                   buffer[100], buffer[101], buffer[102], buffer[103]);
-//    return ATA_TYPE_PATA;
+   while ((status = inb (ATA_COMMAND (bus))) & 0x80){
+     asm volatile ("pause");
+     // printf("%s\n","busy");
+   }     /* BUSY */
 
-//      guess_identity:{
-//      uint8 b1, b2;
+  while (!((status = inb (ATA_COMMAND (bus))) & 0x8) && !(status & 0x01)){
+     // printf("%x",status);
+     asm volatile ("pause");
+  }
+
+  if (status & 0x1) {
+    // rprintf ("ATA bus %X drive %X caused error.\n", bus, drive);
+    goto guess_identity;
+  }
  
-//      b1 = inb (ATA_ADDRESS2 (bus));
-//      b2 = inb (ATA_ADDRESS3 (bus));
+   /* Read 256 words */
+   insw (ATA_DATA (bus), buffer, 256);
  
-//      rprintf ("ata_detect: %.2X %.2X\n", b1, b2);
+ #ifdef DEBUG_ATA
+   {
+     int i, j;
  
-//      if (b1 == 0x14 && b2 == 0xEB) {
-//        rprintf("P-ATAPI detected\n");
-//        return ATA_TYPE_PATAPI;
-//      }
-//      if (b1 == 0x69 && b2 == 0x96) {
-//        rprintf ("S-ATAPI detected\n");
-//        return ATA_TYPE_SATAPI;
-//      }
-//      if (b1 == 0x3C && b2 == 0xC3) {
-//        rprintf ("SATA detected\n");
-//        return ATA_TYPE_SATA;
-//      }
-//      return ATA_TYPE_NONE;
-//    }
-// }
+     // DLOG ("IDENTIFY (bus: %X drive: %X) command output:", bus, drive);
+     /* dump to com1 */
+     for (i = 0; i < 32; i++) {
+       for (j = 0; j < 8; j++) {
+        rprintf ("%.4X ", buffer[i * 32 + j]);
+       }
+       rprintf ("\n");
+     }
+   }
+ #endif
+ 
+   if (buffer[83] & (1 << 10))
+   // rprintf ("LBA48 mode supported.\n");
+   // rprintf ("LBA48 addressable sectors: %.4X %.4X %.4X %.4X\n",
+   //                buffer[100], buffer[101], buffer[102], buffer[103]);
+   rprintf("not a cd");   
+   return NOTCD;
+
+  guess_identity:{
+     uint8 b1, b2;
+ 
+     b1 = inb (ATA_ADDRESS2 (bus));
+     b2 = inb (ATA_ADDRESS3 (bus));
+      
+     // rprintf ("ata_detect: %.2X %.2X\n", b1, b2);
+ 
+     if (b1 == 0x14 && b2 == 0xEB) {
+       rprintf("is a CD");
+       // rprintf("P-ATAPI detected\n");
+       return ISCD;
+     }
+
+     //TODO: probar eliminar estos
+     if (b1 == 0x69 && b2 == 0x96) {
+      rprintf("is a CD");
+       // rprintf ("S-ATAPI detected\n");
+       return ISCD;
+     }
+     if (b1 == 0x3C && b2 == 0xC3) {
+       rprintf("is a CD");
+       // rprintf ("SATA detected\n");
+       return ISCD;
+     }
+     rprintf("NOT a CD");
+     return NOTCD;
+   }
+}
 
 //  //Code taken from http://wiki.osdev.org/Inline_Assembly/Examples
 // static inline unsigned char inb( unsigned short port ) {
