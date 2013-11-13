@@ -5,8 +5,9 @@ GLOBAL 	_infoCD
 SECTION .text
 align 4
 
+
 doNothing:
-    mov ebx, 100000
+    mov ebx, 65000
 loop3:
     dec ebx
     cmp ebx, 0
@@ -44,19 +45,19 @@ _ejectCD:
 
     call isBSY
 
-    mov dx, 0x176
+    mov dx, 0x1f6
     mov al, 10h
     out dx, al 
 
-    mov dx, 0x171
+    mov dx, 0x1f1
     mov al, 0
     out dx, al 
 
-MOV DX, 376h ;Device Control register
-MOV AL, 00001010b ;nIEN is the second bit from the right here
-OUT DX, AL ;nIEN is now one!
+	MOV DX, 3F6h ;Device Control register
+	MOV AL, 00001010b ;nIEN is the second bit from the right here
+	OUT DX, AL ;nIEN is now one!
 
-    mov dx, 0x177
+    mov dx, 0x1f7
     mov al, 0xA0 ;ATAPI COMMAND
     out dx, al 
 
@@ -65,7 +66,7 @@ OUT DX, AL ;nIEN is now one!
     call isBSY
     call isDRQ
 
-    mov dx, 0x170
+    mov dx, 0x1f0
     mov ax, 0x1E
     out dx, ax
 
@@ -87,14 +88,14 @@ OUT DX, AL ;nIEN is now one!
     call isBSY
     call isDRDY
 
-    mov dx, 0x177
+    mov dx, 0x1f7
     mov al, 0xA0
     out dx, al
 
     call isBSY
     call isDRQ
 
-    mov dx, 0x170
+    mov dx, 0x1f0
     mov ax, 1Bh
     out dx, ax
 

@@ -54,42 +54,42 @@ kmain() {
 		// ata_sreset(ATA_BUS_PRIMARY);
 
 		
-		rprintf("Slave secundario:");
-		ata=ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_SLAVE);
-		if(ata==ISCD){
-			CD_BUS=ATA_BUS_SECONDARY;
-			CD_DRIVE=ATA_DRIVE_SLAVE;
-		}
-		rprintf("%d\n", ata);
+		// rprintf("Slave secundario:");
+		// ata=ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_SLAVE);
+		// if(ata==ISCD){
+		// 	CD_BUS=ATA_BUS_SECONDARY;
+		// 	CD_DRIVE=ATA_DRIVE_SLAVE;
+		// }
+		// rprintf("%d\n", ata);
 
-		rprintf("Master Secundario:");
-		ata=ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
-		if(ata==ISCD){
-			CD_BUS=ATA_BUS_SECONDARY;
-			CD_DRIVE=ATA_DRIVE_SLAVE;
-		}
-		rprintf("%d\n", ata);
+		// rprintf("Master Secundario:");
+		// ata=ata_identify(ATA_BUS_SECONDARY,ATA_DRIVE_MASTER);
+		// if(ata==ISCD){
+		// 	CD_BUS=ATA_BUS_SECONDARY;
+		// 	CD_DRIVE=ATA_DRIVE_SLAVE;
+		// }
+		// rprintf("%d\n", ata);
 
-		rprintf("Slave primario:");
-		ata=ata_identify(ATA_BUS_PRIMARY,ATA_DRIVE_SLAVE);
-		if(ata==ISCD){
-			CD_BUS=ATA_BUS_SECONDARY;
-			CD_DRIVE=ATA_DRIVE_SLAVE;
-		}
-		rprintf("%d\n", ata);
+		// rprintf("Slave primario:");
+		// ata=ata_identify(ATA_BUS_PRIMARY,ATA_DRIVE_SLAVE);
+		// if(ata==ISCD){
+		// 	CD_BUS=ATA_BUS_SECONDARY;
+		// 	CD_DRIVE=ATA_DRIVE_SLAVE;
+		// }
+		// rprintf("%d\n", ata);
 
-		rprintf("Master Primario:");
-		ata=ata_identify(ATA_BUS_PRIMARY,ATA_DRIVE_MASTER);
-		if(ata==ISCD){
-			CD_BUS=ATA_BUS_SECONDARY;
-			CD_DRIVE=ATA_DRIVE_SLAVE;
-		}
-		rprintf("%d\n",ata);
-		printf("%x\n",CD_BUS);
-		printf("%x\n",CD_DRIVE);
+		// rprintf("Master Primario:");
+		// ata=ata_identify(ATA_BUS_PRIMARY,ATA_DRIVE_MASTER);
+		// if(ata==ISCD){
+		// 	CD_BUS=ATA_BUS_SECONDARY;
+		// 	CD_DRIVE=ATA_DRIVE_SLAVE;
+		// }
+		// rprintf("%d\n",ata);
+		// printf("%x\n",CD_BUS);
+		// printf("%x\n",CD_DRIVE);
 
-		ata_sreset(ATA_BUS_SECONDARY);
-		ata_sreset(ATA_BUS_PRIMARY);
+		// ata_sreset(ATA_BUS_SECONDARY);
+		// ata_sreset(ATA_BUS_PRIMARY);
 		
 		// atapi_drive_startstop(ATA_DRIVE_SLAVE,ATA_BUS_SECONDARY);
 		rprintf("closing");
