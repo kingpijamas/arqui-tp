@@ -3,9 +3,6 @@
 #include "../include/defs.h"
 #include "../include/keyboard.h"
 
-//TODO Just for testing purpose.
-#include "../include/kernel.h"
-
 
 static unsigned char keyboard_buffer[SIZE_BUFFER];
 static int last=0; 
