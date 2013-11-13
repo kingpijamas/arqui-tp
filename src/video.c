@@ -8,8 +8,6 @@ static colour STD_DISPLAY_text_colour          =    DEFAULT_STD_DISPLAY_TEXT_COL
 static colour REG_DISPLAY_background_colour    =    DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR;
 static colour REG_DISPLAY_text_colour          =    DEFAULT_REG_DISPLAY_TEXT_COLOUR;
 
-//TODO dont forget to shift this buffer up when the screen is shifted upwards
-//TODO since it doesn't make much sense to have a video buffer for the reg_disp, maybe this should be implied in the name
 static VBElem video_buffer[VIDEO_BUFFER_SIZE]={{'\0',-1}};
 static int vbindex=0;
 
@@ -89,9 +87,8 @@ void __bounded_print_char(int minRow, int * offset, char c){
         case '\n':
             __setOffset(offset,__getRowOf(*offset)+1,0);
             break;
-        case '\t'://FIXME: \t length bug when on the screen's edge
+        case '\t':
             for(tab=0; tab<TAB_LENGTH && (__getColOf(*offset)+tab)<=MAX_COL; tab++){
-                // rprintf("getCol+tab=%d maxCol=%d\n",__getColOf(*offset)+tab,MAX_COL);
                 video[((*offset)++)*2]=TAB_CHAR;
             }
             break;
@@ -193,7 +190,7 @@ int __set_cursor_position(int offset){
     outb(BASE_PORT, 0x0E);
     outb(BASE_PORT+1, (unsigned char )((position>>8)&0xFF));
 
-    return 0;//TODO
+    return 0;
 }
 
 int __getRowOf(int offset){

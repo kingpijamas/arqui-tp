@@ -70,7 +70,7 @@ int vfprintf(FILE stream, const char *format, va_list vlist){
 						written+=__printString(stream,va_arg(vlist,char *));
 						break;
 					case 'd':
-					case 'i'://TODO precision
+					case 'i':
 						written+=__printDecimal(stream,va_arg(vlist,int));
 						break;
 					case 'o':
@@ -126,7 +126,6 @@ int __printDigit(FILE stream, int d, int base, bool caps){
 			return iputc('A'+d-10, stream);
 		}
 	}
-	//TODO will never happen
 	return 0;
 }
 
@@ -262,7 +261,6 @@ int scanfbase(int* arg, char curr, int base){
 	return i==0?0:1;
 }
 
-//TODO test arg for %d %o %x (with printf %i)
 int vscanf(const char * format, va_list args){
 
 	char c,curr;

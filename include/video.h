@@ -8,7 +8,6 @@
 
 #define VIDEO_BUFFER_SIZE		VIDEO_AREA(WIDTH,STD_DISPLAY_HEIGHT)
 
-//FIXME all these should be some sort of enum
 #define INVALID_DISPLAY 		-1
 #define INVALID_CURSOR			-2
 

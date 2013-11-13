@@ -4,6 +4,7 @@
 #include "../include/stdio.h"
 #include "../include/stdlib.h"
 #include "../include/string.h"
+#include "../include/kasm.h"
 
 static const char logo[][80]={
 	"       _                            ____    _____ ",

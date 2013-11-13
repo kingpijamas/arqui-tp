@@ -15,6 +15,6 @@ size_t int_80(int sysCallNo, void ** args) {
 		case SYS_READ:
 			return __sys_read((int)args[0],(void*)args[1],(int)args[2]);
 		default:
-			return -1;	//FIXME
+			return -1;
 	}
 }

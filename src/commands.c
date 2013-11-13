@@ -62,14 +62,14 @@ void printf_test_cmd(int argc, char ** args){
 	printf("\tThis: *\n*\t\t  is a \\n\n");
 }
 
-void getChar_test_cmd(int argc, char ** args){//FIXME!
+void getChar_test_cmd(int argc, char ** args){
 	printf("Testing getChar..\n\n");
 
 	printf("Please type a character:\n\n");
 	printf("You typed...'%c'\n\n",getChar());
 }
 
-void scanf_test_cmd(int argc, char ** args){//FIXME!
+void scanf_test_cmd(int argc, char ** args){
 	printf("Testing scanf..\n\n");
 
 	char c;
@@ -88,12 +88,12 @@ void scanf_test_cmd(int argc, char ** args){//FIXME!
 	printf("You typed...\"%s\"\n\n",ans);
 }
 
-void openCD_cmd(int argc, char ** args){//TODO
+void openCD_cmd(int argc, char ** args){
 	_ejectCD();
 }
-void infoCD_cmd(int argc, char ** args){//TODO
+void infoCD_cmd(int argc, char ** args){
 	_infoCD();
 }
-void closeCD_cmd(int argc, char ** args){//TODO
+void closeCD_cmd(int argc, char ** args){
 	_closeCD();
 }
