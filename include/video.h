@@ -6,7 +6,7 @@
 #define VIDEO_ADDRESS			0xb8000
 #define BASE_PORT				0x3D4
 
-#define VIDEO_BUFFER_SIZE		MAX(VIDEO_AREA(WIDTH,REG_DISPLAY_HEIGHT),VIDEO_AREA(WIDTH,STD_DISPLAY_HEIGHT))
+#define VIDEO_BUFFER_SIZE		VIDEO_AREA(WIDTH,STD_DISPLAY_HEIGHT))
 
 //FIXME all these should be some sort of enum
 #define INVALID_DISPLAY 		-1
@@ -60,7 +60,6 @@
 #define DEFAULT_REG_DISPLAY_BACKGROUND_COLOUR	MAGENTA
 #define DEFAULT_REG_DISPLAY_TEXT_COLOUR			WHITE
 
-#define MAX(x,y)								(x>y)? x:y
 #define VIDEO_AREA(width,height)				(width*height)
 
 typedef char colour;
