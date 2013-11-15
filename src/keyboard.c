@@ -155,7 +155,7 @@ void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, in
 					rprintf("ebp:%i\t",ebp);
 					rprintf("esp:%i\t",esp);
 					rprintf("eip:%i\n",eip);
-					rprintf("\n\n\n\n\n");
+					//rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
 					return;
 				}						
 			}
