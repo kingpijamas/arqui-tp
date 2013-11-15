@@ -140,21 +140,22 @@ void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, in
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){					
 					// CONTROL+R
-					rprintf("%s%i\t","eax:",eax);			
-					rprintf("%s%i\t","ebx:",ebx);
-					rprintf("%s%i\n","ecx:",ecx);
-					rprintf("%s%i\t","edx:",edx);
-					rprintf("%s%i\t","cs:",cs);
-					rprintf("%s%i\n","gs:",gs);
-					rprintf("%s%i\t","fs:",fs);
-					rprintf("%s%i\t","es:",es);
-					rprintf("%s%i\n","ds:",ds);
-					rprintf("%s%i\t","ss:",ss);
-					rprintf("%s%i\t","edi:",edi);
-					rprintf("%s%i\n","esi:",esi);
-					rprintf("%s%i\t","ebp:",ebp);
-					rprintf("%s%i\t","esp:",esp);
-					rprintf("%s%i\n","eip:",eip);
+					rprintf("eax:%i\t\t",eax);			
+					rprintf("ebx:%i\t\t",ebx);
+					rprintf("ecx:%i\n",ecx);
+					rprintf("edx:%i\t\t",edx);
+					rprintf("cs:%i\t",cs);
+					rprintf("gs:%i\n",gs);
+					rprintf("fs:%i\t",fs);
+					rprintf("es:%i\t",es);
+					rprintf("ds:%i\n",ds);
+					rprintf("ss:%i\t",ss);
+					rprintf("edi:%i\t",edi);
+					rprintf("esi:%i\n",esi);
+					rprintf("ebp:%i\t",ebp);
+					rprintf("esp:%i\t",esp);
+					rprintf("eip:%i\n",eip);
+					rprintf("\n\n\n\n\n");
 					return;
 				}						
 			}

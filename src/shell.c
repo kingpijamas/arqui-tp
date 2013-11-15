@@ -103,8 +103,8 @@ void __load_shell_buffer(int promptLength){
 			printed+=iputc(shell_buffer[i],STD_OUT);
 
 			if(printed==LINE_WIDTH){
-				printf("\n");
-				printed=0;
+				// printf("\n");
+				// printed=0;
 			}
 
 			i++;
