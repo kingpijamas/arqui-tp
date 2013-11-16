@@ -76,7 +76,8 @@ _int_09_hand:
         push es
         push fs
         push gs
-        push cs
+        mov eax,[esp] ;eip
+        push eax
 
         mov eax,0
         in al, 60h
@@ -88,7 +89,7 @@ _int_09_hand:
         mov al,20h ; EOI command code
         out 20h,al ; IO base address for master pic
         
-        pop eax ;eax=cs
+        pop eax
         pop gs
         pop fs
         pop es

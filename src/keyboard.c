@@ -114,7 +114,7 @@ void putinbuffer(unsigned char ascii){
 		//__write(STD_OUT,keyboard_buffer,last-first);
 }
 
-void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax, int eip) {	
+void forBuffer(unsigned char scancode, int eip, short int gs, short int fs, short int es, short int ds, short int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax){
     unsigned char ascii=ZERO;
    	int specialkeynum=-1; 
    	int specialindex;
@@ -144,7 +144,7 @@ void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, in
 					rprintf("ebx:%i\t\t",ebx);
 					rprintf("ecx:%i\n",ecx);
 					rprintf("edx:%i\t\t",edx);
-					rprintf("cs:%i\t",cs);
+					// rprintf("cs:%i\t",cs);
 					rprintf("gs:%i\n",gs);
 					rprintf("fs:%i\t",fs);
 					rprintf("es:%i\t",es);
@@ -155,7 +155,7 @@ void forBuffer(unsigned char scancode, int cs,int gs, int fs, int es, int ds, in
 					rprintf("ebp:%i\t",ebp);
 					rprintf("esp:%i\t",esp);
 					rprintf("eip:%i\n",eip);
-					//rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
+					rprintf("\n"); //TODO: check if this stays or not
 					return;
 				}						
 			}
