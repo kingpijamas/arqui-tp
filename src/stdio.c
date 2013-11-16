@@ -163,7 +163,7 @@ bool isNumber(char c){
 }
 
 int scanfdecimal(int* arg, char curr){
-	int i=0; bool sign;
+	int i=0; bool sign=false;
 	
 	if(curr=='-'){
 		sign=true;
