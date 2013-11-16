@@ -76,7 +76,10 @@ _int_09_hand:
 
         push eax
 
-        mov eax,[ebp] ;eip
+        mov eax,[ebp+0xC] ;flags
+        push eax
+
+        mov eax,[ebp+4] ;eip
         push eax
 
         mov eax,[ebp+8] ;cs
