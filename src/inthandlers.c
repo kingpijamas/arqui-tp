@@ -3,7 +3,7 @@
 void int_08() {
 }
 
-void int_09(unsigned char scancode, short unsigned int gs, short unsigned int fs, short unsigned int es, short unsigned int ds, short unsigned int ss, int edi, int esi, int ebx, int edx, int ecx, int esp, short unsigned int cs, int eip,int eax, int flags, int ebp){
+void int_09(unsigned char scancode, short unsigned int gs, short unsigned int fs, short unsigned int es, short unsigned int ds, short unsigned int ss, int edi, int esi, int ebx, int edx, int ecx, int esp, short unsigned int cs, int eip,int eax, unsigned short int flags, int ebp){
 	forBuffer(scancode,gs,fs,es,ds,ss,edi,esi,ebx,edx,ecx,esp,cs,eip,eax,flags,ebp);
 
 }

@@ -121,9 +121,11 @@ _int_09_hand:
         pop ecx
         pop eax ;esp
              
-        pop eax ;eip
         pop eax ;cs
-        pop eax
+        pop eax ;eip
+        pop eax ;flags
+
+        pop eax ;eax
         
         mov esp,ebp
         pop ebp
