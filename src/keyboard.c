@@ -114,7 +114,7 @@ void putinbuffer(unsigned char ascii){
 		//__write(STD_OUT,keyboard_buffer,last-first);
 }
 
-void forBuffer(unsigned char scancode, int eip, short int gs, short int fs, short int es, short int ds, short int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax){
+void forBuffer(unsigned char scancode, short int cs, int eip, short int gs, short int fs, short int es, short int ds, short int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax){
     unsigned char ascii=ZERO;
    	int specialkeynum=-1; 
    	int specialindex;
@@ -144,16 +144,16 @@ void forBuffer(unsigned char scancode, int eip, short int gs, short int fs, shor
 					rprintf("ebx:%i\t\t",ebx);
 					rprintf("ecx:%i\n",ecx);
 					rprintf("edx:%i\t\t",edx);
-					// rprintf("cs:%i\t",cs);
+					rprintf("cs:%i\t\t",cs);
 					rprintf("gs:%i\n",gs);
-					rprintf("fs:%i\t",fs);
-					rprintf("es:%i\t",es);
+					rprintf("fs:%i\t\t",fs);
+					rprintf("es:%i\t\t",es);
 					rprintf("ds:%i\n",ds);
-					rprintf("ss:%i\t",ss);
-					rprintf("edi:%i\t",edi);
+					rprintf("ss:%i\t\t",ss);
+					rprintf("edi:%i\t\t",edi);
 					rprintf("esi:%i\n",esi);
-					rprintf("ebp:%i\t",ebp);
-					rprintf("esp:%i\t",esp);
+					rprintf("ebp:%i\t\t",ebp);
+					rprintf("esp:%i\t\t",esp);
 					rprintf("eip:%i\n",eip);
 					rprintf("\n"); //TODO: check if this stays or not
 					return;
