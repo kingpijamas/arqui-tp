@@ -8,6 +8,7 @@ EXTERN  int_08
 EXTERN  int_80
 EXTERN  dummy_handler
 EXTERN  int_09
+EXTERN __write
 
 SECTION .text
 
@@ -70,37 +71,59 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         iret
 
 _int_09_hand:
-        pushad ;Push EAX,ECX,EDX,EBX,original ESP,EBP,ESI and EDI
+        push ebp
+        mov ebp,esp
+
+        push eax
+
+        mov eax,[ebp] ;eip
+        push eax
+
+        mov eax,[ebp+8] ;cs
+        push eax
+
+        push esp
+        push ecx
+        push edx
+        push ebx
+        push esi
+        push edi
+
         push ss
         push ds
-        push es
+        push es   
         push fs
         push gs
-        mov eax,[esp-4] ;eip
-        push eax
-        ;mov eax,[esp] ;cs
-        ;push eax
-        push cs
 
-        mov eax,0
+        xor eax,eax
         in al, 60h
 
         push eax
         call int_09
-       
-
+        pop eax
+        
         mov al,20h ; EOI command code
         out 20h,al ; IO base address for master pic
-        
-         pop eax
-        pop eax
-        pop eax
+
         pop gs
         pop fs
         pop es
         pop ds
         pop ss
-        popad
+
+        pop edi
+        pop esi
+        pop ebx
+        pop edx
+        pop ecx
+        pop eax ;esp
+             
+        pop eax ;eip
+        pop eax ;cs
+        pop eax
+        
+        mov esp,ebp
+        pop ebp
         
         iret
 

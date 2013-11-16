@@ -49,6 +49,6 @@ void LockOnOff(int i);
 void SpecialKeyOnOff(int i, bool onoff);
 int isSpecialKey(unsigned char scancode);
 void putinbuffer(unsigned char ascii);
-void forBuffer(unsigned char scancode, short int cs,int eip, short int gs, short int fs, short int es, short int ds, short int ss, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax);
+void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int fs, short unsigned int es, short unsigned int ds, short unsigned int ss, int edi, int esi, int ebx, int edx, int ecx, int esp, short unsigned int cs, int eip,int eax, int ebp);
 
 #endif
