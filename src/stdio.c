@@ -305,7 +305,7 @@ int vscanf(const char * format, va_list args){
 					arg=va_arg(args,char*);
 					items=items+scanfstring(arg,curr);
 					i++;
-					//printf("%s",arg);
+					
 					break;
 				}
 			case 'c':
@@ -335,7 +335,7 @@ int vscanf(const char * format, va_list args){
 			}
 		}
 
-		i++;
+		// i++;
 	}	
 	return i;
 }
