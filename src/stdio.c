@@ -305,7 +305,7 @@ int vscanf(const char * format, va_list args){
 					arg=va_arg(args,char*);
 					items=items+scanfstring(arg,curr);
 					i++;
-					
+					// printf("%s\n",arg);
 					break;
 				}
 			case 'c':

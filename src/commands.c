@@ -82,10 +82,15 @@ void scanf_test_cmd(int argc, char ** args){
 	scanf("%d",&num);
 	printf("\nYou typed...'%d'\n\n",num);
 
-	char * ans;
-	printf("Please type some text:\n");
-	scanf("%s",ans);
-	printf("You typed...\"%s\"\n\n",ans);
+	printf("%s\n","scanf init");
+	char *arg;
+	scanf("%s",arg);	
+	printf("%s\n","scaf end");
+
+	// char * ans;
+	// printf("Please type some text:\n");
+	// scanf("%s",ans);
+	// printf("%s",ans);
 }
 
 void openCD_cmd(int argc, char ** args){
