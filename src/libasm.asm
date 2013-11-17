@@ -3,6 +3,7 @@ GLOBAL  _int_08_hand,_int_09_hand,_int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 GLOBAL  _Sys_Call
+GLOBAL _registerschange
 
 EXTERN  int_08
 EXTERN  int_80
@@ -53,6 +54,26 @@ _lidt:				; Carga el IDTR
         pop     ebx
         pop     ebp
         retn
+
+_registerschange:
+        push ebp
+        mov ebp, esp
+        pusha
+
+        mov eax,10000
+_registerloop:
+        mov ebx,eax
+        mov ecx,eax
+        mov edx,eax
+        dec eax
+        cmp eax,0
+        jne _registerloop
+
+        pop a
+        mov esp,ebp
+        push ebp
+
+        ret
 
 
 _int_08_hand:				; Handler de INT 8 ( Timer tick)
