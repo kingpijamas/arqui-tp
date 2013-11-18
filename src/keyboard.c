@@ -8,6 +8,7 @@ static unsigned char keyboard_buffer[SIZE_BUFFER];
 static int last=0; 
 static int first=0; 
 static bool full=false;
+static int ctrlindex=0;
 
 static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
@@ -117,7 +118,7 @@ void putinbuffer(unsigned char ascii){
 void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int fs, short unsigned int es, short unsigned int ds, short unsigned int ss, int edi, int esi, int ebx, int edx, int ecx, int esp, short unsigned int cs, int eip, unsigned short int flags,int eax,int ebp){
     unsigned char ascii=ZERO;
    	int specialkeynum=-1; 
-   	int specialindex;
+   	int specialindex=0;
 
 	if(isBreakCode(scancode)){
 		specialkeynum=isSpecialKey(scancode&0x7F);
@@ -127,18 +128,26 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 			//If it's a breakcode we mind only for alt, control and shift.
 			SpecialKeyOnOff(specialkeynum,false);
 		}
+		if(specialkeynum==Ctrl){
+			printf("%s\n","hola" );
+			specialindex=0;
+		}
 		return;
 	}else{		
     	//rprintf("%c",keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS]);
 		ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
+		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r' && ascii!='R'){
+			ctrlindex++;
+			printf("%d\n",ctrlindex);
+		}
 
 		if(isAscii(ascii)){
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
 					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 				}
-				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') ){					
+				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && ctrlindex==0 ){					
 					// CONTROL+R
 					rprintf("eax:%i\t\t",eax);			
 					rprintf("ebx:%i\t\t",ebx);
