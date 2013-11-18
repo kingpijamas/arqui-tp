@@ -134,7 +134,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 		ascii=keyboard[(scancode&0x7F)/KEYMAPSCOLS][(scancode&0x7F)%KEYMAPSCOLS];
 		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r'){
 			ctrlindex--;
-			// printf("ctrlindex-:%d\n",ctrlindex);
+			printf("ctrlindex-:%d\n",ctrlindex);
 		}
 
 		return;
