@@ -91,6 +91,7 @@ void __bounded_print_char(int minRow, int * offset, char c){
             for(tab=0; tab<TAB_LENGTH && (__getColOf(*offset)+tab)<=MAX_COL; tab++){
                 video[((*offset)++)*2]=TAB_CHAR;
             }
+            (*offset)++;
             break;
         default:
             if(__getColOf((*offset)+1) % MAX_COL == 0){

@@ -28,7 +28,7 @@ void help_cmd(int argc, char ** args){
 	__print_help_line("printf  ","Test for the 'printf' function from <stdio.h>");
 	__print_help_line("getc    ","Test for the 'getc' function from <stdio.h>");
 	__print_help_line("scanf   ","Test for the 'scanf' function from <stdio.h>");
-	__print_help_line("regs    ","Test for the register printing (changes registers in a loop)");
+	__print_help_line("regs    ","Test for the register printing");
 	__print_help_line("abrirCD ","Opens the CD reader");
 	__print_help_line("cerrarCD","Closes the CD reader");
 	__print_help_line("infoCD  ","Displays the size of the current CD in the CD reader");
@@ -87,25 +87,21 @@ void scanf_test_cmd(int argc, char ** args){
 	char arg[200]={'\0'};
 	scanf("%s",arg);
 	printf("\nYou typed... '%s'\n\n",arg);
-
-
-	// char * ans;
-	// printf("Please type some text:\n");
-	// scanf("%s",ans);
-	// printf("%s",ans);
 }
 
 void openCD_cmd(int argc, char ** args){
 	_ejectCD();
 }
+
 void infoCD_cmd(int argc, char ** args){
 	_infoCD();
 }
+
 void closeCD_cmd(int argc, char ** args){
 	_closeCD();
 }
 
 void regs_test_cmd(int argc, char ** args){
-	printf("Incrementing registers eax, ebx and edx... (ecx is the timer)\n");
+	printf("Incrementing registers eax, ebx and edx in a loop... (ecx is the wait timer)\n");
 	_registerschange();
 }
