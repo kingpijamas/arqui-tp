@@ -156,7 +156,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 					rprintf("esp:%i\t\t",esp);
 					rprintf("eip:%i\n",eip);
 					rprintf("flags:%xh",flags);
-					rprintf("\n"); //TODO: check if this stays or not
+					rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
 					return;
 				}						
 			}

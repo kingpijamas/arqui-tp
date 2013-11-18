@@ -29,6 +29,7 @@ void help_cmd(int argc, char ** args);
 void openCD_cmd(int argc, char ** args);
 void infoCD_cmd(int argc, char ** args);
 void closeCD_cmd(int argc, char ** args);
+void regs_test_cmd(int argc, char ** args);
 
 void __print_help_line(const char * cmdName,const char * description);
 #endif

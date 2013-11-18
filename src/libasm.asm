@@ -60,21 +60,21 @@ _registerschange:
         mov ebp, esp
         pusha
 
-        mov eax,10000
-_registerloop:
+        mov eax, 0
+_regs_loop:
+        mov ecx, 0x3fffff
+_regs_wait_loop:
+        dec ecx
+        loopnz _regs_wait_loop
         mov ebx,eax
-        mov ecx,eax
         mov edx,eax
-        dec eax
-        cmp eax,0
-        jne _registerloop
+        inc eax
+        loopnz _regs_loop
 
-        pop a
+        popa
         mov esp,ebp
         push ebp
-
         ret
-
 
 _int_08_hand:				; Handler de INT 8 ( Timer tick)
         push    ds
