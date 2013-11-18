@@ -106,6 +106,6 @@ void closeCD_cmd(int argc, char ** args){
 }
 
 void regs_test_cmd(int argc, char ** args){
-	printf("Incrementing registers ebx and edx... (ecx is the timer)\n");
+	printf("Incrementing registers eax, ebx and edx... (ecx is the timer)\n");
 	_registerschange();
 }

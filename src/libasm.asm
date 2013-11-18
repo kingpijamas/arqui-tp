@@ -66,9 +66,9 @@ _regs_loop:
 _regs_wait_loop:
         dec ecx
         loopnz _regs_wait_loop
+        inc eax
         mov ebx,eax
         mov edx,eax
-        inc eax
         loopnz _regs_loop
 
         popa
