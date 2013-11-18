@@ -129,9 +129,14 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 			SpecialKeyOnOff(specialkeynum,false);
 		}
 		if(specialkeynum==Ctrl){
-			printf("%s\n","hola" );
 			specialindex=0;
 		}
+		ascii=keyboard[(scancode&0x7F)/KEYMAPSCOLS][(scancode&0x7F)%KEYMAPSCOLS];
+		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r'){
+			ctrlindex--;
+			// printf("ctrlindex-:%d\n",ctrlindex);
+		}
+
 		return;
 	}else{		
     	//rprintf("%c",keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS]);
@@ -139,7 +144,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 		specialkeynum=isSpecialKey(scancode);	
 		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r' && ascii!='R'){
 			ctrlindex++;
-			printf("%d\n",ctrlindex);
+			// printf("ctrlindex+:%d\n",ctrlindex);
 		}
 
 		if(isAscii(ascii)){
@@ -171,6 +176,12 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 			}
 			if(specialKey[Shift-LOCKSKEYS]){
 					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					if(lockFlag[CapsLock]){
+						if(isLetter(ascii)){
+							printf("%s\n","capslock+shift letter");
+							ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+						}
+					}
 				}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){
