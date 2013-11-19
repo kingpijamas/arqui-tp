@@ -304,26 +304,88 @@ Keyboard
 
 \begin_layout Standard
 Contiene el driver de teclado; para el mismo se utilizó un buffer circular,
- el cual permite no tener que refrescarlo ni cambiar su tamaño y la técnica
- de polling desarrollada previamente en clase.
+ el cual permite no tener que refrescarlo ni cambiar su tamaño y utilizar
+ la técnica de polling desarrollada previamente en clase.
  Como se dijo previamente, por los requerimientos del S.O., el driver de teclado
- también se encarga de “escuchar” la combinación de teclas 
+ también se encarga de "escuchar" la combinación de teclas 
 \begin_inset Formula $Ctrl+R$
 \end_inset
 
- y de “manejarla” llamando a las funciones de impresión correspondientes.
+ y de "manejarla" llamando a las funciones de impresión correspondientes.
 \end_layout
 
 \begin_layout Standard
-No se soporta el 
+En cuanto a las funcionalidades que se soportan encontramos: el 
+\begin_inset Formula $Caps$
+\end_inset
+
+ 
+\begin_inset Formula $Lock$
+\end_inset
+
+ para utilizar letras mayúsculas, la combinación de éste con Shift diferenciando
+ la impresión de letras minúsculas y símbolos, la funcionalidad del Shift,
+ que se presionen las teclas especiales por más de un make code, la combinación
+ 
+\begin_inset Formula $Ctrl+R$
+\end_inset
+
+, la combinación de 
 \begin_inset Formula $Ctrl$
 \end_inset
 
- derecho, ni...
+ y cualquier otra tecla que no imprima nada, y la opción de presionar 
+\begin_inset Formula $Ctrl+Shift+R$
+\end_inset
+
+ sin que se impriman registros, al igual que cualquier otra combinación
+ de 
+\begin_inset Formula $Ctrl+R$
+\end_inset
+
+ que tenga teclas que no sean las ya mencionadas.
+ 
 \end_layout
 
 \begin_layout Standard
-/*TODO*/
+Esto último se logró utilizando un contador de cantidad de teclas presionadas
+ en el driver de teclado al recibir los make codes y break codes, lo que
+ podría servir en el futuro para agregar alguna otra combianción de teclas
+ que lanze un comportamiento especial.
+\end_layout
+
+\begin_layout Standard
+Se decidió utilizar el teclado en inglés para la matriz que mapea scancodes
+ y asciis por facilidad, ya que hay signos en español en la tabla de ascii
+ extendido y no en la común.
+\end_layout
+
+\begin_layout Standard
+Por otro lado, no se sporta el 
+\begin_inset Formula $Ctrl$
+\end_inset
+
+ derecho ni el 
+\begin_inset Formula $AltGr$
+\end_inset
+
+ -éste último envia un make code y dos break codes y hay que considerarlo
+ aparte para contar la cantidad de teclas-, ni las funcionalidades especiales
+ del resto del resto de las teclas especiales no mencionadas en las funcionalida
+des soportadas -
+\begin_inset Formula $f1$
+\end_inset
+
+,
+\begin_inset Formula $Del$
+\end_inset
+
+,
+\begin_inset Formula $Esc$
+\end_inset
+
+,etc-.
+ 
 \end_layout
 
 \begin_layout Subsection*
@@ -468,40 +530,65 @@ Comandos ATAPI para el CD
 \begin_layout Standard
 Se implementaron comandos con la interfaz ATAPI para abrir, cerrar y leer
  la capacidad de un CD.
- El código de los mismos está todo en assembler, lo que resultó ser un problema
- al querer escalarlo para cualquier drive y bus donde se encuentre el CD.
- Se debería haber implementado esto en lenguaje C lo más posible, y utilizar
- inline assembler o pequeñas funciones de assembler para intb, outb y demás
- necesidades de bajo nivel.
- Se quiso utlizar el comando identify de la interfaz ATA para reconocer
- dónde hay un CD, ya que estos no son compatibles con ATA y a su vez devuelven
- bits útiles para identicarlos.
- Para los tres comandos se utilizó diferentes paquetes de envio.
-\end_layout
-
-\begin_layout Subsection*
-Info Registers (
-\begin_inset Formula $Ctrl+R$
-\end_inset
-
-)
+ No se logró hacer éstó último, sí los dos primeros.
+ El código de los mismos está en Assembler a pesar de que hubiera sido más
+ sencillo implementarlo en lenguaje C utilizando inline assembler para inb,
+ oub y otras instrucciones necesarias.
 \end_layout
 
 \begin_layout Standard
-El info registers muestra los registros al momento donde se presiona esta
- combinación de teclas.
+Se buscó utilizar el comando identify de la interfaz ATA para reconocer
+ dónde hay un CD, ya que estos no son compatibles con ATA y a su vez devuelven
+ bits útiles para identificarlos.
+ También se buscó utilizar el Soft reset de ATA.
+\end_layout
+
+\begin_layout Subsection*
+Info Registers (Ctrl+R)
+\end_layout
+
+\begin_layout Standard
+El info registers muestra los registros al momento que se presiona esta
+ combianción de teclas.
  Para que funcione en cualquier programa y existan en el momento indicado
  los datos necesarios, se lo implementó desde el driver de teclado, guardando
- siempre los registros de manera que el driver los reciba e imprima en el
- momento indicado.
- Se podría haber llamado a una función que guarde los registros en lugar
- de recibirlos todos el programa en 
+ siempre los registros de manera que el driver reciba siempre los registros
+ y los tenga disponibles al necesitarlos.
+\end_layout
+
+\begin_layout Standard
+Los flags, eip y cs se buscaron el el stack ya que la interrupción los coloca
+ allí con 32 bits cada uno.
+ Se tuvo cuidado de recibir en la función de 
 \begin_inset Formula $C$
 \end_inset
 
- que maneja la interrupción de teclado, pero no nos pareció lo más adecuado
- ya que de todas maneras el driver sigue accediendo a los registros que
- le llegan en el handler.
+ del driver de teclado los registros con su tamaño real: si son de 16 bits
+ como el code segment, se reciben como unsigned short int en cambio si son
+ de 32 como int.
+\end_layout
+
+\begin_layout Standard
+Se realizó un comando que testeara el cambio de 
+\begin_inset Formula $eax$
+\end_inset
+
+, 
+\begin_inset Formula $ebx$
+\end_inset
+
+ y 
+\begin_inset Formula $edx$
+\end_inset
+
+ a través de un loop sobre 
+\begin_inset Formula $ecx$
+\end_inset
+
+ para comprobar el correcto funcionamiento del Info Registers.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
