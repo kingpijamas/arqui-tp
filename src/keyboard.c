@@ -9,7 +9,7 @@ static int last=0;
 static int first=0; 
 static bool full=false;
 static int numletter=0;
-static unsigned char lastascii=0;
+static unsigned char lastscancode=0;
 
 static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
@@ -66,7 +66,7 @@ bool isBreakCode(unsigned char scancode){
 }
 
 bool isLetter(unsigned char ascii){
-	return (ascii>=(unsigned char)'a' && ascii<=(unsigned char)'z');
+	return (ascii>=(unsigned char)'a' && ascii<=(unsigned char)'z')||(ascii>=(unsigned char)'A' && ascii<=(unsigned char)'Z');
 }
 
 bool isAscii(unsigned char ascii){
@@ -133,28 +133,31 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 		}
 		
 		ascii=keyboard[makecode/KEYMAPSCOLS][makecode%KEYMAPSCOLS];
-		if(ascii==lastascii){
-			lastascii=0;
+		if(makecode==lastscancode){
+			lastscancode=0;
 		}
 		numletter--;
 		
 
 		return;
 	}else{		
+		// printf("MakeCode LockOn:%d \n",lockFlag[CapsLock] );
     	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
 
-
-		if(lastascii!=ascii || specialkeynum>=0){
+		if(lastscancode!=scancode || specialkeynum>=0){
 			numletter++;
-			printf("letras apretadas:%d\n",numletter);
 		}
-		lastascii=ascii;
+		lastscancode=scancode;
 		
 		if(isAscii(ascii)){
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					if(isLetter(ascii)){
+						ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					}else{
+						ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					}
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && numletter==2 ){					
 					
@@ -182,17 +185,19 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 				}				
 			}
 			if(specialKey[Shift-LOCKSKEYS]){
+				// printf("isletter:%d\n",isLetter(ascii));
 				ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+				// printf("LockOn:%d \n",lockFlag[CapsLock] );
 				if(lockFlag[CapsLock]){
 					if(isLetter(ascii)){
-						printf("%s\n","capslock+shift letter");
+						// printf("%s\n","capslock+shift letter");
 						ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 					}
 				}
-				}
+			}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){
-			if(specialkeynum<LOCKSKEYS){
+			if(specialkeynum<LOCKSKEYS){	
 				LockOnOff(specialkeynum);
 			}else if(specialkeynum>=LOCKSKEYS){
 				SpecialKeyOnOff(specialkeynum,true);
