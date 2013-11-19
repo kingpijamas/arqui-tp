@@ -8,7 +8,9 @@ static unsigned char keyboard_buffer[SIZE_BUFFER];
 static int last=0; 
 static int first=0; 
 static bool full=false;
-static int ctrlindex=0;
+static int numletter=0;
+static unsigned char lastscancode=0;
+static bool firstenter=true;
 
 static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
@@ -65,7 +67,7 @@ bool isBreakCode(unsigned char scancode){
 }
 
 bool isLetter(unsigned char ascii){
-	return (ascii>=(unsigned char)'a' && ascii<=(unsigned char)'z');
+	return (ascii>=(unsigned char)'a' && ascii<=(unsigned char)'z')||(ascii>=(unsigned char)'A' && ascii<=(unsigned char)'Z');
 }
 
 bool isAscii(unsigned char ascii){
@@ -121,77 +123,97 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
    	int specialindex=0;
 
 	if(isBreakCode(scancode)){
-		specialkeynum=isSpecialKey(scancode&0x7F);
+		// printf("Break:%d\n",scancode);
+	
+		int makecode=scancode&0x7F;
+		specialkeynum=isSpecialKey(makecode);
 		specialindex=specialkeynum-LOCKSKEYS;
 
 		if(specialkeynum>=LOCKSKEYS && specialKey[specialindex]){
 			//If it's a breakcode we mind only for alt, control and shift.
 			SpecialKeyOnOff(specialkeynum,false);
 		}
-		if(specialkeynum==Ctrl){
-			specialindex=0;
+		
+		ascii=keyboard[makecode/KEYMAPSCOLS][makecode%KEYMAPSCOLS];
+		if(makecode==lastscancode){
+			lastscancode=0;
 		}
-		ascii=keyboard[(scancode&0x7F)/KEYMAPSCOLS][(scancode&0x7F)%KEYMAPSCOLS];
-		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r'){
-			ctrlindex--;
-			// printf("ctrlindex-:%d\n",ctrlindex);
-		}
+	    if(!firstenter){
+			numletter--;
+			printf("Break:%d\n",numletter );
+	    } firstenter=false;		
 
 		return;
 	}else{		
-    	//rprintf("%c",keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS]);
-		ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+		// printf("MakeCode LockOn:%d \n",lockFlag[CapsLock] );
+    	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
-		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r' && ascii!='R'){
-			ctrlindex++;
-			// printf("ctrlindex+:%d\n",ctrlindex);
-		}
 
+		// printf("%d%d\n",lastscancode, scancode );
+		if(lastscancode!=scancode){
+			numletter++;
+			printf("%d\n",numletter );
+		}
+		
 		if(isAscii(ascii)){
+			lastscancode=scancode;
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-				}
-				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && ctrlindex==0 ){					
-					// CONTROL+R
-					rprintf("eax:%xh\t\t",eax);			
-					rprintf("ebx:%xh\t\t",ebx);
-					rprintf("ecx:%xh\n",ecx);
-					rprintf("edx:%xh\t\t",edx);
-					rprintf("cs:%xh\t\t",cs);
-					rprintf("gs:%xh\n",gs);
-					rprintf("fs:%xh\t\t",fs);
-					rprintf("es:%xh\t\t",es);
-					rprintf("ds:%xh\n",ds);
-					rprintf("ss:%xh\t\t",ss);
-					rprintf("edi:%xh\t\t",edi);
-					rprintf("esi:%xh\n",esi);
-					rprintf("ebp:%xh\t\t",ebp);
-					rprintf("esp:%xh\t\t",esp);
-					rprintf("eip:%xh\n",eip);
-					rprintf("flags:%xh",flags);
-					rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
-					return;
-				}						
-			}
-			if(specialKey[Shift-LOCKSKEYS]){
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-					if(lockFlag[CapsLock]){
-						if(isLetter(ascii)){
-							printf("%s\n","capslock+shift letter");
-							ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-						}
+					if(isLetter(ascii)){
+						ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					}else{
+						ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 					}
 				}
+				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && numletter==2 ){					
+					
+					if(numletter==2){//TODO does this make any sense? (partB)
+						// CONTROL+R
+						rprintf("eax:%xh\t\t",eax);			
+						rprintf("ebx:%xh\t\t",ebx);
+						rprintf("ecx:%xh\n",ecx);
+						rprintf("edx:%xh\t\t",edx);
+						rprintf("cs:%xh\t\t",cs);
+						rprintf("gs:%xh\n",gs);
+						rprintf("fs:%xh\t\t",fs);
+						rprintf("es:%xh\t\t",es);
+						rprintf("ds:%xh\n",ds);
+						rprintf("ss:%xh\t\t",ss);
+						rprintf("edi:%xh\t\t",edi);
+						rprintf("esi:%xh\n",esi);
+						rprintf("ebp:%xh\t\t",ebp);
+						rprintf("esp:%xh\t\t",esp);
+						rprintf("eip:%xh\n",eip);
+						rprintf("flags:%xh",flags);
+						rprintf("\n\n\n\n\n");
+					}
+					return;
+				}else if(specialKey[Ctrl-LOCKSKEYS]){
+					return;
+				}			
+			}
+			if(specialKey[Shift-LOCKSKEYS]){
+				// printf("isletter:%d\n",isLetter(ascii));
+				ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+				// printf("LockOn:%d \n",lockFlag[CapsLock] );
+				if(lockFlag[CapsLock]){
+					if(isLetter(ascii)){
+						// printf("%s\n","capslock+shift letter");
+						ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+					}
+				}
+			}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){
-			if(specialkeynum<LOCKSKEYS){
-				LockOnOff(specialkeynum);
-			}else if(specialkeynum>=LOCKSKEYS){
-				SpecialKeyOnOff(specialkeynum,true);
+			if(lastscancode!=scancode){
+				if(specialkeynum<LOCKSKEYS){	
+					LockOnOff(specialkeynum);
+				}else if(specialkeynum>=LOCKSKEYS){
+					SpecialKeyOnOff(specialkeynum,true);
+				}
+				lastscancode=scancode;
+				return;
 			}
-			return;
 		}
 	} 
 }
-// __write(STD_OUT,"Here",4);
