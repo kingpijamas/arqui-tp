@@ -123,7 +123,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
    	int specialindex=0;
 
 	if(isBreakCode(scancode)){
-		// printf("Break:%d\n",scancode);
+		 printf("Break:%d\n",scancode);
 	
 		int makecode=scancode&0x7F;
 		specialkeynum=isSpecialKey(makecode);
@@ -145,14 +145,14 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 
 		return;
 	}else{		
-		// printf("MakeCode LockOn:%d \n",lockFlag[CapsLock] );
+		 printf("MakeCode:%d \n",scancode);
     	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
 
 		// printf("%d%d\n",lastscancode, scancode );
 		if(lastscancode!=scancode){
 			numletter++;
-			printf("%d\n",numletter );
+			// printf("%d\n",numletter );
 		}
 		
 		if(isAscii(ascii)){
