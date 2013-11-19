@@ -145,12 +145,12 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
     	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
 
-		if(lastscancode!=scancode || specialkeynum>=0){
+		if(lastscancode!=scancode){
 			numletter++;
 		}
-		lastscancode=scancode;
 		
 		if(isAscii(ascii)){
+			lastscancode=scancode;
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
 					if(isLetter(ascii)){
@@ -182,7 +182,9 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 						rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
 					}
 					return;
-				}				
+				}else if(specialKey[Ctrl-LOCKSKEYS]){
+					return;
+				}			
 			}
 			if(specialKey[Shift-LOCKSKEYS]){
 				// printf("isletter:%d\n",isLetter(ascii));
@@ -197,12 +199,15 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 			}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){
-			if(specialkeynum<LOCKSKEYS){	
-				LockOnOff(specialkeynum);
-			}else if(specialkeynum>=LOCKSKEYS){
-				SpecialKeyOnOff(specialkeynum,true);
+			if(lastscancode!=scancode){
+				if(specialkeynum<LOCKSKEYS){	
+					LockOnOff(specialkeynum);
+				}else if(specialkeynum>=LOCKSKEYS){
+					SpecialKeyOnOff(specialkeynum,true);
+				}
+				lastscancode=scancode;
+				return;
 			}
-			return;
 		}
 	} 
 }
