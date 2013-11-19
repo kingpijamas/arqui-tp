@@ -60,7 +60,7 @@
 \begin_body
 
 \begin_layout Title
-lsTrabajo Práctico Especial
+Trabajo Práctico Especial
 \end_layout
 
 \begin_layout Author
@@ -312,7 +312,18 @@ Contiene el driver de teclado; para el mismo se utilizó un buffer circular,
 \end_inset
 
  y de “manejarla” llamando a las funciones de impresión correspondientes.
- /*TODO*/
+\end_layout
+
+\begin_layout Standard
+No se soporta el 
+\begin_inset Formula $Ctrl$
+\end_inset
+
+ derecho, ni...
+\end_layout
+
+\begin_layout Standard
+/*TODO*/
 \end_layout
 
 \begin_layout Subsection*
@@ -448,6 +459,49 @@ _
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection*
+Comandos ATAPI para el CD
+\end_layout
+
+\begin_layout Standard
+Se implementaron comandos con la interfaz ATAPI para abrir, cerrar y leer
+ la capacidad de un CD.
+ El código de los mismos está todo en assembler, lo que resultó ser un problema
+ al querer escalarlo para cualquier drive y bus donde se encuentre el CD.
+ Se debería haber implementado esto en lenguaje C lo más posible, y utilizar
+ inline assembler o pequeñas funciones de assembler para intb, outb y demás
+ necesidades de bajo nivel.
+ Se quiso utlizar el comando identify de la interfaz ATA para reconocer
+ dónde hay un CD, ya que estos no son compatibles con ATA y a su vez devuelven
+ bits útiles para identicarlos.
+ Para los tres comandos se utilizó diferentes paquetes de envio.
+\end_layout
+
+\begin_layout Subsection*
+Info Registers (
+\begin_inset Formula $Ctrl+R$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+El info registers muestra los registros al momento donde se presiona esta
+ combinación de teclas.
+ Para que funcione en cualquier programa y existan en el momento indicado
+ los datos necesarios, se lo implementó desde el driver de teclado, guardando
+ siempre los registros de manera que el driver los reciba e imprima en el
+ momento indicado.
+ Se podría haber llamado a una función que guarde los registros en lugar
+ de recibirlos todos el programa en 
+\begin_inset Formula $C$
+\end_inset
+
+ que maneja la interrupción de teclado, pero no nos pareció lo más adecuado
+ ya que de todas maneras el driver sigue accediendo a los registros que
+ le llegan en el handler.
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -503,6 +557,15 @@ scanf Test de scanf para la cátedra
 
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
+regs Test del sistema de info registers (
+\begin_inset Formula $Ctrl+R$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
 abrirCD Abre la lectora de CD
 \end_layout
 
@@ -514,15 +577,6 @@ cerrarCD Cierra la lectora de CD
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 infoCD Muestra por salida estándar el tamaño del CD dentro de la unidad
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-regs Test del sistema de impresión de registros (
-\begin_inset Formula $Ctrl+R$
-\end_inset
-
-)
 \end_layout
 
 \begin_layout Subsection*
