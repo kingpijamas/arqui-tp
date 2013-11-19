@@ -10,6 +10,7 @@ static int first=0;
 static bool full=false;
 static int numletter=0;
 static unsigned char lastscancode=0;
+static bool firstenter=true;
 
 static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
@@ -122,6 +123,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
    	int specialindex=0;
 
 	if(isBreakCode(scancode)){
+		// printf("Break:%d\n",scancode);
 	
 		int makecode=scancode&0x7F;
 		specialkeynum=isSpecialKey(makecode);
@@ -136,8 +138,10 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 		if(makecode==lastscancode){
 			lastscancode=0;
 		}
-		numletter--;
-		
+	    if(!firstenter){
+			numletter--;
+			printf("Break:%d\n",numletter );
+	    } firstenter=false;		
 
 		return;
 	}else{		
@@ -145,8 +149,10 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
     	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
 
+		// printf("%d%d\n",lastscancode, scancode );
 		if(lastscancode!=scancode){
 			numletter++;
+			printf("%d\n",numletter );
 		}
 		
 		if(isAscii(ascii)){
