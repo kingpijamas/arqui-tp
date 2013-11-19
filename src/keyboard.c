@@ -10,7 +10,6 @@ static int first=0;
 static bool full=false;
 static int numletter=0;
 static unsigned char lastscancode=0;
-// static bool firstenter=true;
 
 static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
@@ -113,8 +112,6 @@ void putinbuffer(unsigned char ascii){
 			full=true;
 		}
 	}				
-		//test
-		//__write(STD_OUT,keyboard_buffer,last-first);
 }
 
 void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int fs, short unsigned int es, short unsigned int ds, short unsigned int ss, int edi, int esi, int ebx, int edx, int ecx, int esp, short unsigned int cs, int eip, unsigned short int flags,int eax,int ebp){
@@ -123,8 +120,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
    	int specialindex=0;
 
 	if(isBreakCode(scancode)){
-		 printf("Break:%d\n",scancode);
-	
+		
 		int makecode=scancode&0x7F;
 		specialkeynum=isSpecialKey(makecode);
 		specialindex=specialkeynum-LOCKSKEYS;
@@ -138,21 +134,16 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 		if(makecode==lastscancode){
 			lastscancode=0;
 		}
-	    // if(!firstenter){
-			numletter--;
-			// printf("Break:%d\n",numletter );
-	    // } firstenter=false;		
-
+	
+		numletter--;
+	
 		return;
 	}else{		
-		 printf("MakeCode:%d \n",scancode);
-    	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+		ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
 
-		// printf("%d%d\n",lastscancode, scancode );
 		if(lastscancode!=scancode){
 			numletter++;
-			// printf("%d\n",numletter );
 		}
 		
 		if(isAscii(ascii)){
@@ -167,7 +158,7 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && numletter==2 ){					
 					
-					if(numletter==2){//TODO does this make any sense? (partB)
+					if(numletter==2){ //Check only Control and r are pressed
 						// CONTROL+R
 						rprintf("eax:%xh\t\t",eax);			
 						rprintf("ebx:%xh\t\t",ebx);
@@ -193,12 +184,10 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 				}			
 			}
 			if(specialKey[Shift-LOCKSKEYS]){
-				// printf("isletter:%d\n",isLetter(ascii));
 				ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-				// printf("LockOn:%d \n",lockFlag[CapsLock] );
+				
 				if(lockFlag[CapsLock]){
 					if(isLetter(ascii)){
-						// printf("%s\n","capslock+shift letter");
 						ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 					}
 				}
