@@ -167,25 +167,25 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 				}
 				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && numletter==2 ){					
 					
-					if(numletter==2){
+					if(numletter==2){//TODO does this make any sense? (partB)
 						// CONTROL+R
-						rprintf("eax:%i\t\t",eax);			
-						rprintf("ebx:%i\t\t",ebx);
-						rprintf("ecx:%i\n",ecx);
-						rprintf("edx:%i\t\t",edx);
-						rprintf("cs:%i\t\t",cs);
-						rprintf("gs:%i\n",gs);
-						rprintf("fs:%i\t\t",fs);
-						rprintf("es:%i\t\t",es);
-						rprintf("ds:%i\n",ds);
-						rprintf("ss:%i\t\t",ss);
-						rprintf("edi:%i\t\t",edi);
-						rprintf("esi:%i\n",esi);
-						rprintf("ebp:%i\t\t",ebp);
-						rprintf("esp:%i\t\t",esp);
-						rprintf("eip:%i\n",eip);
+						rprintf("eax:%xh\t\t",eax);			
+						rprintf("ebx:%xh\t\t",ebx);
+						rprintf("ecx:%xh\n",ecx);
+						rprintf("edx:%xh\t\t",edx);
+						rprintf("cs:%xh\t\t",cs);
+						rprintf("gs:%xh\n",gs);
+						rprintf("fs:%xh\t\t",fs);
+						rprintf("es:%xh\t\t",es);
+						rprintf("ds:%xh\n",ds);
+						rprintf("ss:%xh\t\t",ss);
+						rprintf("edi:%xh\t\t",edi);
+						rprintf("esi:%xh\n",esi);
+						rprintf("ebp:%xh\t\t",ebp);
+						rprintf("esp:%xh\t\t",esp);
+						rprintf("eip:%xh\n",eip);
 						rprintf("flags:%xh",flags);
-						rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
+						rprintf("\n\n\n\n\n");
 					}
 					return;
 				}else if(specialKey[Ctrl-LOCKSKEYS]){
