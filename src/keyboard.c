@@ -8,7 +8,8 @@ static unsigned char keyboard_buffer[SIZE_BUFFER];
 static int last=0; 
 static int first=0; 
 static bool full=false;
-static int ctrlindex=0;
+static int numletter=0;
+static unsigned char lastascii=0;
 
 static bool lockFlag[LOCKSKEYS]={false,false,false}; //Num, Scrll, Caps
 static bool specialKey[SPECIALSKEYS]={false,false,false}; //Control, Alt, Shift.
@@ -121,67 +122,73 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
    	int specialindex=0;
 
 	if(isBreakCode(scancode)){
-		specialkeynum=isSpecialKey(scancode&0x7F);
+	
+		int makecode=scancode&0x7F;
+		specialkeynum=isSpecialKey(makecode);
 		specialindex=specialkeynum-LOCKSKEYS;
 
 		if(specialkeynum>=LOCKSKEYS && specialKey[specialindex]){
 			//If it's a breakcode we mind only for alt, control and shift.
 			SpecialKeyOnOff(specialkeynum,false);
 		}
-		if(specialkeynum==Ctrl){
-			specialindex=0;
+		
+		ascii=keyboard[makecode/KEYMAPSCOLS][makecode%KEYMAPSCOLS];
+		if(ascii==lastascii){
+			lastascii=0;
 		}
-		ascii=keyboard[(scancode&0x7F)/KEYMAPSCOLS][(scancode&0x7F)%KEYMAPSCOLS];
-		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r'){
-			ctrlindex--;
-			printf("ctrlindex-:%d\n",ctrlindex);
-		}
+		numletter--;
+		
 
 		return;
 	}else{		
-    	//rprintf("%c",keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS]);
-		ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+    	ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 		specialkeynum=isSpecialKey(scancode);	
-		if(specialKey[Ctrl-LOCKSKEYS] && specialkeynum!=Ctrl && ascii!='r' && ascii!='R'){
-			ctrlindex++;
-			// printf("ctrlindex+:%d\n",ctrlindex);
-		}
 
+
+		if(lastascii!=ascii || specialkeynum>=0){
+			numletter++;
+			printf("letras apretadas:%d\n",numletter);
+		}
+		lastascii=ascii;
+		
 		if(isAscii(ascii)){
 			if(isLetter(ascii)){
 				if(lockFlag[CapsLock]){ 
 					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 				}
-				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && ctrlindex==0 ){					
-					// CONTROL+R
-					rprintf("eax:%i\t\t",eax);			
-					rprintf("ebx:%i\t\t",ebx);
-					rprintf("ecx:%i\n",ecx);
-					rprintf("edx:%i\t\t",edx);
-					rprintf("cs:%i\t\t",cs);
-					rprintf("gs:%i\n",gs);
-					rprintf("fs:%i\t\t",fs);
-					rprintf("es:%i\t\t",es);
-					rprintf("ds:%i\n",ds);
-					rprintf("ss:%i\t\t",ss);
-					rprintf("edi:%i\t\t",edi);
-					rprintf("esi:%i\n",esi);
-					rprintf("ebp:%i\t\t",ebp);
-					rprintf("esp:%i\t\t",esp);
-					rprintf("eip:%i\n",eip);
-					rprintf("flags:%xh",flags);
-					rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
+				else if(specialKey[Ctrl-LOCKSKEYS] && (ascii=='r'||ascii=='R') && numletter==2 ){					
+					
+					if(numletter==2){
+						// CONTROL+R
+						rprintf("eax:%i\t\t",eax);			
+						rprintf("ebx:%i\t\t",ebx);
+						rprintf("ecx:%i\n",ecx);
+						rprintf("edx:%i\t\t",edx);
+						rprintf("cs:%i\t\t",cs);
+						rprintf("gs:%i\n",gs);
+						rprintf("fs:%i\t\t",fs);
+						rprintf("es:%i\t\t",es);
+						rprintf("ds:%i\n",ds);
+						rprintf("ss:%i\t\t",ss);
+						rprintf("edi:%i\t\t",edi);
+						rprintf("esi:%i\n",esi);
+						rprintf("ebp:%i\t\t",ebp);
+						rprintf("esp:%i\t\t",esp);
+						rprintf("eip:%i\n",eip);
+						rprintf("flags:%xh",flags);
+						rprintf("\n\n\n\n\n"); //TODO: check if this stays or not
+					}
 					return;
-				}						
+				}				
 			}
 			if(specialKey[Shift-LOCKSKEYS]){
-					ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-					if(lockFlag[CapsLock]){
-						if(isLetter(ascii)){
-							printf("%s\n","capslock+shift letter");
-							ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
-						}
+				ascii=spKeyKeyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
+				if(lockFlag[CapsLock]){
+					if(isLetter(ascii)){
+						printf("%s\n","capslock+shift letter");
+						ascii=keyboard[scancode/KEYMAPSCOLS][scancode%KEYMAPSCOLS];
 					}
+				}
 				}
 			putinbuffer(ascii);
 		}else if(specialkeynum>=0){
@@ -194,4 +201,3 @@ void forBuffer(unsigned char scancode, short unsigned int gs, short unsigned int
 		}
 	} 
 }
-// __write(STD_OUT,"Here",4);
