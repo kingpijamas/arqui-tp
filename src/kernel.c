@@ -105,8 +105,11 @@ kmain() {
 		//__read(STD_IN, buffer,2);
 		
 		//SCANF WORKING
-		 //char *arg;
-		 //scanf("%s",arg);
+		// printf("%s\n","scanf init");
+		// char *arg;
+		// scanf("%s",arg);
+		// printf("%s\n",arg);
+		// printf("%s\n","scaf end");
 
 		//GET CHAR AND WRITE WORKING!
 		// while(ch=='\0'){

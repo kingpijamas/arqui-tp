@@ -163,7 +163,7 @@ bool isNumber(char c){
 }
 
 int scanfdecimal(int* arg, char curr){
-	int i=0; bool sign;
+	int i=0; bool sign=false;
 	
 	if(curr=='-'){
 		sign=true;
@@ -305,7 +305,7 @@ int vscanf(const char * format, va_list args){
 					arg=va_arg(args,char*);
 					items=items+scanfstring(arg,curr);
 					i++;
-					//printf("%s",arg);
+					// printf("%s\n",arg);
 					break;
 				}
 			case 'c':
@@ -335,7 +335,7 @@ int vscanf(const char * format, va_list args){
 			}
 		}
 
-		i++;
+		// i++;
 	}	
 	return i;
 }

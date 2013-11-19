@@ -12,7 +12,8 @@ static ShellCommand commands[SHELL_COMMAND_COUNT]={
 												{"help",help_cmd},
 												{"abrirCD",openCD_cmd},
 												{"infoCD",infoCD_cmd},
-												{"cerrarCD",closeCD_cmd}
+												{"cerrarCD",closeCD_cmd},
+												{"regs",regs_test_cmd}
 												// {"clear",clear}
 											};
 static bool firstCall=true;
@@ -103,8 +104,8 @@ void __load_shell_buffer(int promptLength){
 			printed+=iputc(shell_buffer[i],STD_OUT);
 
 			if(printed==LINE_WIDTH){
-				printf("\n");
-				printed=0;
+				// printf("\n");
+				// printed=0;
 			}
 
 			i++;

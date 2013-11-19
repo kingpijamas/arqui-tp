@@ -31,3 +31,5 @@ void 		_closeCD();
 void		_infoCD();
 
 void 		_ejectCD();
+
+void		_registerschange();

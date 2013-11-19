@@ -3,11 +3,13 @@ GLOBAL  _int_08_hand,_int_09_hand,_int_80_hand
 GLOBAL  _mascaraPIC1,_mascaraPIC2,_Cli,_Sti
 GLOBAL  _debug
 GLOBAL  _Sys_Call
+GLOBAL _registerschange
 
 EXTERN  int_08
 EXTERN  int_80
 EXTERN  dummy_handler
 EXTERN  int_09
+EXTERN __write
 
 SECTION .text
 
@@ -53,6 +55,26 @@ _lidt:				; Carga el IDTR
         pop     ebp
         retn
 
+_registerschange:
+        push ebp
+        mov ebp, esp
+        pusha
+
+        mov eax, 0
+_regs_loop:
+        mov ecx, 0x3fffff
+_regs_wait_loop:
+        dec ecx
+        loopnz _regs_wait_loop
+        inc eax
+        mov ebx,eax
+        mov edx,eax
+        loopnz _regs_loop
+
+        popa
+        mov esp,ebp
+        push ebp
+        ret
 
 _int_08_hand:				; Handler de INT 8 ( Timer tick)
         push    ds
@@ -70,31 +92,64 @@ _int_08_hand:				; Handler de INT 8 ( Timer tick)
         iret
 
 _int_09_hand:
-        pushad ;Push EAX,ECX,EDX,EBX,original ESP,EBP,ESI and EDI
+        push ebp
+        mov ebp,esp
+
+        push eax
+
+        mov eax,[ebp+0xC] ;flags
+        push eax
+
+        mov eax,[ebp+4] ;eip
+        push eax
+
+        mov eax,[ebp+8] ;cs
+        push eax
+
+        push esp
+        push ecx
+        push edx
+        push ebx
+        push esi
+        push edi
+
         push ss
         push ds
-        push es
+        push es   
         push fs
         push gs
-        push cs
 
-        mov eax,0
+        xor eax,eax
         in al, 60h
 
         push eax
         call int_09
         pop eax
-
+        
         mov al,20h ; EOI command code
         out 20h,al ; IO base address for master pic
-        
-        pop eax ;eax=cs
+
         pop gs
         pop fs
         pop es
         pop ds
         pop ss
-        popad
+
+        pop edi
+        pop esi
+        pop ebx
+        pop edx
+        pop ecx
+        pop eax ;esp
+             
+        pop eax ;cs
+        pop eax ;eip
+        pop eax ;flags
+
+        pop eax ;eax
+        
+        mov esp,ebp
+        pop ebp
         
         iret
 
