@@ -114,8 +114,8 @@ void __bounded_print_char_noVB(int minRow, int * offset, char c){
         case '\b':
             return;
         case '\t':
-            for(tab=0; tab<TAB_LENGTH && (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset)); tab++){
-                video[((*offset)++)*2]='\0';
+            for(tab=0; tab<TAB_LENGTH /*&& (__getRowOf((*offset)+TAB_LENGTH)==__getRowOf(*offset))*/; tab++){
+                video[((*offset)++)*2]=TAB_CHAR;
             }
             return;
         default:
